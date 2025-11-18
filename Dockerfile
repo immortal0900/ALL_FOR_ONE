@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y \
 # Install uv for faster dependency management
 RUN pip install --no-cache-dir uv
 
+# Use CPU-only PyTorch wheels
+ENV PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu
+
 # Copy dependency files
 COPY pyproject.toml ./
 
