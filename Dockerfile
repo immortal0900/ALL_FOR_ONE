@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
     git \
+    pkg-config \
+    libcairo2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv for faster dependency management
@@ -19,9 +21,6 @@ COPY pyproject.toml ./
 
 # Install Python dependencies using uv
 RUN uv pip install --system --no-cache -r pyproject.toml
-
-# Install additional runtime dependencies
-RUN uv pip install --system --no-cache streamlit uvicorn
 
 # Copy application source code
 COPY src/ ./src/
