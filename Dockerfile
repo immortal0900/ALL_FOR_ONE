@@ -11,19 +11,24 @@ RUN apt-get update && apt-get install -y \
     git \
     pkg-config \
     libcairo2-dev \
+    libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv for faster dependency management
 RUN pip install --no-cache-dir uv
-
-# Use CPU-only PyTorch wheels
-ENV PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu
 
 # Copy dependency files
 COPY pyproject.toml ./
 
 # Install Python dependencies using uv
 RUN uv pip install --system --no-cache -r pyproject.toml
+
+# Install PyTorch CPU wheels separately
+RUN uv pip install --system --no-cache \
+    --index-url https://download.pytorch.org/whl/cpu \
+    torch==2.4.1+cpu \
+    torchvision==0.19.1+cpu \
+    torchaudio==2.4.1+cpu
 
 # Copy application source code
 COPY src/ ./src/
