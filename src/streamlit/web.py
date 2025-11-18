@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import os
 
 st.title("🏗️ 자동 보고서 생성기")
 st.write("분양성 및 분양가를 판단할 사업지의 정보들을 삽입해보세요! 👋")
@@ -40,9 +41,12 @@ if submitted:
     # --- 요청 ---
     with st.spinner("⏳ 보고서를 생성 중입니다... 잠시만 기다려주세요. (13 ~ 15분소요)"):
         try:
+            # Get FastAPI URL from environment variable or default to localhost
+            api_url = os.getenv("FASTAPI_URL", "http://localhost:8080")
             response = requests.post(
-                "http://localhost:8080/invoke",  # FastAPI의 POST 엔드포인트 경로
-                json=payload            
+                f"{api_url}/invoke",
+                json=payload,
+                timeout=1200  # 20 minutes timeout for long report generation
             )
             if response.status_code == 200:
                 data = response.json()

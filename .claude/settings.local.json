@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(\".venv/Scripts/python.exe\" src/agents/main/main_agent_run.py)"
+      "Bash(\".venv/Scripts/python.exe\" src/agents/main/main_agent_run.py)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

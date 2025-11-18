@@ -13,4 +13,4 @@ pgdata/
 credentials.json
 token.json
 
-src/agents/renderer/temp
+src/agents/renderer/tempnul
