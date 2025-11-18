@@ -1,57 +1,64 @@
-# RAG Commander - FastAPI + Streamlit Docker Image
-FROM python:3.12-slim
+# RAG Commander - FastAPI Docker Image
+# 멀티스테이지 빌드로 이미지 크기 최적화
 
-# Set working directory
-WORKDIR /app
+# 빌드 스테이지
+FROM python:3.12-slim as builder
 
-# Install system dependencies
+WORKDIR /build
+
+# 빌드에 필요한 시스템 패키지만 설치
 RUN apt-get update && apt-get install -y \
     build-essential \
-    curl \
-    git \
     pkg-config \
     libcairo2-dev \
     libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv for faster dependency management
-RUN pip install --no-cache-dir uv
-
-# Copy dependency files
+# 의존성 파일 복사
 COPY pyproject.toml ./
 
-# Install Python dependencies using uv
-RUN uv pip install --system --no-cache -r pyproject.toml
+# Python 패키지 설치
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir .
 
-# Install PyTorch CPU wheels separately
-RUN uv pip install --system --no-cache \
+# PyTorch CPU 설치
+RUN pip install --no-cache-dir \
     --index-url https://download.pytorch.org/whl/cpu \
     torch==2.4.1+cpu \
     torchvision==0.19.1+cpu \
     torchaudio==2.4.1+cpu
 
-# Copy application source code
-COPY src/ ./src/
-COPY .streamlit/ ./.streamlit/
+# 실행 스테이지
+FROM python:3.12-slim
 
-# Copy data files (93MB)
+WORKDIR /app
+
+# 실행에 필요한 시스템 패키지만 설치
+RUN apt-get update && apt-get install -y \
+    curl \
+    libcairo2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 빌드 스테이지에서 Python 패키지 복사
+COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# 애플리케이션 코드 복사
+COPY src/ ./src/
+
+# 데이터 파일만 복사 (필요한 것만)
 COPY src/data/ ./src/data/
 
-# Copy startup script
-COPY start.sh ./start.sh
-RUN chmod +x start.sh
+# 포트 노출
+EXPOSE 8080
 
-# Expose ports
-# Note: Railway will override with $PORT environment variable
-EXPOSE 8080 8501
-
-# Health check
+# 헬스체크
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8080/ || exit 1
+    CMD curl -f http://localhost:${PORT:-8080}/ || exit 1
 
-# Set environment variables
+# 환경 변수
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Start command - will be overridden by Railway with custom start command
-CMD ["./start.sh"]
+# FastAPI 실행
+CMD uvicorn src.fastapi.main_api:app --host 0.0.0.0 --port ${PORT:-8080}

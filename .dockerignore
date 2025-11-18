@@ -71,7 +71,25 @@ Thumbs.db
 .ipynb_checkpoints/
 *.ipynb
 
+# Development files
+src/lab/
+output/
+*.png
+*.jpg
+*.jpeg
+
 # Docker
 docker-compose.yml
 Dockerfile
 .dockerignore
+
+# Large backup files
+*.dump
+*.sql
+*.pdf
+!src/data/**/*.pdf
+!src/data/**/*.csv
+!src/data/**/*.xlsx
+!src/data/**/*.json
+!src/data/**/*.doc
+!src/data/**/*.docx
