@@ -53,6 +53,9 @@ if submitted:
                 api_url = st.secrets["FASTAPI_URL"]
             except (KeyError, AttributeError):
                 api_url = os.getenv("FASTAPI_URL", "http://localhost:8080")
+
+            # 디버깅: 사용되는 API URL 표시
+            st.info(f" 연결 중: {api_url}")
             response = requests.post(
                 f"{api_url}/invoke",
                 json=payload,
