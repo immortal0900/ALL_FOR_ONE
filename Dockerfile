@@ -109,6 +109,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # 환경 변수
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app/src
 
 # FastAPI 실행
 CMD uvicorn src.fastapi.main_api:app --host 0.0.0.0 --port ${PORT:-8080}

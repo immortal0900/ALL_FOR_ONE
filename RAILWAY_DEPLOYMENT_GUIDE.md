@@ -57,8 +57,13 @@ TAVILY_API_KEY=...
 ### 3-3. 배포 설정
 1. "Settings" 탭 클릭
 2. "Build Command"는 비워두기 (Dockerfile 사용)
-3. "Start Command"는 비워두기 (Dockerfile의 CMD 사용)
-   - 또는 설정하려면: `uvicorn src.fastapi.main_api:app --host 0.0.0.0 --port $PORT`
+3. "Start Command" 확인 및 수정:
+   - **중요**: Start Command가 비어있거나 다음 명령어로 설정되어 있어야 함:
+     ```
+     uvicorn src.fastapi.main_api:app --host 0.0.0.0 --port $PORT
+     ```
+   - 만약 `star` 같은 잘못된 명령이 있다면 삭제하고 위 명령으로 변경
+   - Start Command를 비워두면 Dockerfile의 CMD가 사용됨
 
 ### 3-4. 포트 설정
 1. "Settings" 탭에서 "Generate Domain" 클릭
@@ -90,6 +95,17 @@ TAVILY_API_KEY=...
 ### 5-3. 포트 오류
 - Railway는 $PORT 환경 변수를 사용
 - 코드에서 하드코딩된 포트 제거 필요
+
+### 5-4. "The executable 'star' could not be found" 오류
+- Railway Settings의 Start Command에 잘못된 명령이 설정되어 있음
+- 해결 방법:
+  1. Railway 대시보드 → 서비스 → Settings 탭
+  2. Start Command 확인
+  3. 잘못된 명령 삭제 또는 다음으로 변경:
+     ```
+     uvicorn src.fastapi.main_api:app --host 0.0.0.0 --port $PORT
+     ```
+  4. 또는 Start Command를 완전히 비워두면 Dockerfile의 CMD 사용
 
 ## 참고사항
 
