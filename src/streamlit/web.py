@@ -7,15 +7,20 @@ st.write("분양성 및 분양가를 판단할 사업지의 정보들을 삽입�
 
 # --- 입력 폼 ---
 with st.form("report_form"):
-    target_area = st.text_input("📍 사업지 장소", placeholder="예: 서울특별시 송파구 신천동")
+    target_area = st.text_input(
+        "📍 사업지 장소", placeholder="예: 서울특별시 송파구 신천동"
+    )
     main_type = st.text_input("🏢 단지 타입", placeholder="예: 84제곱미터")
     total_units = st.text_input("🏠 세대수", placeholder="예: 2275")
     email = st.text_input("📧 이메일 주소", placeholder="예: example@gmail.com")
 
-    
-    policy_count = st.number_input("🔢 정책 개수(옵션)", min_value=1, max_value=10, value=2, step=1)
-    policy_options = ["2025.10.15",  "2025.06.27", "2025.09.07" ]
-    policy_selected = st.multiselect("📋 정책 선택", options=policy_options, default=policy_options[:2])
+    policy_count = st.number_input(
+        "🔢 정책 개수(옵션)", min_value=1, max_value=10, value=2, step=1
+    )
+    policy_options = ["2025.10.15", "2025.06.27", "2025.09.07"]
+    policy_selected = st.multiselect(
+        "📋 정책 선택", options=policy_options, default=policy_options[:2]
+    )
     policy_list_str = str(policy_selected) if policy_selected else None
     brand = st.text_input("🏗️ 브랜드명", placeholder="예: 래미안아이파크")
 
@@ -39,14 +44,19 @@ if submitted:
     st.json(payload)
 
     # --- 요청 ---
-    with st.spinner("⏳ 보고서를 생성 중입니다... 잠시만 기다려주세요. (13 ~ 15분소요)"):
+    with st.spinner(
+        "⏳ 보고서를 생성 중입니다... 잠시만 기다려주세요. (13 ~ 15분소요)"
+    ):
         try:
-            # Get FastAPI URL from environment variable or default to localhost
-            api_url = os.getenv("FASTAPI_URL", "http://localhost:8080")
+            # Get FastAPI URL from Streamlit secrets or environment variable
+            try:
+                api_url = st.secrets["FASTAPI_URL"]
+            except (KeyError, AttributeError):
+                api_url = os.getenv("FASTAPI_URL", "http://localhost:8080")
             response = requests.post(
                 f"{api_url}/invoke",
                 json=payload,
-                timeout=1200  # 20 minutes timeout for long report generation
+                timeout=1200,  # 20 minutes timeout for long report generation
             )
             if response.status_code == 200:
                 data = response.json()
@@ -56,4 +66,3 @@ if submitted:
                 st.text(response.text)
         except requests.exceptions.RequestException as e:
             st.error(f"⚠️ 요청 실패: {e}")
-
