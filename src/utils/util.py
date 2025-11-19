@@ -82,8 +82,29 @@ def get_current_dir() -> Path:
     return Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
 
 def get_project_root(marker="pyproject.toml"): # 현재 프로젝트의 경로를 가져오기 위해 사용용
+    # Docker 환경 체크 먼저
+    docker_root = Path("/app")
+    if docker_root.exists():
+        marker_path = docker_root / marker
+        if marker_path.exists():
+            return docker_root
+    
+    # 일반적인 경우: 현재 파일에서 시작해서 부모 디렉토리들을 탐색
     cur = Path(__file__).resolve() if "__file__" in globals() else Path().resolve()
-    return next((p for p in [cur, *cur.parents] if (p / marker).exists()), cur)    
+    
+    # 현재 디렉토리부터 부모 디렉토리까지 순회
+    for parent in [cur, *cur.parents]:
+        marker_path = parent / marker
+        if marker_path.exists():
+            return parent
+    
+    # 마커 파일을 찾지 못한 경우
+    # Docker 환경이면 /app 반환
+    if "/app" in str(cur):
+        return Path("/app")
+    
+    # 그 외의 경우 현재 작업 디렉토리 반환
+    return Path.cwd()    
 
 def get_data_dir(): 
     return get_project_root() / "src" / "data"

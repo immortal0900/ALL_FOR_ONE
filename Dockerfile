@@ -99,6 +99,9 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
 COPY --from=builder /usr/local/bin /usr/local/bin
 
+# 프로젝트 루트 마커 파일 복사 (get_project_root 함수용)
+COPY pyproject.toml ./
+
 # 애플리케이션 코드 복사
 COPY src/ ./src/
 
