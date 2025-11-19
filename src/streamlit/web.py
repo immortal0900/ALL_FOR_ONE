@@ -52,12 +52,11 @@ if submitted:
             api_url = None
 
             # Streamlit Cloud Secrets 확인
-            if hasattr(st, "secrets"):
-                try:
-                    if "API_URL" in st.secrets:
-                        api_url = st.secrets["API_URL"]
-                except (KeyError, AttributeError, TypeError):
-                    pass
+            try:
+                if hasattr(st, "secrets"):
+                    api_url = st.secrets.get("API_URL", None)
+            except Exception:
+                pass
 
             # Secrets에서 못 찾으면 환경 변수 확인
             if not api_url:
@@ -66,6 +65,10 @@ if submitted:
             # 둘 다 없으면 기본값 사용 (로컬 개발)
             if not api_url:
                 api_url = "http://localhost:8080"
+
+            # 디버깅: 사용 중인 API URL 표시
+            st.write(f"🔗 연결 URL: {api_url}")
+
             response = requests.post(
                 f"{api_url}/invoke",
                 json=payload,
