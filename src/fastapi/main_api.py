@@ -23,7 +23,11 @@ app = FastAPI(title="Service API")
 # CORS 설정 추가
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 모든 origin 허용 (프로덕션에서는 특정 도메인만 허용 권장)
+    allow_origins=[
+        "http://localhost:8501",  # 로컬 개발
+        "https://*.streamlit.app",  # Streamlit Cloud
+        "https://*.railway.app",  # Railway
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
