@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
+import asyncio
 
 from agents.main.main_agent import graph_builder
 from agents.state.start_state import StartInput
@@ -50,9 +51,20 @@ async def global_exception_handler(request: Request, exc: Exception):
 @app.post("/invoke", response_model=GraphResponse)
 async def invoke_graph(request: GraphRequest):
     try:
-        result = await graph.ainvoke({"start_input": request.start_input.model_dump()})
+        result = await asyncio.wait_for(
+            graph.ainvoke({"start_input": request.start_input.model_dump()}),
+            timeout=1200.0,
+        )
         return GraphResponse(output=result)
+    except asyncio.TimeoutError:
+        raise HTTPException(
+            status_code=504, detail="요청 처리 시간이 초과되었습니다. (20분 제한)"
+        )
     except Exception as e:
+        import traceback
+
+        tb = traceback.format_exc()
+        print(f"Error in invoke_graph: {tb}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

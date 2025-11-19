@@ -9,6 +9,7 @@ load_dotenv()
 _pgvector_cache = {}
 _pgvector_lock = Lock()
 
+
 def _prepare_connection_string(connection_url: str) -> str:
     """
     Supabase 연결 문자열을 처리합니다.
@@ -17,16 +18,20 @@ def _prepare_connection_string(connection_url: str) -> str:
     """
     if not connection_url:
         return connection_url
-    
+
     if "pooler.supabase.com" in connection_url:
         pass
     elif "supabase.com" in connection_url or "supabase.co" in connection_url:
         if "pooler" not in connection_url:
             if "@aws-" in connection_url and ".pooler." not in connection_url:
-                connection_url = connection_url.replace("@aws-", "@aws-0-ap-northeast-2.pooler.")
+                connection_url = connection_url.replace(
+                    "@aws-", "@aws-0-ap-northeast-2.pooler."
+                )
             elif ".supabase.co" in connection_url:
-                connection_url = connection_url.replace(".supabase.co", ".pooler.supabase.com")
-    
+                connection_url = connection_url.replace(
+                    ".supabase.co", ".pooler.supabase.com"
+                )
+
     if "?" in connection_url:
         if "connect_timeout" not in connection_url:
             connection_url += "&connect_timeout=10"
@@ -38,8 +43,9 @@ def _prepare_connection_string(connection_url: str) -> str:
             connection_url += "&keepalives_count=5"
     else:
         connection_url += "?connect_timeout=10&keepalives_idle=30&keepalives_interval=10&keepalives_count=5"
-    
+
     return connection_url
+
 
 def get_pgvector_store(collection_name: str):
     """
@@ -52,6 +58,7 @@ def get_pgvector_store(collection_name: str):
         if collection_name not in _pgvector_cache:
             try:
                 from langchain_community.vectorstores import pgvector as pgv
+
                 meta = pgv.BaseModel.metadata
                 for tname in list(meta.tables.keys()):
                     if tname.startswith("langchain_pg_"):
@@ -61,7 +68,7 @@ def get_pgvector_store(collection_name: str):
 
             emb = OpenAIEmbeddings(model="text-embedding-3-large")
             connection_url = os.getenv("POSTGRES_URL")
-            
+
             if connection_url:
                 connection_url = _prepare_connection_string(connection_url)
 
@@ -72,21 +79,6 @@ def get_pgvector_store(collection_name: str):
                 use_jsonb=True,
             )
         else:
-            try:
-                store = _pgvector_cache[collection_name]
-                store._conn
-            except Exception:
-                print(f"[PGVector] 연결이 끊어져 재생성합니다: {collection_name}")
-                del _pgvector_cache[collection_name]
-                emb = OpenAIEmbeddings(model="text-embedding-3-large")
-                connection_url = os.getenv("POSTGRES_URL")
-                if connection_url:
-                    connection_url = _prepare_connection_string(connection_url)
-                _pgvector_cache[collection_name] = PGVector(
-                    embedding_function=emb,
-                    connection_string=connection_url,
-                    collection_name=collection_name,
-                    use_jsonb=True,
-                )
+            pass
 
         return _pgvector_cache[collection_name]

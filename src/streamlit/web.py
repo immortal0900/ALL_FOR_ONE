@@ -2,9 +2,24 @@ import streamlit as st
 import requests
 import os
 import urllib3
+import ssl
+from requests.adapters import HTTPAdapter
+from urllib3.util.ssl_ import create_urllib3_context
 
-# SSL 경고 메시지 억제 (verify=False 사용 시 발생하는 경고)
+# SSL 경고 메시지 억제
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+# SSL 컨텍스트 생성 (DECRYPTION_FAILED_OR_BAD_RECORD_MAC 에러 해결)
+class SSLAdapter(HTTPAdapter):
+    def init_poolmanager(self, *args, **kwargs):
+        ctx = create_urllib3_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        ctx.set_ciphers("DEFAULT@SECLEVEL=1")
+        kwargs["ssl_context"] = ctx
+        return super().init_poolmanager(*args, **kwargs)
+
 
 st.title("AI 멀티에이전트 분양성 검토 솔루션")
 st.write("분양성 및 분양가를 판단할 사업지의 정보들을 삽입해보세요!")
@@ -56,7 +71,12 @@ if submitted:
         st.write(f"연결 URL: {api_url}")
 
         try:
-            response = requests.post(
+            # SSL 문제 해결을 위한 세션 설정
+            session = requests.Session()
+            adapter = SSLAdapter(max_retries=3)
+            session.mount("https://", adapter)
+
+            response = session.post(
                 f"{api_url}/invoke",
                 json=payload,
                 timeout=1200,  # 20 minutes timeout for long report generation
