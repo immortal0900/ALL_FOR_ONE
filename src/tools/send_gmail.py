@@ -1,4 +1,5 @@
 import os
+import json
 import base64
 import markdown
 import weasyprint  # ✅ 추가
@@ -34,7 +35,19 @@ def gmail_authenticate():
             print("♻️  Gmail token 갱신 완료")
         else:
             print("🌐 최초 인증 중... (브라우저 창 열림)")
-            flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
+
+            credentials_config = None
+            if os.getenv("GOOGLE_CREDENTIALS_JSON"):
+                credentials_config = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+            elif os.path.exists(CREDENTIALS_PATH):
+                with open(CREDENTIALS_PATH, "r") as f:
+                    credentials_config = json.load(f)
+            else:
+                raise FileNotFoundError(
+                    "credentials.json 파일 또는 GOOGLE_CREDENTIALS_JSON 환경 변수가 필요합니다."
+                )
+
+            flow = InstalledAppFlow.from_client_config(credentials_config, SCOPES)
             creds = flow.run_local_server(port=0)
 
         with open(TOKEN_PATH, "w") as token:

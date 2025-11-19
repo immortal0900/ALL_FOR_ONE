@@ -1,5 +1,6 @@
 import io
 import os
+import json
 import pandas as pd
 from typing import Union, Optional
 from google.oauth2.credentials import Credentials
@@ -27,7 +28,18 @@ def _get_drive_service(
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_json, SCOPES)
+            credentials_config = None
+            if os.getenv("GOOGLE_CREDENTIALS_JSON"):
+                credentials_config = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
+            elif os.path.exists(credentials_json):
+                with open(credentials_json, "r") as f:
+                    credentials_config = json.load(f)
+            else:
+                raise FileNotFoundError(
+                    "credentials.json 파일 또는 GOOGLE_CREDENTIALS_JSON 환경 변수가 필요합니다."
+                )
+
+            flow = InstalledAppFlow.from_client_config(credentials_config, SCOPES)
             creds = flow.run_local_server(port=0)
         with open(token_json, "w") as token:
             token.write(creds.to_json())
