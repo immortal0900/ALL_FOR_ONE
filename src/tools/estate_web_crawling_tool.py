@@ -25,8 +25,7 @@ from utils.util import get_project_root
 BASE_URL = "https://housing-post.com"
 LIST_PATH = "/List.aspx?CNO=11389"
 MAX_PAGE = 3
-# DATA_ROOT = get_project_root / "src"/ "data"/ "policy_factors"
-DATA_ROOT = Path("C:/RAG_COMMANDER/src/data/policy_factors")
+DATA_ROOT = get_project_root() / "src" / "data" / "policy_factors"
 
 
 def _collect_form_inputs(soup):

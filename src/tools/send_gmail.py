@@ -26,14 +26,34 @@ CREDENTIALS_PATH = os.path.join(BASE_DIR, "credentials.json")
 def gmail_authenticate():
     creds = None
 
-    if os.path.exists(TOKEN_PATH):
+    token_json_str = os.getenv("GOOGLE_TOKEN_JSON")
+    if token_json_str:
+        token_data = json.loads(token_json_str)
+        creds = Credentials.from_authorized_user_info(token_data, SCOPES)
+        print("✅ 환경변수에서 토큰 로드 완료")
+    elif os.path.exists(TOKEN_PATH):
         creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
             print("♻️  Gmail token 갱신 완료")
+            if token_json_str:
+                print("⚠️  환경변수 토큰은 갱신 후 파일로 저장되지 않습니다.")
+            else:
+                with open(TOKEN_PATH, "w") as token:
+                    token.write(creds.to_json())
+                    print(f"💾 토큰 저장 완료 → {TOKEN_PATH}")
         else:
+            is_docker = (
+                os.path.exists("/.dockerenv") or os.getenv("DOCKER_ENV") == "true"
+            )
+            if is_docker:
+                raise RuntimeError(
+                    "Docker 환경에서는 브라우저 인증이 불가능합니다. "
+                    "GOOGLE_TOKEN_JSON 환경변수에 인증된 토큰을 설정해주세요."
+                )
+
             print("🌐 최초 인증 중... (브라우저 창 열림)")
 
             credentials_config = None
@@ -50,9 +70,9 @@ def gmail_authenticate():
             flow = InstalledAppFlow.from_client_config(credentials_config, SCOPES)
             creds = flow.run_local_server(port=0)
 
-        with open(TOKEN_PATH, "w") as token:
-            token.write(creds.to_json())
-            print(f"💾 토큰 저장 완료 → {TOKEN_PATH}")
+            with open(TOKEN_PATH, "w") as token:
+                token.write(creds.to_json())
+                print(f"💾 토큰 저장 완료 → {TOKEN_PATH}")
 
     return creds
 

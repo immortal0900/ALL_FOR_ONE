@@ -22,12 +22,31 @@ def _get_drive_service(
 ):
     """OAuth 인증 → Drive 서비스 객체 반환"""
     creds = None
-    if os.path.exists(token_json):
+
+    token_json_str = os.getenv("GOOGLE_TOKEN_JSON")
+    if token_json_str:
+        token_data = json.loads(token_json_str)
+        creds = Credentials.from_authorized_user_info(token_data, SCOPES)
+        print("✅ 환경변수에서 토큰 로드 완료")
+    elif os.path.exists(token_json):
         creds = Credentials.from_authorized_user_file(token_json, SCOPES)
+
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
+            if not token_json_str:
+                with open(token_json, "w") as token:
+                    token.write(creds.to_json())
         else:
+            is_docker = (
+                os.path.exists("/.dockerenv") or os.getenv("DOCKER_ENV") == "true"
+            )
+            if is_docker:
+                raise RuntimeError(
+                    "Docker 환경에서는 브라우저 인증이 불가능합니다. "
+                    "GOOGLE_TOKEN_JSON 환경변수에 인증된 토큰을 설정해주세요."
+                )
+
             credentials_config = None
             if os.getenv("GOOGLE_CREDENTIALS_JSON"):
                 credentials_config = json.loads(os.getenv("GOOGLE_CREDENTIALS_JSON"))
@@ -41,8 +60,9 @@ def _get_drive_service(
 
             flow = InstalledAppFlow.from_client_config(credentials_config, SCOPES)
             creds = flow.run_local_server(port=0)
-        with open(token_json, "w") as token:
-            token.write(creds.to_json())
+            with open(token_json, "w") as token:
+                token.write(creds.to_json())
+
     return build("drive", "v3", credentials=creds)
 
 
