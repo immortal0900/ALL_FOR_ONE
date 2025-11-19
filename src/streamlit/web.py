@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import os
 
-st.title("🏗️ 자동 보고서 생성기")
+st.title("AI 멀티에이전트 분양성 검토 솔루션")
 st.write("분양성 및 분양가를 판단할 사업지의 정보들을 삽입해보세요! 👋")
 
 # --- 입력 폼 ---
