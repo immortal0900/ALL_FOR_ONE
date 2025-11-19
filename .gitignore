@@ -10,7 +10,7 @@ wheels/
 .venv
 .env
 pgdata/
-credentials.json
+
 token.json
 
 src/agents/renderer/tempnul

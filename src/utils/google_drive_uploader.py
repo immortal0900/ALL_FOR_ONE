@@ -8,14 +8,16 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 from google.auth.transport.requests import Request
 from utils.util import get_project_root
+
 SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/gmail.send",
 ]
 
+
 def _get_drive_service(
     credentials_json: str = get_project_root() / "credentials.json",
-    token_json: str = get_project_root() /  "token.json"
+    token_json: str = get_project_root() / "token.json",
 ):
     """OAuth 인증 → Drive 서비스 객체 반환"""
     creds = None
@@ -60,14 +62,20 @@ def upload_to_drive(
         buffer = data
         buffer.seek(0)
     else:
-        raise TypeError("지원하지 않는 data 형식입니다. (DataFrame, bytes, str[경로], BytesIO)")
+        raise TypeError(
+            "지원하지 않는 data 형식입니다. (DataFrame, bytes, str[경로], BytesIO)"
+        )
 
     file_metadata = {"name": filename}
     if folder_id:
         file_metadata["parents"] = [folder_id]
 
     media = MediaIoBaseUpload(buffer, mimetype=mime_type)
-    file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
+    file = (
+        service.files()
+        .create(body=file_metadata, media_body=media, fields="id")
+        .execute()
+    )
     file_id = file.get("id")
 
     # “링크가 있는 사람은 누구나 보기 가능” 권한 추가

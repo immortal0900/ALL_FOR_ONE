@@ -43,6 +43,7 @@ def gmail_authenticate():
 
     return creds
 
+
 def _strip_outer_fence(md: str) -> str:
     """
     ```...``` 로 전체가 둘러싸여 있으면 그 껍데기만 벗겨줌.
@@ -63,6 +64,7 @@ def _strip_outer_fence(md: str) -> str:
         text = "\n".join(lines).strip()
 
     return text
+
 
 # -------------------------------------------------
 # Markdown → PDF 변환 (WeasyPrint 버전)
@@ -131,6 +133,8 @@ def markdown_to_pdf(md_text: str, filename: str) -> str:
         print(f"❌ PDF 변환 실패: {e}")
 
     return str(output_path)
+
+
 # def markdown_to_pdf(md_text: str, filename: str) -> str:
 #     """
 #     Markdown을 PDF로 변환해서 output 폴더에 저장 후 경로 반환
@@ -190,6 +194,7 @@ def markdown_to_pdf(md_text: str, filename: str) -> str:
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.discovery import build
 
+
 def upload_to_drive(file_path: str, folder_id: str | None = None) -> str:
     """
     PDF 파일을 Google Drive에 업로드하고, 누구나 열람 가능한 링크를 리턴한다.
@@ -204,18 +209,21 @@ def upload_to_drive(file_path: str, folder_id: str | None = None) -> str:
 
     media = MediaFileUpload(file_path, mimetype="application/pdf")
 
-    uploaded = drive_service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields="id, webViewLink, webContentLink"
-    ).execute()
+    uploaded = (
+        drive_service.files()
+        .create(
+            body=file_metadata,
+            media_body=media,
+            fields="id, webViewLink, webContentLink",
+        )
+        .execute()
+    )
 
     file_id = uploaded["id"]
 
     # 링크 가진 사람은 보기 가능하게
     drive_service.permissions().create(
-        fileId=file_id,
-        body={"type": "anyone", "role": "reader"}
+        fileId=file_id, body={"type": "anyone", "role": "reader"}
     ).execute()
 
     return uploaded["webViewLink"]
@@ -232,14 +240,17 @@ def send_gmail(
     service = build("gmail", "v1", credentials=creds)
 
     # ✅ Markdown → PDF 변환
-    final_pdf_path = markdown_to_pdf(_strip_outer_fence(md_content_final), f"{title}_최종보고서.pdf")
-    source_pdf_path = markdown_to_pdf(_strip_outer_fence(md_content_source), f"{title}__데이터출처모음.pdf")
+    final_pdf_path = markdown_to_pdf(
+        _strip_outer_fence(md_content_final), f"{title}_최종보고서.pdf"
+    )
+    source_pdf_path = markdown_to_pdf(
+        _strip_outer_fence(md_content_source), f"{title}__데이터출처모음.pdf"
+    )
 
     # ✅ PDF를 Google Drive에 업로드
     final_link = upload_to_drive(final_pdf_path)
     source_link = upload_to_drive(source_pdf_path)
 
-    
     # 🔗 Google Drive 링크 HTML 섹션 구성
     drive_links_html = ""
     if drive_links:
@@ -275,7 +286,7 @@ def send_gmail(
 
     # ✅ Gmail 본문만 전송 (첨부 제외)
     message = MIMEText(html_body, "html", "utf-8")
-    message["to"] = to              # ⬅︎ 이게 없어서 400 났던 것
+    message["to"] = to  # ⬅︎ 이게 없어서 400 났던 것
     message["subject"] = title
 
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
