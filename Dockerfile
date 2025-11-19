@@ -83,12 +83,14 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# 실행에 필요한 시스템 패키지만 설치
+# 실행에 필요한 시스템 패키지만 설치 (WeasyPrint 포함)
 RUN apt-get update && apt-get install -y \
     curl \
     libcairo2 \
     libgobject-2.0-0 \
     libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libpangocairo-1.0-0 \
     libgdk-pixbuf-2.0-0 \
     shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
