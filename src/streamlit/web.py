@@ -47,24 +47,10 @@ if submitted:
     with st.spinner(
         "⏳ 보고서를 생성 중입니다... 잠시만 기다려주세요. (13 ~ 15분소요)"
     ):
-        try:
-            # 환경에 따른 API URL 설정
-            api_url = None
 
-            # Streamlit Cloud Secrets 확인
-            try:
-                if hasattr(st, "secrets"):
-                    api_url = st.secrets.get("API_URL", None)
-            except Exception:
-                pass
 
-            # Secrets에서 못 찾으면 환경 변수 확인
-            if not api_url:
-                api_url = os.getenv("API_URL")
 
-            # 둘 다 없으면 기본값 사용 (로컬 개발)
-            if not api_url:
-                api_url = "http://localhost:8080"
+            api_url = "https://allforone-production.up.railway.app"
 
             # 디버깅: 사용 중인 API URL 표시
             st.write(f"🔗 연결 URL: {api_url}")
@@ -80,5 +66,4 @@ if submitted:
             else:
                 st.error(f"❌ 서버 오류: {response.status_code}")
                 st.text(response.text)
-        except requests.exceptions.RequestException as e:
-            st.error(f"⚠️ 요청 실패: {e}")
+
