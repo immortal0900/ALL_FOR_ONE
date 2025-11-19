@@ -1,6 +1,10 @@
 import streamlit as st
 import requests
 import os
+import urllib3
+
+# SSL 경고 메시지 억제 (verify=False 사용 시 발생하는 경고)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 st.title("AI 멀티에이전트 분양성 검토 솔루션")
 st.write("분양성 및 분양가를 판단할 사업지의 정보들을 삽입해보세요!")
@@ -51,14 +55,22 @@ if submitted:
         # 디버깅: 사용 중인 API URL 표시
         st.write(f"연결 URL: {api_url}")
 
-        response = requests.post(
-            f"{api_url}/invoke",
-            json=payload,
-            timeout=1200,  # 20 minutes timeout for long report generation
-        )
-        if response.status_code == 200:
-            data = response.json()
-            st.success("보고서 생성 완료!")
-        else:
-            st.error(f"서버 오류: {response.status_code}")
-            st.text(response.text)
+        try:
+            response = requests.post(
+                f"{api_url}/invoke",
+                json=payload,
+                timeout=1200,  # 20 minutes timeout for long report generation
+                verify=False,  # SSL 검증 비활성화 (Railway SSL 인증서 문제로 인한 임시 조치)
+            )
+            if response.status_code == 200:
+                data = response.json()
+                st.success("보고서 생성 완료!")
+            else:
+                st.error(f"서버 오류: {response.status_code}")
+                st.text(response.text)
+        except requests.exceptions.SSLError as e:
+            st.error("SSL 연결 오류가 발생했습니다.")
+            st.write("Railway 서버의 SSL 인증서 문제일 수 있습니다.")
+            st.write(f"오류 상세: {str(e)}")
+        except requests.exceptions.RequestException as e:
+            st.error(f"요청 실패: {str(e)}")
