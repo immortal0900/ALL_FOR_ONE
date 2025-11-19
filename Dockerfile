@@ -87,6 +87,10 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     curl \
     libcairo2 \
+    libgobject-2.0-0 \
+    libpango-1.0-0 \
+    libgdk-pixbuf-2.0-0 \
+    shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
 # 빌드 스테이지에서 Python 패키지 복사
