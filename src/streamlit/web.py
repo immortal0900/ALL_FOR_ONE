@@ -48,14 +48,24 @@ if submitted:
         "⏳ 보고서를 생성 중입니다... 잠시만 기다려주세요. (13 ~ 15분소요)"
     ):
         try:
-            # Get FastAPI URL from Streamlit secrets or environment variable
-            try:
-                api_url = st.secrets["FASTAPI_URL"]
-            except (KeyError, AttributeError):
-                api_url = os.getenv("FASTAPI_URL", "http://localhost:8080")
+            # 환경에 따른 API URL 설정
+            api_url = None
 
-            # 디버깅: 사용되는 API URL 표시
-            st.info(f" 연결 중: {api_url}")
+            # Streamlit Cloud Secrets 확인
+            if hasattr(st, "secrets"):
+                try:
+                    if "API_URL" in st.secrets:
+                        api_url = st.secrets["API_URL"]
+                except (KeyError, AttributeError, TypeError):
+                    pass
+
+            # Secrets에서 못 찾으면 환경 변수 확인
+            if not api_url:
+                api_url = os.getenv("API_URL")
+
+            # 둘 다 없으면 기본값 사용 (로컬 개발)
+            if not api_url:
+                api_url = "http://localhost:8080"
             response = requests.post(
                 f"{api_url}/invoke",
                 json=payload,
