@@ -3,6 +3,8 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 import os
+import time
+import asyncio
 from dotenv import load_dotenv
 from functools import wraps
 
@@ -27,6 +29,65 @@ def patch_google_genai():
 
 # 패치 적용
 patch_google_genai()
+
+
+class RetryableChatOpenAI(ChatOpenAI):
+    """Exponential Backoff 재시도 로직이 적용된 ChatOpenAI 클래스"""
+
+    def invoke(self, messages, **kwargs):
+        """동기 호출 시 재시도 로직 적용"""
+        max_retries = 5
+        
+        for i in range(max_retries):
+            try:
+                return super().invoke(messages, **kwargs)
+            except Exception as e:
+                error_str = str(e)
+                
+                if i == max_retries - 1:
+                    raise
+                
+                if "429" in error_str or "rate_limit" in error_str.lower():
+                    wait_time = (2 ** i) + 1
+                    print(f"Rate limit hit. Waiting {wait_time}s...")
+                    time.sleep(wait_time)
+                    continue
+                
+                if "api" in error_str.lower() or "error" in error_str.lower():
+                    wait_time = (2 ** i) + 1
+                    print(f"API error occurred. Waiting {wait_time}s...")
+                    time.sleep(wait_time)
+                    continue
+                
+                raise
+
+    async def ainvoke(self, messages, **kwargs):
+        """비동기 호출 시 재시도 로직 적용"""
+        max_retries = 5
+        
+        for i in range(max_retries):
+            try:
+                return await super().ainvoke(messages, **kwargs)
+            except Exception as e:
+                error_str = str(e)
+                
+                if i == max_retries - 1:
+                    raise
+                
+                if "429" in error_str or "rate_limit" in error_str.lower():
+                    wait_time = (2 ** i) + 1
+                    print(f"Rate limit hit. Waiting {wait_time}s...")
+                    await asyncio.sleep(wait_time)
+                    continue
+                
+                if "api" in error_str.lower() or "error" in error_str.lower():
+                    wait_time = (2 ** i) + 1
+                    print(f"API error occurred. Waiting {wait_time}s...")
+                    await asyncio.sleep(wait_time)
+                    continue
+                
+                raise
+
 
 class ModelName(StrEnum):
     GPT_4_1_MINI = "gpt-4.1-mini"
@@ -60,7 +121,7 @@ class LLMProfile(StrEnum):
 
     @staticmethod
     def renderer_llm():
-        return ChatOpenAI(
+        return RetryableChatOpenAI(
             model=LLMProfile.RENDERING.value,
             temperature=0,
         )
@@ -70,21 +131,21 @@ class LLMProfile(StrEnum):
 
     @staticmethod
     def dev_llm():
-        return ChatOpenAI(
+        return RetryableChatOpenAI(
             model=LLMProfile.DEV.value,
             temperature=0,
         )
 
     @staticmethod
     def chat_bot_llm():
-        return ChatOpenAI(
+        return RetryableChatOpenAI(
             model=LLMProfile.CHAT_BOT.value,
             temperature=0,
         )
 
     @staticmethod
     def analysis_llm():
-        return ChatOpenAI(
+        return RetryableChatOpenAI(
             model=LLMProfile.ANALYSIS.value,
             temperature=0,
             # reasoning_effort="high", # minimal, low, medium, high
@@ -102,6 +163,6 @@ class LLMProfile(StrEnum):
 
     @staticmethod
     def report_llm():
-        return ChatOpenAI(
+        return RetryableChatOpenAI(
             model=LLMProfile.REPORT.value,
         )
