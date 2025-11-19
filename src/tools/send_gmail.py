@@ -134,16 +134,24 @@ def markdown_to_pdf(md_text: str, filename: str) -> str:
             <title>{pdf_title}</title>
             <style>
               @page {{ size: A4; margin: 20mm; }}
+              @font-face {{
+                font-family: 'Noto Sans CJK KR';
+                src: local('Noto Sans CJK KR');
+              }}
               body {{
-                font-family: 'Noto Sans KR', 'Malgun Gothic', Arial, sans-serif;
+                font-family: 'Noto Sans CJK KR', 'Noto Sans KR', 'Noto Sans', 'Malgun Gothic', 'Nanum Gothic', Arial, sans-serif;
                 line-height: 1.6;
                 color: #222;
               }}
-              h1, h2, h3, h4 {{ color: #333; }}
+              h1, h2, h3, h4 {{ 
+                color: #333;
+                font-family: 'Noto Sans CJK KR', 'Noto Sans KR', 'Noto Sans', 'Malgun Gothic', 'Nanum Gothic', Arial, sans-serif;
+              }}
               table {{
                 border-collapse: collapse;
                 width: 100%;
                 margin: 10px 0;
+                font-family: 'Noto Sans CJK KR', 'Noto Sans KR', 'Noto Sans', 'Malgun Gothic', 'Nanum Gothic', Arial, sans-serif;
               }}
               th, td {{
                 border: 1px solid #aaa;

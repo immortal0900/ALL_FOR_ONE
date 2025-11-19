@@ -84,6 +84,7 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # 실행에 필요한 시스템 패키지만 설치 (WeasyPrint 포함)
+# 한글 폰트 설치 추가 (PDF 렌더링용)
 RUN apt-get update && apt-get install -y \
     curl \
     libcairo2 \
@@ -93,7 +94,10 @@ RUN apt-get update && apt-get install -y \
     libpangocairo-1.0-0 \
     libgdk-pixbuf-2.0-0 \
     shared-mime-info \
-    && rm -rf /var/lib/apt/lists/*
+    fonts-noto-cjk \
+    fonts-noto-cjk-extra \
+    && rm -rf /var/lib/apt/lists/* \
+    && fc-cache -fv
 
 # 빌드 스테이지에서 Python 패키지 복사
 COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
