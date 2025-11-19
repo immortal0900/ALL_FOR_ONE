@@ -27,7 +27,7 @@ def _get_drive_service(
     if token_json_str:
         token_data = json.loads(token_json_str)
         creds = Credentials.from_authorized_user_info(token_data, SCOPES)
-        print("✅ 환경변수에서 토큰 로드 완료")
+        print("환경변수에서 토큰 로드 완료")
     elif os.path.exists(token_json):
         creds = Credentials.from_authorized_user_file(token_json, SCOPES)
 

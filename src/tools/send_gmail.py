@@ -2,7 +2,8 @@ import os
 import json
 import base64
 import markdown
-import weasyprint  # ✅ 추가
+import weasyprint
+from pathlib import Path
 from email.mime.text import MIMEText
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -30,20 +31,20 @@ def gmail_authenticate():
     if token_json_str:
         token_data = json.loads(token_json_str)
         creds = Credentials.from_authorized_user_info(token_data, SCOPES)
-        print("✅ 환경변수에서 토큰 로드 완료")
+        print("환경변수에서 토큰 로드 완료")
     elif os.path.exists(TOKEN_PATH):
         creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
-            print("♻️  Gmail token 갱신 완료")
+            print("Gmail token 갱신 완료")
             if token_json_str:
-                print("⚠️  환경변수 토큰은 갱신 후 파일로 저장되지 않습니다.")
+                print("경고: 환경변수 토큰은 갱신 후 파일로 저장되지 않습니다.")
             else:
                 with open(TOKEN_PATH, "w") as token:
                     token.write(creds.to_json())
-                    print(f"💾 토큰 저장 완료 → {TOKEN_PATH}")
+                    print(f"토큰 저장 완료: {TOKEN_PATH}")
         else:
             is_docker = (
                 os.path.exists("/.dockerenv") or os.getenv("DOCKER_ENV") == "true"
@@ -54,7 +55,7 @@ def gmail_authenticate():
                     "GOOGLE_TOKEN_JSON 환경변수에 인증된 토큰을 설정해주세요."
                 )
 
-            print("🌐 최초 인증 중... (브라우저 창 열림)")
+            print("최초 인증 중... (브라우저 창 열림)")
 
             credentials_config = None
             if os.getenv("GOOGLE_CREDENTIALS_JSON"):
@@ -72,7 +73,7 @@ def gmail_authenticate():
 
             with open(TOKEN_PATH, "w") as token:
                 token.write(creds.to_json())
-                print(f"💾 토큰 저장 완료 → {TOKEN_PATH}")
+                print(f"토큰 저장 완료: {TOKEN_PATH}")
 
     return creds
 
@@ -106,9 +107,16 @@ def markdown_to_pdf(md_text: str, filename: str) -> str:
     """
     Markdown을 PDF로 변환해서 output 폴더에 저장 후 경로 반환
     (WeasyPrint 사용, 파일명/메타데이터 고정)
+    Docker 환경에서는 임시 파일로 사용되며 Google Drive 업로드 후 삭제됩니다.
     """
     output_dir = get_project_root() / "output"
-    os.makedirs(output_dir, exist_ok=True)
+    try:
+        os.makedirs(output_dir, exist_ok=True)
+    except OSError as e:
+        print(f"경고: output 폴더 생성 실패: {e}")
+        output_dir = Path("/tmp")
+        print(f"임시 디렉토리 사용: {output_dir}")
+
     output_path = output_dir / filename
 
     # PDF 문서 제목(메타데이터)은 파일명에서 확장자만 제거해서 사용
@@ -161,9 +169,9 @@ def markdown_to_pdf(md_text: str, filename: str) -> str:
             # 필요하면 stylesheets=[weasyprint.CSS(string="...")] 추가 가능
             html_obj.write_pdf(fp, presentational_hints=True)
 
-        print(f"📄 PDF 생성 완료: {output_path}")
+        print(f"PDF 생성 완료: {output_path}")
     except Exception as e:
-        print(f"❌ PDF 변환 실패: {e}")
+        print(f"PDF 변환 실패: {e}")
 
     return str(output_path)
 
@@ -272,7 +280,7 @@ def send_gmail(
     creds = gmail_authenticate()
     service = build("gmail", "v1", credentials=creds)
 
-    # ✅ Markdown → PDF 변환
+    # Markdown → PDF 변환
     final_pdf_path = markdown_to_pdf(
         _strip_outer_fence(md_content_final), f"{title}_최종보고서.pdf"
     )
@@ -280,31 +288,42 @@ def send_gmail(
         _strip_outer_fence(md_content_source), f"{title}__데이터출처모음.pdf"
     )
 
-    # ✅ PDF를 Google Drive에 업로드
+    # PDF를 Google Drive에 업로드
     final_link = upload_to_drive(final_pdf_path)
     source_link = upload_to_drive(source_pdf_path)
 
-    # 🔗 Google Drive 링크 HTML 섹션 구성
+    # Docker 환경에서 임시 파일 정리 (디스크 공간 절약)
+    try:
+        if os.path.exists(final_pdf_path):
+            os.remove(final_pdf_path)
+            print(f"임시 파일 삭제: {final_pdf_path}")
+        if os.path.exists(source_pdf_path):
+            os.remove(source_pdf_path)
+            print(f"임시 파일 삭제: {source_pdf_path}")
+    except Exception as e:
+        print(f"임시 파일 삭제 실패 (무시): {e}")
+
+    # Google Drive 링크 HTML 섹션 구성
     drive_links_html = ""
     if drive_links:
-        drive_links_html = "<hr/><h4>📂 데이터 다운로드 링크</h4><ul>"
+        drive_links_html = "<hr/><h4>데이터 다운로드 링크</h4><ul>"
         for name, link in drive_links.items():
             drive_links_html += f'<li><a href="{link}" target="_blank">{name}</a></li>'
         drive_links_html += "</ul>"
 
-    # ✅ HTML 본문 구성 (클릭하면 Drive 열림)
+    # HTML 본문 구성 (클릭하면 Drive 열림)
     html_body = f"""
     <html>
       <body style="font-family:'Noto Sans KR',Arial,sans-serif;line-height:1.6;color:#222;">
-        <h2>📑 {title}</h2>
+        <h2>{title}</h2>
         <p>
           내부 분석 보고서가 완료되었습니다.<br/>
           아래 링크를 통해 PDF 파일을 다운로드할 수 있습니다.
         </p>
 
         <ul>
-          <li>📘 <a href="{final_link}" target="_blank">최종보고서.pdf</a></li>
-          <li>📗 <a href="{source_link}" target="_blank">데이터출처모음.pdf</a></li>
+          <li><a href="{final_link}" target="_blank">최종보고서.pdf</a></li>
+          <li><a href="{source_link}" target="_blank">데이터출처모음.pdf</a></li>
         </ul>
         <hr/>
         {drive_links_html}
@@ -317,13 +336,13 @@ def send_gmail(
     </html>
     """
 
-    # ✅ Gmail 본문만 전송 (첨부 제외)
+    # Gmail 본문만 전송 (첨부 제외)
     message = MIMEText(html_body, "html", "utf-8")
-    message["to"] = to  # ⬅︎ 이게 없어서 400 났던 것
+    message["to"] = to  # 이게 없어서 400 났던 것
     message["subject"] = title
 
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
     body = {"raw": raw}
 
     sent = service.users().messages().send(userId="me", body=body).execute()
-    print(f"✅ 메일 전송 완료 → {to} (ID: {sent['id']})")
+    print(f"메일 전송 완료: {to} (ID: {sent['id']})")
