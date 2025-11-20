@@ -130,6 +130,9 @@ def gemini_search_tool(state: NearbyMarketState) -> NearbyMarketState:
     - 매매아파트는 준공연도를 명시하세요.
     - 마크다운 코드블록은 제거하고 출력해 주세요.
     - 정확한 정보인지 확인하고 출력해 주세요.
+    - 주소는 반드시 공식 행정구역명을 사용하세요 (예: "서울특별시", "경기도", "부산광역시" 등).
+    - "서울시" 대신 "서울특별시", "경기" 대신 "경기도"처럼 정확한 행정구역명을 사용하세요.
+    - 카카오 지도 API가 인식할 수 있는 정확한 주소 형식으로 작성하세요.
     </RULE>
     <OUTPUT>
     {{
@@ -188,6 +191,16 @@ def kakao_api_distance_tool(state: NearbyMarketState) -> NearbyMarketState:
     for apt in gemini_data["매매아파트"]:
         address = apt["주소와단지명"]
         result = get_location_profile.invoke({"address": address})
+
+        if result.get("좌표") is None:
+            address_parts = address.split()
+            if len(address_parts) > 1:
+                retry_address = " ".join(address_parts[:3])
+                retry_result = get_location_profile.invoke({"address": retry_address})
+                if retry_result.get("좌표") is not None:
+                    result = retry_result
+                    result["주소"] = address
+
         result["타입"] = "매매아파트"
         result["원본정보"] = apt
         all_result.append(result)
@@ -196,6 +209,16 @@ def kakao_api_distance_tool(state: NearbyMarketState) -> NearbyMarketState:
     for apt in gemini_data["분양아파트"]:
         address = apt["주소와단지명"]
         result = get_location_profile.invoke({"address": address})
+
+        if result.get("좌표") is None:
+            address_parts = address.split()
+            if len(address_parts) > 1:
+                retry_address = " ".join(address_parts[:3])
+                retry_result = get_location_profile.invoke({"address": retry_address})
+                if retry_result.get("좌표") is not None:
+                    result = retry_result
+                    result["주소"] = address
+
         result["타입"] = "분양아파트"
         result["원본정보"] = apt
         all_result.append(result)
@@ -255,27 +278,31 @@ def perplexity_search_tool(state: NearbyMarketState) -> NearbyMarketState:
 
     for apt in gemini_data["분양아파트"]:
         address = apt["주소와단지명"]
-        current_price = apt["평당분양가격"]
-        contract_condition = apt["계약조건"]
-        contract_rate = apt["청약경쟁률"]
-        contract_date = apt["청약일시"]
-        query_parts.append(
-            f"{address}의 평당분양가격: {current_price}, 계약조건: {contract_condition}, 청약경쟁률: {contract_rate}, 청약일시: {contract_date}"
-        )
+        apt_name = address.split()[-1] if address else ""
+        current_price = apt.get("평당분양가격", "")
+        contract_condition = apt.get("계약조건", "")
+        contract_rate = apt.get("청약경쟁률", "")
+        contract_date = apt.get("청약일시", "")
+
+        query_text = f"{address} {apt_name} 분양가격 평당분양가 청약경쟁률 계약조건 {contract_date}"
+        if current_price and current_price != "검증 불가":
+            query_text += f" {current_price}"
+        query_parts.append(query_text)
 
     combined_query = f"""
-    <CONTEXT>
-    1. {query_parts[0]}
-    2. {query_parts[1]}
-    3. {query_parts[2]}
-    </CONTEXT>
-    <GOAL>
-    - <CONTEXT>의 분양아파트 3개의 "평당 분양가격", "계약조건", "청약경쟁률", "청약일시"을 검증하고 정확하게게 출력해주세요
-    </GOAL>
-    <RULE>
-    - 다른 말은 생략하고 무조건 <OUTPUT>형태의 json 형식으로 출력해 주세요
-    </RULE>
-    <OUTPUT>
+    다음 분양아파트 3개의 정확한 분양 정보를 검색하고 검증해주세요:
+
+    1. {query_parts[0] if len(query_parts) > 0 else ""}
+    2. {query_parts[1] if len(query_parts) > 1 else ""}
+    3. {query_parts[2] if len(query_parts) > 2 else ""}
+
+    각 아파트의 다음 정보를 정확히 찾아주세요:
+    - 평당 분양가격 (만원 단위)
+    - 계약조건 (계약금, 중도금 비율 등)
+    - 청약경쟁률 (비율 형식)
+    - 청약일시 (정확한 날짜)
+
+    반드시 JSON 형식으로만 출력하세요:
     {{
         "분양아파트": [
             {{
@@ -283,14 +310,28 @@ def perplexity_search_tool(state: NearbyMarketState) -> NearbyMarketState:
                 "평당분양가격": "",
                 "계약조건": "",
                 "청약경쟁률": "",
+                "청약일시": "",
                 "비고": ""
             }}
         ]
     }}
-    </OUTPUT>
     """
+
     result = perplexity_search.invoke({"query": combined_query})
-    return {perplexity_search_key: result}
+
+    result_text = result if isinstance(result, str) else str(result)
+
+    if "검증 불가" in result_text or "확인 불가" in result_text:
+        for apt in gemini_data["분양아파트"]:
+            address = apt["주소와단지명"]
+            apt_name = address.split()[-1] if address else ""
+            retry_query = f"{address} {apt_name} 분양 공고 분양가 청약"
+            retry_result = perplexity_search.invoke({"query": retry_query})
+            if "검증 불가" not in retry_result and "확인 불가" not in retry_result:
+                result_text = retry_result
+                break
+
+    return {perplexity_search_key: result_text}
 
 
 def analysis_setting(state: NearbyMarketState) -> NearbyMarketState:
@@ -342,7 +383,7 @@ def agent(state: NearbyMarketState) -> NearbyMarketState:
         gemini_search_key: state[gemini_search_key],
         kakao_api_distance_context_key: state[kakao_api_distance_context_key],
         real_estate_price_context_key: state[real_estate_price_context_key],
-        perplexity_search_key: state[perplexity_search_key],        
+        perplexity_search_key: state[perplexity_search_key],
         kakao_api_distance_download_link_key: state[
             kakao_api_distance_download_link_key
         ],

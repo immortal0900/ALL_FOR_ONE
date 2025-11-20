@@ -34,6 +34,83 @@ def _call_kakao(path, params):
     return data.get("documents") or []
 
 
+def normalize_address(address: str) -> list[str]:
+    """
+    주소를 카카오 API가 인식할 수 있는 여러 형식으로 정규화합니다.
+    
+    Args:
+        address: 정규화할 주소 문자열
+        
+    Returns:
+        정규화된 주소 리스트 (여러 변형 포함)
+    """
+    if not address:
+        return []
+    
+    normalized = []
+    
+    address_original = address.strip()
+    normalized.append(address_original)
+    
+    address_lower = address_original.lower()
+    
+    replacements = {
+        "서울시": "서울특별시",
+        "서울": "서울특별시",
+        "경기": "경기도",
+        "경기도": "경기도",
+        "부산시": "부산광역시",
+        "부산": "부산광역시",
+        "대구시": "대구광역시",
+        "대구": "대구광역시",
+        "인천시": "인천광역시",
+        "인천": "인천광역시",
+        "광주시": "광주광역시",
+        "광주": "광주광역시",
+        "대전시": "대전광역시",
+        "대전": "대전광역시",
+        "울산시": "울산광역시",
+        "울산": "울산광역시",
+        "세종시": "세종특별자치시",
+        "세종": "세종특별자치시",
+        "강원": "강원도",
+        "강원도": "강원도",
+        "충북": "충청북도",
+        "충청북도": "충청북도",
+        "충남": "충청남도",
+        "충청남도": "충청남도",
+        "전북": "전라북도",
+        "전라북도": "전라북도",
+        "전남": "전라남도",
+        "전라남도": "전라남도",
+        "경북": "경상북도",
+        "경상북도": "경상북도",
+        "경남": "경상남도",
+        "경상남도": "경상남도",
+        "제주": "제주특별자치도",
+        "제주도": "제주특별자치도",
+    }
+    
+    for old, new in replacements.items():
+        if old in address_original:
+            normalized_addr = address_original.replace(old, new)
+            if normalized_addr not in normalized:
+                normalized.append(normalized_addr)
+    
+    address_parts = address_original.split()
+    if len(address_parts) > 1:
+        partial_address = " ".join(address_parts[:3])
+        if partial_address not in normalized:
+            normalized.append(partial_address)
+    
+    if len(address_parts) > 2:
+        partial_address2 = " ".join(address_parts[:2])
+        if partial_address2 not in normalized:
+            normalized.append(partial_address2)
+    
+    return normalized
+
+
 def get_coordinates(address):
     """주소를 경도/위도로 변환."""
     documents = _call_kakao("/v2/local/search/address.json", {"query": address})
@@ -41,6 +118,26 @@ def get_coordinates(address):
         return None
     first = documents[0]
     return {"longitude": float(first["x"]), "latitude": float(first["y"])}
+
+
+def get_coordinates_with_retry(address: str):
+    """
+    주소를 경도/위도로 변환합니다. 실패 시 여러 방법으로 재시도합니다.
+    
+    Args:
+        address: 변환할 주소 문자열
+        
+    Returns:
+        좌표 딕셔너리 또는 None
+    """
+    normalized_addresses = normalize_address(address)
+    
+    for normalized_addr in normalized_addresses:
+        coords = get_coordinates(normalized_addr)
+        if coords:
+            return coords
+    
+    return None
 
 
 def _build_place(place):
@@ -107,7 +204,7 @@ def _get_future_value_info(coords, radius):
 @tool
 def get_location_profile(address, radius=DEFAULT_RADIUS):
     """주소를 좌표로 변환하고 주변 입지를 조사하고 해당 주소와 입지 사이의 거리를 검색하는 도구"""
-    coords = get_coordinates(address)
+    coords = get_coordinates_with_retry(address)
     if not coords:
         return {"주소": address, "좌표": None, "메시지": "좌표를 찾지 못했습니다."}
     return {
