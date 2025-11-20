@@ -10,22 +10,27 @@ from functools import wraps
 
 load_dotenv()
 
+
 # Monkey patch for langchain-google-genai max_retries bug
 def patch_google_genai():
     """langchain-google-genai의 max_retries 버그를 우회하는 패치"""
     try:
         from langchain_google_genai import chat_models
+
         original_chat_with_retry = chat_models._chat_with_retry
 
         @wraps(original_chat_with_retry)
         def patched_chat_with_retry(generation_method, **kwargs):
             # max_retries 파라미터 제거
-            kwargs.pop('max_retries', None)
-            return original_chat_with_retry(generation_method=generation_method, **kwargs)
+            kwargs.pop("max_retries", None)
+            return original_chat_with_retry(
+                generation_method=generation_method, **kwargs
+            )
 
         chat_models._chat_with_retry = patched_chat_with_retry
     except Exception as e:
         print(f"Google Genai 패치 적용 실패 (무시 가능): {e}")
+
 
 # 패치 적용
 patch_google_genai()
@@ -34,58 +39,58 @@ patch_google_genai()
 class RetryableChatOpenAI(ChatOpenAI):
     """Exponential Backoff 재시도 로직이 적용된 ChatOpenAI 클래스"""
 
-    def invoke(self, messages, **kwargs):
+    def invoke(self, input, config=None, **kwargs):
         """동기 호출 시 재시도 로직 적용"""
         max_retries = 5
-        
+
         for i in range(max_retries):
             try:
-                return super().invoke(messages, **kwargs)
+                return super().invoke(input, config=config, **kwargs)
             except Exception as e:
                 error_str = str(e)
-                
+
                 if i == max_retries - 1:
                     raise
-                
+
                 if "429" in error_str or "rate_limit" in error_str.lower():
-                    wait_time = (2 ** i) + 1
+                    wait_time = (2**i) + 1
                     print(f"Rate limit hit. Waiting {wait_time}s...")
                     time.sleep(wait_time)
                     continue
-                
+
                 if "api" in error_str.lower() or "error" in error_str.lower():
-                    wait_time = (2 ** i) + 1
+                    wait_time = (2**i) + 1
                     print(f"API error occurred. Waiting {wait_time}s...")
                     time.sleep(wait_time)
                     continue
-                
+
                 raise
 
-    async def ainvoke(self, messages, **kwargs):
+    async def ainvoke(self, input, config=None, **kwargs):
         """비동기 호출 시 재시도 로직 적용"""
         max_retries = 5
-        
+
         for i in range(max_retries):
             try:
-                return await super().ainvoke(messages, **kwargs)
+                return await super().ainvoke(input, config=config, **kwargs)
             except Exception as e:
                 error_str = str(e)
-                
+
                 if i == max_retries - 1:
                     raise
-                
+
                 if "429" in error_str or "rate_limit" in error_str.lower():
-                    wait_time = (2 ** i) + 1
+                    wait_time = (2**i) + 1
                     print(f"Rate limit hit. Waiting {wait_time}s...")
                     await asyncio.sleep(wait_time)
                     continue
-                
+
                 if "api" in error_str.lower() or "error" in error_str.lower():
-                    wait_time = (2 ** i) + 1
+                    wait_time = (2**i) + 1
                     print(f"API error occurred. Waiting {wait_time}s...")
                     await asyncio.sleep(wait_time)
                     continue
-                
+
                 raise
 
 
@@ -99,8 +104,9 @@ class ModelName(StrEnum):
 
     CLAUDE_OPUS_4_1_20250805 = "claude-opus-4-1-20250805"
     CLAUDE_SONNET_4_5_20250929 = "claude-sonnet-4-5-20250929"
-    
+
     GEMINI_2_5_PRO = "gemini-2.5-pro"
+
 
 class LLMProfile(StrEnum):
 
@@ -151,6 +157,7 @@ class LLMProfile(StrEnum):
             # reasoning_effort="high", # minimal, low, medium, high
             # verbosity="high",
         )
+
     # @staticmethod
     # def analysis_llm():
     #     return ChatGoogleGenerativeAI(
