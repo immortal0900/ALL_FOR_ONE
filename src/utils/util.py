@@ -81,7 +81,7 @@ from pathlib import Path
 def get_current_dir() -> Path:
     return Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
 
-def get_project_root(marker="pyproject.toml"): # 현재 프로젝트의 경로를 가져오기 위해 사용용
+def get_project_root(marker="pyproject.toml"): # 현재 프로젝트의 경로를 가져오기 위해 사용
     # Docker 환경 체크 먼저
     docker_root = Path("/app")
     if docker_root.exists():

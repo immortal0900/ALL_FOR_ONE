@@ -1,6 +1,6 @@
-# RAG_COMMANDER 프로젝트 구조 및 규칙 가이드
+# ALL-FOR-ONE 프로젝트 구조 및 규칙 가이드
 
-## 📋 목차
+## 목차
 1. [프로젝트 개요](#프로젝트-개요)
 2. [전체 아키텍처](#전체-아키텍처)
 3. [폴더 구조 및 역할](#폴더-구조-및-역할)
@@ -13,7 +13,7 @@
 
 ## 프로젝트 개요
 
-**RAG_COMMANDER**는 부동산 보고서 작성을 위한 멀티에이전트 리서치 시스템입니다.
+**ALL-FOR-ONE**은 부동산 보고서 작성을 위한 멀티에이전트 리서치 시스템입니다.
 
 ### 주요 기능
 - **7개의 병렬 분석 에이전트**: 입지, 정책, 수급, 미분양, 인구, 주변시세, 청약FAQ 분석
@@ -59,16 +59,16 @@
 
 ## 폴더 구조 및 역할
 
-### 📁 루트 디렉토리
+### 루트 디렉토리
 ```
-RAG_COMMANDER/
+ALL-FOR-ONE/
 ├── src/                    # 모든 소스 코드
 ├── pyproject.toml         # 프로젝트 설정 및 의존성
 ├── README.md              # 프로젝트 설명 및 세팅 가이드
 └── .env                   # 환경 변수 (gitignore 필수)
 ```
 
-### 📁 src/agents/ - 에이전트 관리
+### src/agents/ - 에이전트 관리
 **역할**: LangGraph 기반 멀티에이전트 워크플로우 정의
 
 #### agents/state/
@@ -125,7 +125,7 @@ def router(state) -> str
 
 ---
 
-### 📁 src/prompts/ - 프롬프트 관리
+### src/prompts/ - 프롬프트 관리
 **역할**: 모든 LLM 프롬프트를 YAML 파일로 중앙 관리
 
 #### 파일 구조
@@ -157,7 +157,7 @@ prompt = PromptManager(PromptType.LOCATION_INSIGHT_SYSTEM).get_prompt(
 
 ---
 
-### 📁 src/tools/ - 도구 관리
+### src/tools/ - 도구 관리
 **역할**: 에이전트가 사용하는 도구들 정의
 
 #### tools/rag/ - RAG 시스템
@@ -199,7 +199,7 @@ prompt = PromptManager(PromptType.LOCATION_INSIGHT_SYSTEM).get_prompt(
 
 ---
 
-### 📁 src/data/ - 데이터 파일
+### src/data/ - 데이터 파일
 **역할**: PDF, CSV, Excel 등 원본 데이터 저장
 
 #### 폴더 구조
@@ -216,7 +216,7 @@ prompt = PromptManager(PromptType.LOCATION_INSIGHT_SYSTEM).get_prompt(
 
 ---
 
-### 📁 src/utils/ - 유틸리티
+### src/utils/ - 유틸리티
 **역할**: 공통 유틸리티 함수들
 
 - **util.py**: 
@@ -238,7 +238,7 @@ prompt = PromptManager(PromptType.LOCATION_INSIGHT_SYSTEM).get_prompt(
 
 ---
 
-### 📁 src/lab/ - 연구소
+### src/lab/ - 연구소
 **역할**: 테스트 및 실험 코드
 
 **규칙**: 
@@ -723,7 +723,7 @@ ANTHROPIC_API_KEY=...
 
 ---
 
-**마지막 업데이트**: 2025-01-XX
-**작성자**: AI Assistant
-**목적**: 새로운 컨텍스트 창에서도 프로젝트 구조를 빠르게 파악하고 중복 작업 방지
+**마지막 업데이트**: 2025년 1월
+**작성자**: 화인
+**목적**: 새로운 개발자가 프로젝트 구조를 빠르게 파악하고 중복 작업 방지
 
