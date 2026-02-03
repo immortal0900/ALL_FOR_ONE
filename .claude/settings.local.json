@@ -1,10 +1,20 @@
 {
   "permissions": {
     "allow": [
-      "Bash(\".venv/Scripts/python.exe\" src/agents/main/main_agent_run.py)",
-      "Bash(git add:*)"
-    ],
-    "deny": [],
-    "ask": []
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)",
+      "Bash(powershell -Command \"Get-Process -Id 20744 | Select-Object ProcessName, Id, Path\")",
+      "Bash(taskkill:*)",
+      "Bash(uv run python:*)",
+      "WebSearch",
+      "Bash(tree:*)",
+      "WebFetch(domain:deepeval.com)",
+      "Bash(python:*)",
+      "Bash(chcp 65001)",
+      "Bash(set PYTHONIOENCODING=utf-8)",
+      "Bash(uv run:*)",
+      "Bash(PYTHONIOENCODING=utf-8 uv run:*)"
+    ]
   }
 }
