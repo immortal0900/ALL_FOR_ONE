@@ -89,7 +89,7 @@ def prev_segment_context(state: JungMinJaeState) -> str | None:
     return f"# 이전 세그먼트 요약/맥락\n{response.content}"
 
 
-def retreiver(state: JungMinJaeState) -> JungMinJaeState:
+def retriever(state: JungMinJaeState) -> JungMinJaeState:
     _ = state[start_input_key]
     return {rag_context_key: "rag_test"}
 
@@ -248,7 +248,7 @@ def router(state: JungMinJaeState):
 # -------------------------
 # 6) 그래프 구성
 # -------------------------
-retreiver_key = "retreiver"
+retriever_key = "retriever"
 reporting_key = "reporting"
 agent_key = "agent"
 finalize_key = "finalize_merge"
@@ -260,7 +260,7 @@ apply_reflection_key = "apply_reflection"
 graph_builder = StateGraph(JungMinJaeState)
 
 # 노드 추가
-graph_builder.add_node(retreiver_key, retreiver)
+graph_builder.add_node(retriever_key, retriever)
 graph_builder.add_node(reporting_key, reporting)
 graph_builder.add_node(agent_key, agent)
 graph_builder.add_node(finalize_key, finalize_merge)
@@ -274,8 +274,8 @@ graph_builder.add_node(tool_node_key, tool_node)
 graph_builder.add_node(apply_reflection_key, apply_reflection)
 
 # 엣지 구성
-graph_builder.add_edge(START, retreiver_key)
-graph_builder.add_edge(retreiver_key, reporting_key)
+graph_builder.add_edge(START, retriever_key)
+graph_builder.add_edge(retriever_key, reporting_key)
 graph_builder.add_edge(reporting_key, agent_key)
 
 # 에이전트 루프 → 병합/성찰로 분기

@@ -75,7 +75,7 @@ SUPPLY_DEMAND_HUMAN:
     {planning_move}
 
     [해당 지역 근처 청약 경쟁률]
-    {pre_pomise_competition}
+    {pre_promise_competition}
     
   input_variables:
     - target_area
@@ -90,4 +90,4 @@ SUPPLY_DEMAND_HUMAN:
     - one_people_grdp
     - housing_sales_volume
     - planning_move
-    - pre_pomise_competition
+    - pre_promise_competition

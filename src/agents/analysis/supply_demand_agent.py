@@ -64,7 +64,7 @@ one_people_gdp_key = SupplyDemandState.KEY.one_people_gdp
 one_people_grdp_key = SupplyDemandState.KEY.one_people_grdp
 housing_sales_volume_key = SupplyDemandState.KEY.housing_sales_volume
 planning_move_key = SupplyDemandState.KEY.planning_move
-pre_pomise_competition_key = SupplyDemandState.KEY.pre_pomise_competition
+pre_promise_competition_key = SupplyDemandState.KEY.pre_promise_competition
 
 jeonse_price_download_link_key = SupplyDemandState.KEY.jeonse_price_download_link
 sale_price_download_link_key = SupplyDemandState.KEY.sale_price_download_link
@@ -78,8 +78,8 @@ housing_sales_volume_download_link_key = (
     SupplyDemandState.KEY.housing_sales_volume_download_link
 )
 planning_move_download_link_key = SupplyDemandState.KEY.planning_move_download_link
-pre_pomise_competition_download_link_key = (
-    SupplyDemandState.KEY.pre_pomise_competition_download_link
+pre_promise_competition_download_link_key = (
+    SupplyDemandState.KEY.pre_promise_competition_download_link
 )
 
 
@@ -115,14 +115,14 @@ def supply_housing(state: SupplyDemandState) -> SupplyDemandState:
 from tools.pre_promise_competition_tool_v2 import pre_promise
 
 
-async def pre_pomise_competition(state: SupplyDemandState) -> SupplyDemandState:
+async def pre_promise_competition(state: SupplyDemandState) -> SupplyDemandState:
     start_input = state[start_input_key]
     target_area = start_input[target_area_key]
     result = await pre_promise(target_area)
 
     return {
-        pre_pomise_competition_key: result,
-        pre_pomise_competition_download_link_key: pre_promise_competition_to_csv(
+        pre_promise_competition_key: result,
+        pre_promise_competition_download_link_key: pre_promise_competition_to_csv(
             result, target_area
         ),
     }
@@ -286,7 +286,7 @@ def analysis_setting(state: SupplyDemandState) -> SupplyDemandState:
     one_people_grdp = state[one_people_grdp_key]
     housing_sales_volume = state[housing_sales_volume_key]
     planning_move = state[planning_move_key]
-    pre_pomise_competition = state[pre_pomise_competition_key]
+    pre_promise_competition = state[pre_promise_competition_key]
 
     system_prompt = PromptManager(PromptType.SUPPLY_DEMAND_SYSTEM).get_prompt()
     humun_prompt = PromptManager(PromptType.SUPPLY_DEMAND_HUMAN).get_prompt(
@@ -302,7 +302,7 @@ def analysis_setting(state: SupplyDemandState) -> SupplyDemandState:
         one_people_grdp=one_people_grdp,
         housing_sales_volume=housing_sales_volume,
         planning_move=planning_move,
-        pre_pomise_competition=pre_pomise_competition,        
+        pre_promise_competition=pre_promise_competition,        
     )
 
     messages = [
@@ -329,7 +329,7 @@ def agent(state: SupplyDemandState) -> SupplyDemandState:
         one_people_grdp_key: state[one_people_grdp_key],
         housing_sales_volume_key: state[housing_sales_volume_key],
         planning_move_key: state[planning_move_key],        
-        pre_pomise_competition_key: state[pre_pomise_competition_key],
+        pre_promise_competition_key: state[pre_promise_competition_key],
         
         jeonse_price_download_link_key: state[jeonse_price_download_link_key],
         sale_price_download_link_key: state[sale_price_download_link_key],
@@ -338,7 +338,7 @@ def agent(state: SupplyDemandState) -> SupplyDemandState:
         one_people_gdp_grdp_download_link_key: state[one_people_gdp_grdp_download_link_key],
         housing_sales_volume_download_link_key: state[housing_sales_volume_download_link_key],
         planning_move_download_link_key: state[planning_move_download_link_key],
-        pre_pomise_competition_download_link_key: state[pre_pomise_competition_download_link_key],        
+        pre_promise_competition_download_link_key: state[pre_promise_competition_download_link_key],        
     }
     return new_state
 
@@ -351,7 +351,7 @@ def router(state: SupplyDemandState):
     return "__end__"
 
 
-pre_pomise_competition_key = "pre_pomise_competition"
+pre_promise_competition_key = "pre_promise_competition"
 
 year10_after_house_key = "year10_after_house"
 sale_and_jeonse_price_ratio_key = "sale_and_jeonse_price_ratio"
@@ -371,7 +371,7 @@ tools_key = "tools"
 agent_key = "agent"
 graph_builder = StateGraph(SupplyDemandState)
 
-graph_builder.add_node(pre_pomise_competition_key, pre_pomise_competition)
+graph_builder.add_node(pre_promise_competition_key, pre_promise_competition)
 graph_builder.add_node(year10_after_house_key, year10_after_house)
 graph_builder.add_node(sale_and_jeonse_price_ratio_key, sale_and_jeonse_price_ratio)
 graph_builder.add_node(trade_balance_key, trade_balance)
@@ -385,7 +385,7 @@ graph_builder.add_node(analysis_setting_key, analysis_setting)
 graph_builder.add_node(tools_key, tool_node)
 graph_builder.add_node(agent_key, agent)
 
-graph_builder.add_edge(START, pre_pomise_competition_key)
+graph_builder.add_edge(START, pre_promise_competition_key)
 graph_builder.add_edge(START, year10_after_house_key)
 graph_builder.add_edge(START, sale_and_jeonse_price_ratio_key)
 graph_builder.add_edge(START, trade_balance_key)
@@ -395,7 +395,7 @@ graph_builder.add_edge(START, use_kor_rate_key)
 graph_builder.add_edge(START, get_home_mortgage_key)
 graph_builder.add_edge(START, get_gdp_and_grdp_key)
 
-graph_builder.add_edge(pre_pomise_competition_key, analysis_setting_key)
+graph_builder.add_edge(pre_promise_competition_key, analysis_setting_key)
 graph_builder.add_edge(year10_after_house_key, analysis_setting_key)
 graph_builder.add_edge(sale_and_jeonse_price_ratio_key, analysis_setting_key)
 graph_builder.add_edge(trade_balance_key, analysis_setting_key)

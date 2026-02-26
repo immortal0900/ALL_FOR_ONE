@@ -168,13 +168,13 @@ web_search_key = "web_search"
 analysis_setting_key = "analysis_setting"
 tools_key = "tools"
 agent_key = "agent"
-gemini_search_key = "gemini_search"
+gemini_search_node_key = "gemini_search"
 kakao_api_distance_key = "kakao_api_distance"
 perplexity_search_key = "perplexity_search"
 
 graph_builder = StateGraph(LocationInsightState)
 
-graph_builder.add_node(gemini_search_key, gemini_search_tool)
+graph_builder.add_node(gemini_search_node_key, gemini_search_tool)
 graph_builder.add_node(kakao_api_distance_key, kakao_api_distance_tool)
 graph_builder.add_node(analysis_setting_key, analysis_setting)
 # graph_builder.add_node(perplexity_search_key, perplexity_search_tool)
@@ -182,8 +182,8 @@ graph_builder.add_node(analysis_setting_key, analysis_setting)
 graph_builder.add_node(tools_key, tool_node)
 graph_builder.add_node(agent_key, agent)
 
-graph_builder.add_edge(START, gemini_search_key)
-graph_builder.add_edge(gemini_search_key, kakao_api_distance_key)
+graph_builder.add_edge(START, gemini_search_node_key)
+graph_builder.add_edge(gemini_search_node_key, kakao_api_distance_key)
 graph_builder.add_edge(kakao_api_distance_key, analysis_setting_key)
 graph_builder.add_edge(analysis_setting_key, agent_key)
 

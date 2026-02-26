@@ -41,7 +41,7 @@ total_units_key = StartInput.KEY.total_units
 email_key = StartInput.KEY.email
 
 ppt_title_key = RendererState.KEY.ppt_title
-ppt_sumary_title_key = RendererState.KEY.ppt_sumary_title
+ppt_summary_title_key = RendererState.KEY.ppt_summary_title
 ppt_path_key = RendererState.KEY.ppt_path
 slide_plan_key = RendererState.KEY.slide_plan
 
@@ -84,7 +84,7 @@ def init(state: RendererState) -> RendererState:
     
     return {
         ppt_title_key: ppt_title,
-        ppt_sumary_title_key: summary_title,        
+        ppt_summary_title_key: summary_title,        
         messages_key:messages
     }
     
@@ -98,7 +98,7 @@ def agent(state: RendererState) -> RendererState:
 from tools.send_gmail import gmail_authenticate
 from tools.send_gmail import send_gmail
 
-def renderring(state: RendererState) -> RendererState:
+def rendering(state: RendererState) -> RendererState:
     
     title = state[ppt_title_key]
     final_report = state[final_report_key]
@@ -127,26 +127,26 @@ def router(state: RendererState):
     last_ai_message = messages[-1]
     if last_ai_message.tool_calls:
         return "tools"
-    return "renderring"
+    return "rendering"
 
 
 
 init_key = "init"
 tools_key = "tools"
 agent_key = "agent"
-renderring_key = "renderring"
+rendering_key = "rendering"
 graph_builder = StateGraph(RendererState)
 graph_builder.add_node(init_key, init)
 graph_builder.add_node(agent_key, agent)
 graph_builder.add_node(tools_key, tool_node)
-graph_builder.add_node(renderring_key, renderring)
+graph_builder.add_node(rendering_key, rendering)
 
 graph_builder.add_edge(START, init_key)
 graph_builder.add_edge(init_key, agent_key)
-graph_builder.add_conditional_edges(agent_key, router, [tools_key, renderring_key])
+graph_builder.add_conditional_edges(agent_key, router, [tools_key, rendering_key])
 
 graph_builder.add_edge(tools_key, agent_key)
-graph_builder.add_edge(renderring_key, END)
+graph_builder.add_edge(rendering_key, END)
 
 renderer_graph = graph_builder.compile()
 

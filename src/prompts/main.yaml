@@ -133,9 +133,9 @@ MAIN_SOUCE_PAGE:
 
     [8. 청약 경쟁률]                                           
      원본 데이터 출처 (공공 데이터) :https://www.data.go.kr/data/15101048/fileData.do#tab-layer-openapi
-     다운로드 링크: {pre_pomise_competition_download_link}
+     다운로드 링크: {pre_promise_competition_download_link}
      데이터 내용: 
-     {pre_pomise_competition}
+     {pre_promise_competition}
 
     [9. 주택 10년 이상 노후도, 매매수급지수 등 기타]
      원본 데이터 출처 1.(10년 이상 노후도 - sgis) : https://sgis.kostat.go.kr/developer/html/openApi/api/data.html
@@ -197,8 +197,8 @@ MAIN_SOUCE_PAGE:
     - sale_price
     - sale_price_download_link
 
-    - pre_pomise_competition
-    - pre_pomise_competition_download_link
+    - pre_promise_competition
+    - pre_promise_competition_download_link
 
     - year10_after_house
     - trade_balance

@@ -4,17 +4,42 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import asyncio
 import uuid
+import traceback
+import logging
 from datetime import datetime
 from typing import Dict, Optional
 
 from agents.main.main_agent import graph_builder
 from agents.state.start_state import StartInput
 
+logger = logging.getLogger(__name__)
+
+# -----------------------------------------------------------------------
+# 작업 저장소 설정
+# -----------------------------------------------------------------------
+# 완료/실패 작업은 JOB_TTL_SECONDS 후 자동 삭제되어 메모리 누수를 방지합니다.
+# 이 값이 없으면 jobs 딕셔너리가 무한히 커져 서버 OOM이 발생합니다.
+# -----------------------------------------------------------------------
+JOB_TTL_SECONDS = 1800  # 30분
+
 # 그래프 한 번만 컴파일
 graph = graph_builder.compile()
 
 # 작업 상태 저장소 (메모리)
 jobs: Dict[str, Dict] = {}
+
+
+async def _schedule_job_cleanup(job_id: str, delay_seconds: int) -> None:
+    """지정된 시간 후 작업 데이터를 메모리에서 삭제합니다.
+
+    Args:
+        job_id: 삭제할 작업 ID
+        delay_seconds: 삭제까지 대기 시간 (초)
+    """
+    await asyncio.sleep(delay_seconds)
+    removed = jobs.pop(job_id, None)
+    if removed:
+        logger.info("Job %s cleaned up after %ds TTL", job_id, delay_seconds)
 
 
 class GraphRequest(BaseModel):
@@ -56,11 +81,8 @@ app.add_middleware(
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    # 원본 예외, 스택트레이스 등을 로깅
-    import traceback
-
     tb = traceback.format_exc()
-    print(f"Unhandled error: {tb}")
+    logger.error("Unhandled error: %s", tb)
     return JSONResponse(
         status_code=500,
         content={"detail": "Internal server error", "error": str(exc)},
@@ -81,14 +103,16 @@ async def run_graph_task(job_id: str, start_input: dict):
         jobs[job_id]["completed_at"] = datetime.now().isoformat()
 
     except Exception as e:
-        import traceback
-
         tb = traceback.format_exc()
-        print(f"Error in run_graph_task: {tb}")
+        logger.error("Error in run_graph_task: %s", tb)
 
         jobs[job_id]["status"] = "failed"
         jobs[job_id]["message"] = f"작업 실패: {str(e)}"
         jobs[job_id]["error"] = str(e)
+
+    finally:
+        # 작업 완료/실패 후 TTL 기반 자동 정리 예약
+        asyncio.create_task(_schedule_job_cleanup(job_id, JOB_TTL_SECONDS))
 
 
 @app.post("/invoke", response_model=JobResponse)
@@ -135,7 +159,7 @@ async def get_job_result(job_id: str):
 
     job = jobs[job_id]
 
-    if job["status"] == "pending" or job["status"] == "running":
+    if job["status"] in ("pending", "running"):
         raise HTTPException(
             status_code=202,
             detail=f"작업이 아직 완료되지 않았습니다. 현재 상태: {job['status']}",
@@ -156,3 +180,4 @@ async def get_job_result(job_id: str):
 @app.get("/")
 def health_check():
     return {"status": "ok"}
+

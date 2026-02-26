@@ -11,7 +11,7 @@ class RendererState(TypedDict):
     slide_plan: Optional[str]
 
     ppt_title: str
-    ppt_sumary_title: str
+    ppt_summary_title: str
     ppt_path:str
     messages: Annotated[list[AnyMessage], add_messages]
     analysis_outputs: dict

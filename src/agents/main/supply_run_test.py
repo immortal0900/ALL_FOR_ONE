@@ -7,7 +7,7 @@ async def run():
             "target_area": "서울 송파구 석촌동"
         }
     })
-    print(invoke['supply_demand_output']['pre_pomise_competition'])
+    print(invoke['supply_demand_output']['pre_promise_competition'])
     return invoke
 
 

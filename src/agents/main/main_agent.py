@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from tools.send_gmail import gmail_authenticate, send_gmail
+
 from langgraph.graph.state import Command, Literal
 
 from agents.state.start_state import StartInput
@@ -82,9 +84,9 @@ housing_sales_volume_download_link_key = (
 )
 jeonse_price_key = SupplyDemandState.KEY.jeonse_price
 jeonse_price_download_link_key = SupplyDemandState.KEY.jeonse_price_download_link
-pre_pomise_competition_key = SupplyDemandState.KEY.pre_pomise_competition
-pre_pomise_competition_download_link_key = (
-    SupplyDemandState.KEY.pre_pomise_competition_download_link
+pre_promise_competition_key = SupplyDemandState.KEY.pre_promise_competition
+pre_promise_competition_download_link_key = (
+    SupplyDemandState.KEY.pre_promise_competition_download_link
 )
 sale_price_key = SupplyDemandState.KEY.sale_price
 sale_price_download_link_key = SupplyDemandState.KEY.sale_price_download_link
@@ -129,23 +131,8 @@ def jung_min_jae_graph(state: MainState) -> MainState:
     return {"final_report": result["final_report"], status_key: "RENDERING"}
 
 
-# def rendering(state: MainState) -> MainState:
-
-#     renderer_graph.invoke(
-#         {
-#             "start_input": deepcopy(state[start_input_key]),
-#             "analysis_outputs": deepcopy(state[analysis_outputs_key]),
-#             'final_report': deepcopy(state[final_report_key])
-#         }
-#     )
-#     return {status_key: "DONE"}
-
-from tools.send_gmail import gmail_authenticate
-from tools.send_gmail import send_gmail
-
-
-def final_node(state: MainState) -> MainState:
-    analysis_outputs = state[analysis_outputs_key]
+def _build_source_prompt(analysis_outputs: dict) -> str:
+    """분석 결과에서 출처 페이지 프롬프트를 생성합니다."""
     housing_faq = analysis_outputs[housing_faq_key]
     location_insight = analysis_outputs[location_insight_key]
     policy_output = analysis_outputs[policy_output_key]
@@ -154,7 +141,7 @@ def final_node(state: MainState) -> MainState:
     population_insight = analysis_outputs[population_insight_key]
     nearby_market = analysis_outputs[nearby_market_key]
 
-    prompt = PromptManager(PromptType.MAIN_SOUCE_PAGE).get_prompt(
+    return PromptManager(PromptType.MAIN_SOUCE_PAGE).get_prompt(
         # 청약 정리
         housing_faq_context=housing_faq[housing_faq_context_key],
         housing_faq_download_link=housing_faq[housing_faq_download_link_key],
@@ -203,9 +190,9 @@ def final_node(state: MainState) -> MainState:
         ],
         jeonse_price=supply_demand[jeonse_price_key],
         jeonse_price_download_link=supply_demand[jeonse_price_download_link_key],
-        pre_pomise_competition=supply_demand[pre_pomise_competition_key],
-        pre_pomise_competition_download_link=supply_demand[
-            pre_pomise_competition_download_link_key
+        pre_promise_competition=supply_demand[pre_promise_competition_key],
+        pre_promise_competition_download_link=supply_demand[
+            pre_promise_competition_download_link_key
         ],
         sale_price=supply_demand[sale_price_key],
         sale_price_download_link=supply_demand[sale_price_download_link_key],
@@ -213,46 +200,62 @@ def final_node(state: MainState) -> MainState:
         trade_balance=supply_demand[trade_balance_key],
     )
 
+
+def _build_drive_links(analysis_outputs: dict) -> dict[str, str]:
+    """분석 결과에서 Google Drive 다운로드 링크 딕셔너리를 생성합니다."""
+    housing_faq = analysis_outputs[housing_faq_key]
+    location_insight = analysis_outputs[location_insight_key]
+    policy_output = analysis_outputs[policy_output_key]
+    supply_demand = analysis_outputs[supply_demand_key]
+    unsold_insight = analysis_outputs[unsold_insight_key]
+    population_insight = analysis_outputs[population_insight_key]
+    nearby_market = analysis_outputs[nearby_market_key]
+
+    return {
+        "주택청약 FAQ": housing_faq[housing_faq_download_link_key],
+        "주택공급 규칙": housing_faq[housing_rule_download_link_key],
+        "입지분석 (카카오 API 거리데이터)": location_insight[
+            location_kakao_api_distance_download_link_key
+        ],
+        "주변 단지 매매가 비교": nearby_market[
+            nearby_kakao_api_distance_download_link_key
+        ],
+        "국가 정책 뉴스": policy_output[national_download_link_key],
+        "지역 정책 뉴스": policy_output[region_download_link_key],
+        "미분양 통계": unsold_insight[unsold_unit_download_link_key],
+        "인구 이동 통계": population_insight[move_population_download_link_key],
+        "연령별 인구 분포": population_insight[age_population_download_link_key],
+        "주택담보대출 금리": supply_demand[home_mortgage_download_link_key],
+        "한국 및 미국 금리 비교": supply_demand[use_kor_rate_download_link_key],
+        "1인당 GDP & GRDP": supply_demand[one_people_gdp_grdp_download_link_key],
+        "입주 예정 단지": supply_demand[planning_move_download_link_key],
+        "매매거래량 통계": supply_demand[housing_sales_volume_download_link_key],
+        "전세가격 통계": supply_demand[jeonse_price_download_link_key],
+        "매매가격 통계": supply_demand[sale_price_download_link_key],
+        "청약 경쟁률": supply_demand[pre_promise_competition_download_link_key],
+    }
+
+
+def final_node(state: MainState) -> MainState:
+    """출처 페이지 생성 및 이메일 발송을 수행하는 최종 노드."""
+    analysis_outputs = state[analysis_outputs_key]
+
+    # 1) 출처 페이지 프롬프트 생성 및 LLM 호출
+    prompt = _build_source_prompt(analysis_outputs)
     res = LLMProfile.dev_llm().invoke(prompt)
+
+    # 2) 이메일 발송
     email = state[start_input_key][email_key]
-    final_report = state[final_report_key]
+    start_input = state[start_input_key]
+    title = f"{start_input['target_area']} {start_input['main_type']} {start_input['total_units']} 사업보고서 작성"
 
     gmail_authenticate()
     send_gmail(
         to=email,
-        title=f"{state[start_input_key]['target_area']} {state[start_input_key]['main_type']} {state[start_input_key]['total_units']} 사업보고서 작성",
-        md_content_final=final_report,  # 보고서 Markdown
-        md_content_source=res.content,  # 출처 페이지 Markdown
-        drive_links={
-            # 🏠 주택청약
-            "주택청약 FAQ": housing_faq[housing_faq_download_link_key],
-            "주택공급 규칙": housing_faq[housing_rule_download_link_key],
-            # 📍 입지분석
-            "입지분석 (카카오 API 거리데이터)": location_insight[
-                location_kakao_api_distance_download_link_key
-            ],
-            # 🏘️ 주변 매매 비교
-            "주변 단지 매매가 비교": nearby_market[
-                nearby_kakao_api_distance_download_link_key
-            ],
-            # 📰 정책
-            "국가 정책 뉴스": policy_output[national_download_link_key],
-            "지역 정책 뉴스": policy_output[region_download_link_key],
-            # 📉 미분양
-            "미분양 통계": unsold_insight[unsold_unit_download_link_key],
-            # 👥 인구분석
-            "인구 이동 통계": population_insight[move_population_download_link_key],
-            "연령별 인구 분포": population_insight[age_population_download_link_key],
-            # 💰 공급과 수요
-            "주택담보대출 금리": supply_demand[home_mortgage_download_link_key],
-            "한국 및 미국 금리 비교": supply_demand[use_kor_rate_download_link_key],
-            "1인당 GDP & GRDP": supply_demand[one_people_gdp_grdp_download_link_key],
-            "입주 예정 단지": supply_demand[planning_move_download_link_key],
-            "매매거래량 통계": supply_demand[housing_sales_volume_download_link_key],
-            "전세가격 통계": supply_demand[jeonse_price_download_link_key],
-            "매매가격 통계": supply_demand[sale_price_download_link_key],
-            "청약 경쟁률": supply_demand[pre_pomise_competition_download_link_key],
-        },
+        title=title,
+        md_content_final=state[final_report_key],
+        md_content_source=res.content,
+        drive_links=_build_drive_links(analysis_outputs),
     )
 
     return {"source": res.content, status_key: "DONE"}
