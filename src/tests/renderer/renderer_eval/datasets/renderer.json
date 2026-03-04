@@ -1,0 +1,16 @@
+[
+    {
+        "id": "renderer_001",
+        "type": "renderer",
+        "description": "보고서 → SlidePlan JSON 변환",
+        "input": "[보고서 원문]\n## 1. 입지 분석\n대치동은 3호선 대치역 도보 5분 초역세권입니다.\n\n## 2. 수급 현황\n매매수급지수 112.5로 매수 우위 시장입니다.\n\n## 3. 종합 판단\n분양 성과가 양호할 것으로 예상됩니다.",
+        "actual_output": "[{\"slide_number\": 1, \"title\": \"입지 분석\", \"content\": [\"대치동은 3호선 대치역 도보 5분 초역세권\"]}, {\"slide_number\": 2, \"title\": \"수급 현황\", \"content\": [\"매매수급지수 112.5\", \"매수 우위 시장\"]}, {\"slide_number\": 3, \"title\": \"종합 판단\", \"content\": [\"분양 성과가 양호할 것으로 예상\"]}]"
+    },
+    {
+        "id": "renderer_002",
+        "type": "renderer",
+        "description": "데이터 표 포함 보고서 변환",
+        "input": "[보고서 원문]\n## 주변 시세\n| 단지명 | 시세 |\n|--------|------|\n| A아파트 | 10억 |\n| B아파트 | 8.5억 |\n\n## 시사점\n시세는 8.5~10억 범위입니다.",
+        "actual_output": "[{\"slide_number\": 1, \"title\": \"주변 시세\", \"content\": [\"A아파트: 10억\", \"B아파트: 8.5억\"]}, {\"slide_number\": 2, \"title\": \"시사점\", \"content\": [\"시세 범위: 8.5~10억\"]}]"
+    }
+]

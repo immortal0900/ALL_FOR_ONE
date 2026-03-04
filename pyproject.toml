@@ -60,6 +60,7 @@ dependencies = [
     "uvicorn>=0.32.0",
     "weasyprint>=66.0",
     "xhtml2pdf>=0.2.17",
+    "deepeval>=3.8.8",
 ]
 
 [build-system]

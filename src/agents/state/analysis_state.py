@@ -73,6 +73,9 @@ class LocationInsightState(TypedDict):
     web_context: Optional[str]
     kakao_api_distance_context: Optional[str]
     kakao_api_distance_download_link: Optional[str]
+    # Structured Output 적용: gemini_search_tool()이 NearbyMarketGeminiSchema를
+    # 준수하는 순수 JSON 문자열을 저장합니다.
+    # 하류 노드에서 json.loads()로 바로 파싱 가능합니다.
     gemini_search: Optional[str]
     perplexity_search: Optional[str]
     messages: Annotated[list[AnyMessage], add_messages]
