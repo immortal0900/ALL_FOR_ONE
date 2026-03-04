@@ -16,11 +16,27 @@ params = {
     "orgId": "408",
     "tblId": "DT_408_2006_S0057",
 }
-
 headers = {"User-Agent": "Mozilla/5.0"}
-response = requests.get(url, params=params, headers=headers)
-data = response.json()
-df = pd.DataFrame(data)
+
+# 전역 데이터프레임 캐시
+_trade_df = None
+
+def _get_trade_df() -> pd.DataFrame:
+    """KOSIS API를 호출하여 데이터프레임을 캐싱 및 반환 (지연 초기화)"""
+    global _trade_df
+    if _trade_df is not None:
+        return _trade_df
+
+    try:
+        response = requests.get(url, params=params, headers=headers, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        _trade_df = pd.DataFrame(data)
+        return _trade_df
+    except Exception as e:
+        print(f"[house_sale_volume_tool] Error fetching KOSIS data: {e}")
+        # 실패 시 빈 데이터프레임 반환하여 크래시 방지
+        return pd.DataFrame(columns=["C1_NM", "PRD_DE", "ITM_NM", "DT"])
 # 주요 컬럼
 # PRD_DE: 기간 (예: 202507)
 # C1_NM: 지역명 (예: 종로구, 강남구)
@@ -34,15 +50,22 @@ df = pd.DataFrame(data)
 
 def get_trade_volume(address):
     """주소에서 구 단위 거래량 조회"""
+    # 데이터프레임 지연 로딩
+    df = _get_trade_df()
+    
+    district = ""
     # 주소를 공백으로 나눠서 "구"로 끝나는 단어 찾기
     for word in address.split():
         if word.endswith("구"):
             district = word
             break
 
+    if not district or df.empty:
+        return pd.DataFrame()
+
     # 해당 구가 포함된 데이터 필터링 (contains 사용)
     result = (
-        df[df["C1_NM"].str.contains(district)]
+        df[df["C1_NM"].str.contains(district, na=False)]
         .pivot_table(
             index="PRD_DE",  # 행을 날짜로로
             columns="ITM_NM",  # 열을 항목명(ITM_NM)

@@ -100,13 +100,13 @@ def e2e_result():
     start_input = {
         "target_area": "서울특별시 강남구 대치동",
         "main_type": "84㎡",
-        "email": "test@example.com",
+        "email": "immortal0900@gmail.com",
         "total_units": "500"
     }
     
     print("\n[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...")
-    # 최대 10분 대기
-    result_dict = client.run_pipeline(start_input=start_input, timeout=600)
+    # 최대 20분 대기
+    result_dict = client.run_pipeline(start_input=start_input, timeout=1200)
     print("[E2E] 파이프라인 리턴 완료. 결과 객체를 캐싱합니다.")
     
     return result_dict

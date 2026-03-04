@@ -12,7 +12,7 @@ class E2EClient:
     def __init__(self, base_url: str = None):
         self.base_url = base_url or get_server_url()
 
-    def run_pipeline(self, start_input: Dict[str, Any], timeout: int = 600) -> Dict[str, Any]:
+    def run_pipeline(self, start_input: Dict[str, Any], timeout: int = 1200) -> Dict[str, Any]:
         """
         서버에 생성 파이프라인(/invoke)을 요청하고
         결과가 나올 때까지 폴링하여 최종 output을 반환합니다.
