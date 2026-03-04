@@ -9,7 +9,7 @@
 import json
 import os
 import pytest
-
+from tests.e2e_client import E2EClient
 
 # ============================================================
 # 데이터셋 로더
@@ -85,3 +85,28 @@ def print_summary_report(request):
             print(f"  [{status}] {q_type}: {score:.2%} ({count}건)")
 
     print("\n" + "=" * 70)
+
+
+# ============================================================
+# E2E 서버 연동 fixture (세션 단위 1회 호출)
+# ============================================================
+@pytest.fixture(scope="session")
+def e2e_result():
+    """
+    모든 분석 에이전트 평가 전에 딱 한 번 서버 파이프라인을 호출합니다.
+    """
+    client = E2EClient()
+    # 임의의 기준 입력 (이 값을 기준으로 모든 테스트 문항 채점)
+    start_input = {
+        "target_area": "서울특별시 강남구 대치동",
+        "main_type": "84㎡",
+        "email": "test@example.com",
+        "total_units": "500"
+    }
+    
+    print("\n[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...")
+    # 최대 10분 대기
+    result_dict = client.run_pipeline(start_input=start_input, timeout=600)
+    print("[E2E] 파이프라인 리턴 완료. 결과 객체를 캐싱합니다.")
+    
+    return result_dict

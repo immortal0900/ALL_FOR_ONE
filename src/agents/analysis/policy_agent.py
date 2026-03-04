@@ -240,14 +240,14 @@ def generate_initial_report(state: PolicyState) -> PolicyState:
 def evaluate_report_completeness(state: PolicyState) -> PolicyState:
     """
     보고서 완성도 평가
-    comp.md 스타일 구조를 기준으로 평가
+    
     """
     draft = state["report_draft"]
     yaml_context = state.get("yaml_context", {})
 
     # comp.md 스타일의 필수 구조 체크
     required_structure = (
-        "SEGMENT 2의 comp.md 스타일 구조를 모두 포함해야 합니다:\n"
+        "SEGMENT 2의 구조를 모두 포함해야 합니다:\n"
         "1. 개요 (각 정책의 정식 명칭, 배경, 성격, 시행 시점, 출처)\n"
         "2. 정책 목표 (각 정책별 목표)\n"
         "3. 주요 정책 비교 (표 형식으로 10개 항목):\n"
@@ -273,11 +273,11 @@ def evaluate_report_completeness(state: PolicyState) -> PolicyState:
     )
 
     template = (
-        required_structure + "=== Segment 02 (comp.md 스타일 전체 구조) ===\n"
+        required_structure + "=== Segment 02 ===\n"
         f"{yaml_context.get('segment_02', '')}\n\n"
     )
     prompt = (
-        "다음 *보고서 초안*이 *SEGMENT 2의 comp.md 스타일 구조*를 모두 채웠는지 살펴보고, 부족한 항목과 검색어를 알려주세요.\n\n"
+        "다음 *보고서 초안*이 *SEGMENT 2의 구조*를 모두 채웠는지 살펴보고, 부족한 항목과 검색어를 알려주세요.\n\n"
         f"[필수 구조]\n{required_structure}\n\n"
         f"[템플릿]\n{template}\n\n"
         f"[보고서 초안]\n{draft}"

@@ -61,6 +61,7 @@ dependencies = [
     "weasyprint>=66.0",
     "xhtml2pdf>=0.2.17",
     "deepeval>=3.8.8",
+    "jsonpointer>=3.0.0",
 ]
 
 [build-system]

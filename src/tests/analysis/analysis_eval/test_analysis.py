@@ -26,7 +26,7 @@ from .conftest import load_dataset, GLOBAL_RESULTS
 # ============================================================
 # 평가 실행 핵심 함수
 # ============================================================
-def run_evaluation_for_agent(agent_name: str):
+def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
     """
     특정 분석 에이전트의 데이터셋을 로드하고 평가를 실행합니다.
 
@@ -35,9 +35,20 @@ def run_evaluation_for_agent(agent_name: str):
 
     Args:
         agent_name: 에이전트 식별자 (예: "housing_faq")
+        e2e_result: conftest에서 주입된 서버 파이프라인 전체 실행 결과 객체
     """
     dataset = load_dataset(agent_name)
     summary = {"agent": agent_name, "results": []}
+
+    # e2e_result에서 이 에이전트의 결과물 추출
+    # 예: e2e_result["housing_faq_output"]["result"]
+    output_key = f"{agent_name}_output"
+    
+    # 서버 결과 형식 검증
+    if output_key not in e2e_result or "result" not in e2e_result[output_key]:
+        pytest.fail(f"서버 결과에 {output_key}['result'] 데이터가 없습니다.")
+        
+    actual_agent_record = e2e_result[output_key]["result"]
 
     # 유형별로 테스트 케이스 그룹핑
     cases_by_type: dict[str, list[tuple]] = {}
@@ -45,7 +56,8 @@ def run_evaluation_for_agent(agent_name: str):
         q_type = item.get("type", "analysis_report")
         test_case = LLMTestCase(
             input=item["input"],
-            actual_output=item["actual_output"],
+            # JSON의 모의 답안 대신 실제 서버에서 생산된 문자열 지정!
+            actual_output=actual_agent_record,
         )
         cases_by_type.setdefault(q_type, []).append((test_case, item))
 
@@ -70,8 +82,8 @@ def run_evaluation_for_agent(agent_name: str):
             q_id = q_info.get("id", "unknown")
             q_desc = q_info.get("description", "")
             print(f"  * [{q_id}] {q_desc}")
-            print(f"    - 입력 (앞 80자): {test_case.input[:80]}...")
-            print(f"    - 출력 (앞 80자): {test_case.actual_output[:80]}...")
+            print(f"    - 입력: {test_case.input}")
+            print(f"    - 실제 서버 출력:\n{test_case.actual_output}\n")
             print(f"    - 가중 점수: {weighted_score:.2%}")
 
             for metric in metrics:
@@ -104,36 +116,36 @@ def run_evaluation_for_agent(agent_name: str):
 # ============================================================
 # 에이전트별 테스트 함수
 # ============================================================
-def test_housing_faq():
+def test_housing_faq(e2e_result):
     """청약 FAQ 분석 에이전트 평가"""
-    run_evaluation_for_agent("housing_faq")
+    run_evaluation_for_agent("housing_faq", e2e_result)
 
 
-def test_policy():
+def test_policy(e2e_result):
     """정책 분석 에이전트 평가"""
-    run_evaluation_for_agent("policy")
+    run_evaluation_for_agent("policy", e2e_result)
 
 
-def test_supply_demand():
+def test_supply_demand(e2e_result):
     """수급 분석 에이전트 평가"""
-    run_evaluation_for_agent("supply_demand")
+    run_evaluation_for_agent("supply_demand", e2e_result)
 
 
-def test_nearby_market():
+def test_nearby_market(e2e_result):
     """주변 시장 분석 에이전트 평가"""
-    run_evaluation_for_agent("nearby_market")
+    run_evaluation_for_agent("nearby_market", e2e_result)
 
 
-def test_location_insight():
+def test_location_insight(e2e_result):
     """입지 분석 에이전트 평가"""
-    run_evaluation_for_agent("location_insight")
+    run_evaluation_for_agent("location_insight", e2e_result)
 
 
-def test_population_insight():
+def test_population_insight(e2e_result):
     """인구 분석 에이전트 평가"""
-    run_evaluation_for_agent("population_insight")
+    run_evaluation_for_agent("population_insight", e2e_result)
 
 
-def test_unsold_insight():
+def test_unsold_insight(e2e_result):
     """미분양 분석 에이전트 평가"""
-    run_evaluation_for_agent("unsold_insight")
+    run_evaluation_for_agent("unsold_insight", e2e_result)

@@ -99,6 +99,7 @@ class ModelName(StrEnum):
     GPT_4_1 = "gpt-4.1"
     GPT_5_MINI = "gpt-5-mini"
     GPT_5 = "gpt-5"
+    GPT_5_MINI = "gpt-5-mini"
     GPT_5_LASTEST = "gpt-5-chat-latest"
     GPT_5_PRO = "gpt-5-pro-2025-10-06"
 
@@ -111,13 +112,13 @@ class ModelName(StrEnum):
 class LLMProfile(StrEnum):
 
     # 개발자가 사용할 LLM
-    DEV = ModelName.GPT_4_1_MINI.value
+    DEV = ModelName.GPT_5_MINI.value
 
     # 챗봇용 LLM
-    CHAT_BOT = ModelName.GPT_4_1.value
+    CHAT_BOT = ModelName.GPT_5_MINI.value
 
     # 분석용 LLM
-    ANALYSIS = ModelName.GPT_4_1.value
+    ANALYSIS = ModelName.GPT_5_MINI.value
 
     # 보고서 작성용 LLM
     REPORT = ModelName.GPT_5.value

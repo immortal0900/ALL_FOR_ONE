@@ -278,7 +278,7 @@ POLICY_COMPARISON_SEGMENT_01:
 POLICY_COMPARISON_SEGMENT_02:
   name: "POLICY_COMPARISON_SEGMENT_02"  
   prompt: |
-    == SEGMENT 2: 정책 비교 분석 (comp.md 스타일) ==
+    == SEGMENT 2: 정책 비교 분석 ==
     
     **중요: 반드시 다음 구조로 작성하세요. {policy_list}에 명시된 정책들을 우선적으로 비교하세요.**
     
