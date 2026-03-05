@@ -15,12 +15,12 @@ set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analys
 
 import pytest
 from deepeval.test_case import LLMTestCase
-from .custom_metrics import (
+from tests.analysis.analysis_eval.custom_metrics import (
     get_metrics_for_type,
     calculate_weighted_score,
     get_primary_metric,
 )
-from .conftest import load_dataset, GLOBAL_RESULTS
+from tests.analysis.analysis_eval.conftest import load_dataset, GLOBAL_RESULTS
 
 
 # ============================================================

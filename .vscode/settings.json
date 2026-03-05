@@ -1,3 +1,3 @@
 {
-    "python.defaultInterpreterPath": ".venv\\Scripts\\python.exe"
+    "python.defaultInterpreterPath": "$ALL_FOR_ONE\\.venv\\Scripts\\python.exe"
 }
