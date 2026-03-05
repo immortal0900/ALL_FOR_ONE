@@ -206,7 +206,7 @@ def generate_initial_report(state: PolicyState) -> PolicyState:
             "**6가지 엄격한 규칙:**\n"
             "1. 보고서 시작 금지: '※', '아래는', '주의사항' 등 메타 설명 절대 금지. 바로 '## **개요**'부터 시작\n"
             "2. 할루시네이션 절대 금지: PDF에 명시된 정확한 수치만 사용. PDF에 없으면 빈칸('-') 또는 생략\n"
-            "3. 애매한 표현 완전 금지: '동일', '유지', '기존 규제 유지', '변동 없음', '동일 적용', '같음' 등 모든 애매한 표현 절대 금지\n"
+            "3. 애매한 표현 완전 금지 생략하지 않고 구체적 정보를 기재: '동일', '유지', '기존 규제 유지', '변동 없음', '동일 적용', '같음' 등 모든 애매한 표현 절대 금지\n"
             "   - 나쁜 예: 'LTV 동일', '기존과 동일', '동일 (유지)'\n"
             "   - 좋은 예: '수도권 규제지역 LTV 40% (무주택·1주택 기준)'\n"
             "4. 출처 필수 명시: 각 표 항목과 내용마다 [출처: 파일명] 형식으로 출처 명시\n"
@@ -217,7 +217,7 @@ def generate_initial_report(state: PolicyState) -> PolicyState:
             "   - 예: perplexity_search('2025년 6월 27일 디딤돌 대출 일반 한도')\n"
             "6. Perplexity 출처 표기:\n"
             "   - Perplexity 답변에 포함된 링크를 반드시 함께 표기\n"
-            "   - 형식: [출처: Perplexity - https://example.com]\n\n"
+            "   - 형식예시: [출처: Perplexity - https://example.com]\n\n"
             "표는 간결하게 작성하고, 핵심 내용만 포함하세요. "
             "장황한 설명은 제거하고 사실만 기록하세요.\n"
             "policy_list에 명시된 정책들을 우선적으로 비교 분석하세요.\n\n"
@@ -245,7 +245,7 @@ def evaluate_report_completeness(state: PolicyState) -> PolicyState:
     draft = state["report_draft"]
     yaml_context = state.get("yaml_context", {})
 
-    # comp.md 스타일의 필수 구조 체크
+    # Segment 02 스타일의 필수 구조 체크
     required_structure = (
         "SEGMENT 2의 구조를 모두 포함해야 합니다:\n"
         "1. 개요 (각 정책의 정식 명칭, 배경, 성격, 시행 시점, 출처)\n"
@@ -266,7 +266,6 @@ def evaluate_report_completeness(state: PolicyState) -> PolicyState:
         "6. 전망 및 과제 (단기 효과, 장기 과제)\n"
         "7. 참고 자료 (각 정책 보도자료 링크)\n\n"
         "**추가 체크사항:**\n"
-        "- '※', '아래는' 같은 메타 설명이 없는지 확인\n"
         "- '동일', '유지', '기존 규제 유지', '변동 없음', '동일 적용' 같은 애매한 표현이 없는지 확인\n"
         "- 모든 항목에 구체적인 수치와 내용이 있는지 확인\n"
         "- 각 항목에 출처가 명시되어 있는지 확인\n"
