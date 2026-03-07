@@ -17,11 +17,52 @@ import pytest
 from deepeval.test_case import LLMTestCase
 from tests.analysis.analysis_eval.custom_metrics import (
     get_metrics_for_type,
-    calculate_weighted_score,
+    calculate_separated_scores,
     get_primary_metric,
 )
 from tests.analysis.analysis_eval.conftest import load_dataset, GLOBAL_RESULTS
 
+
+# ============================================================
+# Context 추출 헬퍼 함수
+# ============================================================
+def _extract_retrieval_contexts(agent_name: str, output_dict: dict) -> list[str]:
+    """
+    각 에이전트 결과 딕셔너리에서 RAG 컨텍스트를 찾아 문자열 리스트로 반환합니다.
+    """
+    contexts = []
+    
+    # 에이전트별 키 매핑 테이블 (analysis_outputs_schema 기반)
+    CONTEXT_MAPPING = {
+        "policy": ["national_context", "region_context", "pdf_context"],
+        "housing_faq": ["housing_faq_context", "housing_rule_context"],
+        "unsold_insight": ["unsold_unit"],
+        "population_insight": ["age_population_context", "move_population_context"],
+        "supply_demand": [
+            "year10_after_house", "jeonse_price", "sale_price", "trade_balance",
+            "use_kor_rate", "home_mortgage", "one_people_gdp", "one_people_grdp",
+            "housing_sales_volume", "planning_move", "pre_promise_competition"
+        ],
+        "location_insight": ["rag_context", "web_context", "kakao_api_distance_context", "gemini_search", "perplexity_search"],
+        "nearby_market": ["kakao_api_distance_context", "gemini_search", "real_estate_price_context", "perplexity_search", "rag_context", "web_context"]
+    }
+    
+    keys_to_extract = CONTEXT_MAPPING.get(agent_name, [])
+    for key in keys_to_extract:
+        val = output_dict.get(key)
+        if val and isinstance(val, str) and val.strip():
+            contexts.append(val)
+        elif val and isinstance(val, list):
+            # 문자열 리스트일 경우 안전하게 Join
+            joined_str = "\n".join(str(v) for v in val if v)
+            if joined_str.strip():
+                contexts.append(joined_str)
+            
+    # 비어 있을 경우 에러를 피하기 위해 기본 컨텍스트 1개라도 주기
+    if not contexts:
+        contexts.append("문서 검색 기록이 존재하지 않습니다.")
+        
+    return contexts
 
 # ============================================================
 # 평가 실행 핵심 함수
@@ -50,21 +91,26 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
         
     actual_agent_record = e2e_result[output_key]["result"]
 
+    actual_agent_record = e2e_result[output_key]["result"]
+
+    # RAG 메트릭 채점을 위해 서버 응답에서 관련 데이터 추출
+    retrieval_context = _extract_retrieval_contexts(agent_name, e2e_result[output_key])
+
     # 유형별로 테스트 케이스 그룹핑
     cases_by_type: dict[str, list[tuple]] = {}
     for item in dataset:
         q_type = item.get("type", "analysis_report")
         test_case = LLMTestCase(
             input=item["input"],
-            # JSON의 모의 답안 대신 실제 서버에서 생산된 문자열 지정!
             actual_output=actual_agent_record,
+            retrieval_context=retrieval_context,
         )
         cases_by_type.setdefault(q_type, []).append((test_case, item))
 
     # 유형별 평가 수행
     for question_type, case_list in cases_by_type.items():
-        metrics = get_metrics_for_type(question_type)
-        primary_metric_name = get_primary_metric(question_type)
+        metrics = get_metrics_for_type(agent_name)
+        primary_metric_name = get_primary_metric(agent_name)
 
         type_scores = []
         for test_case, q_info in case_list:
@@ -75,16 +121,21 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
                 metric.measure(test_case)
                 metric_scores[metric.name] = metric.score if metric.score else 0.0
 
-            weighted_score = calculate_weighted_score(question_type, metric_scores)
-            type_scores.append(weighted_score)
+            separated_scores = calculate_separated_scores(agent_name, metric_scores)
+            type_scores.append(separated_scores)
 
             # 결과 출력
             q_id = q_info.get("id", "unknown")
             q_desc = q_info.get("description", "")
+            print("\n" + "="*50)
             print(f"  * [{q_id}] {q_desc}")
             print(f"    - 입력: {test_case.input}")
             print(f"    - 실제 서버 출력:\n{test_case.actual_output}\n")
-            print(f"    - 가중 점수: {weighted_score:.2%}")
+            print(f"    - [일반 분석 점수]: {separated_scores['analysis_score']:.2%}")
+            if separated_scores['rag_score'] is not None:
+                print(f"    - [RAG 검색 점수]: {separated_scores['rag_score']:.2%}")
+            else:
+                print(f"    - [RAG 검색 점수]: 미대상 (N/A)")
 
             for metric in metrics:
                 marker = " [주요]" if metric.name == primary_metric_name else ""
@@ -93,21 +144,32 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
                     print(f"    - 판단 이유: {metric.reason}")
 
         if type_scores:
-            type_avg = sum(type_scores) / len(type_scores)
+            avg_analysis = sum(s["analysis_score"] for s in type_scores) / len(type_scores)
+            
+            # RAG 점수가 존재하는 에이전트인지 확인하여 평균 산출
+            valid_rag_scores = [float(s["rag_score"]) for s in type_scores if s["rag_score"] is not None]
+            avg_rag = sum(valid_rag_scores) / len(valid_rag_scores) if valid_rag_scores else None
+
             summary["results"].append({
                 "type": question_type,
-                "score": type_avg,
-                "count": len(type_scores),
+                "analysis_score": avg_analysis,
+                "rag_score": avg_rag,
+                "count": len(type_scores)
             })
 
     GLOBAL_RESULTS.append(summary)
 
     # 전체 평균 점수 계산 및 assertion
     # assert 조건, 메세지: 지정된 조건이 참(True)이면 통과, 거짓(False)일 때만 에러 메시지를 발생
-    all_scores = [r["score"] for r in summary["results"]]
-    if all_scores:
-        overall_avg = sum(all_scores) / len(all_scores)
-        assert overall_avg >= 0.7, (
+    if isinstance(summary.get("results"), list) and summary["results"]:
+        all_scores = []
+        for r in summary["results"]:
+            if isinstance(r, dict) and "analysis_score" in r and isinstance(r["analysis_score"], (int, float)):
+                all_scores.append(float(r["analysis_score"]))
+                
+        if all_scores:
+            overall_avg = sum(all_scores) / len(all_scores)
+            assert overall_avg >= 0.7, (
             f"{agent_name} 전체 평균 점수 {overall_avg:.2%}로 "
             f"기준(70%) 미달"
         )

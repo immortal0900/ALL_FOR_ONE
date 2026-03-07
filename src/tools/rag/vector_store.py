@@ -10,6 +10,7 @@ _pgvector_cache = {}
 _pgvector_lock = Lock()
 
 
+import urllib.parse
 def _prepare_connection_string(connection_url: str) -> str:
     """
     Supabase 연결 문자열을 처리합니다.
@@ -18,6 +19,23 @@ def _prepare_connection_string(connection_url: str) -> str:
     """
     if not connection_url:
         return connection_url
+
+    # 터미널에서 set 명령어로 입력한 따옴표(") 혹은 작은따옴표(')가 
+    # 문자열 자체로 들어온 경우 SQLAlchemy가 파싱하지 못하므로 양끝 제거
+    connection_url = connection_url.strip('"').strip("'")
+
+    # 비밀번호 특수문자 URL 인코딩 (SQLAlchemy 파싱 오류 방지)
+    try:
+        # 형태: dialect://user:pass@host:port/db...?
+        if "://" in connection_url and "@" in connection_url:
+            prefix, rest = connection_url.split("://", 1)
+            auth, host_part = rest.split("@", 1)
+            if ":" in auth:
+                user, pwd = auth.split(":", 1)
+                encoded_pwd = urllib.parse.quote_plus(urllib.parse.unquote_plus(pwd))
+                connection_url = f"{prefix}://{user}:{encoded_pwd}@{host_part}"
+    except Exception as e:
+        print(f"[Warning] URL 인코딩 중 오류: {e}")
 
     if "pooler.supabase.com" in connection_url:
         pass
@@ -29,7 +47,7 @@ def _prepare_connection_string(connection_url: str) -> str:
                 )
             elif ".supabase.co" in connection_url:
                 connection_url = connection_url.replace(
-                    ".supabase.co", ".pooler.supabase.com"
+                    ".supabase.co", ".supabase.com" # 풀러 교정이 필요 시 다른 부분에서 처리됨
                 )
 
     if "?" in connection_url:
