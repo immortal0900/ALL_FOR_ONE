@@ -10,6 +10,9 @@ from functools import wraps
 
 load_dotenv()
 
+# Langfuse 추적기 (Graceful Degradation: 미설치 시에도 안전)
+from utils.langfuse_tracker import tracker as _langfuse_tracker
+
 
 # Monkey patch for langchain-google-genai max_retries bug
 def patch_google_genai():
@@ -37,10 +40,37 @@ patch_google_genai()
 
 
 class RetryableChatOpenAI(ChatOpenAI):
-    """Exponential Backoff 재시도 로직이 적용된 ChatOpenAI 클래스"""
+    """Exponential Backoff 재시도 로직과 Langfuse 자동 추적이 적용된 ChatOpenAI 클래스.
+
+    [Langfuse 자동 주입 흐름]
+    invoke()/ainvoke() 호출
+      → _merge_langfuse_config()로 기존 config에 CallbackHandler 추가
+      → super().invoke()가 콜백을 통해 Langfuse 서버로 trace 전송
+
+    [존재 이유]
+    이 클래스 한 곳에서 Langfuse 콜백을 주입하므로
+    28개 LLM 호출 지점을 개별 수정할 필요가 없습니다.
+    """
+
+    def _merge_langfuse_config(self, config=None):
+        """기존 config에 Langfuse CallbackHandler를 안전하게 병합합니다.
+
+        [존재 이유]
+        LangGraph ToolNode 등이 내부적으로 자체 callbacks를 config에 전달합니다.
+        기존 callbacks를 덮어쓰면 도구 호출이 실패하므로,
+        반드시 append 방식으로 병합해야 합니다.
+
+        Args:
+            config: 기존 LangChain config (None 가능)
+
+        Returns:
+            Langfuse 콜백이 병합된 config (추적 비활성화 시 원본 그대로 반환)
+        """
+        return _langfuse_tracker.merge_config(config)
 
     def invoke(self, input, config=None, **kwargs):
-        """동기 호출 시 재시도 로직 적용"""
+        """동기 호출 시 재시도 로직 + Langfuse 자동 추적 적용"""
+        config = self._merge_langfuse_config(config)
         max_retries = 5
 
         for i in range(max_retries):
@@ -67,7 +97,8 @@ class RetryableChatOpenAI(ChatOpenAI):
                 raise
 
     async def ainvoke(self, input, config=None, **kwargs):
-        """비동기 호출 시 재시도 로직 적용"""
+        """비동기 호출 시 재시도 로직 + Langfuse 자동 추적 적용"""
+        config = self._merge_langfuse_config(config)
         max_retries = 5
 
         for i in range(max_retries):

@@ -13,6 +13,9 @@ from typing import Optional
 import google.genai as genai
 from dotenv import load_dotenv
 
+# Langfuse 수동 추적 (Graceful Degradation)
+from utils.langfuse_tracker import tracker as _langfuse_tracker
+
 load_dotenv()
 
 # Gemini API 클라이언트 생성
@@ -28,6 +31,10 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
     """
     Gemini API를 사용하여 프롬프트에 대한 응답을 생성합니다.
     서버 오류 시 최대 3번까지 재시도합니다.
+
+    [Langfuse 추적]
+    호출 시 Langfuse에 generation으로 기록됩니다.
+    LANGFUSE_ENABLED=false이면 추적 없이 기존과 동일하게 동작합니다.
 
     [response_schema 없을 때]
     자유 형식 텍스트를 반환합니다. 기존 동작과 동일합니다.
@@ -63,6 +70,21 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
         else None
     )
 
+    # Langfuse 수동 추적: generation 시작
+    langfuse_client = _langfuse_tracker.get_client()
+    langfuse_span = None
+    if langfuse_client is not None:
+        try:
+            langfuse_span = langfuse_client.start_as_current_observation(
+                as_type="generation",
+                name="gemini-search",
+                model=_DEFAULT_MODEL,
+                input=prompt[:500],  # 프롬프트 앞부분만 기록 (비용 절약)
+                metadata={"has_schema": response_schema is not None},
+            )
+        except Exception:
+            langfuse_span = None
+
     for attempt in range(_MAX_RETRIES):
         try:
             response = client.models.generate_content(
@@ -70,14 +92,48 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
                 contents=prompt,
                 config=generation_config,
             )
-            return response.text
+            result_text = response.text
+
+            # Langfuse: 성공 시 출력 및 usage 기록
+            if langfuse_span is not None:
+                try:
+                    usage = getattr(response, "usage_metadata", None)
+                    usage_details = {}
+                    if usage:
+                        usage_details = {
+                            "input": getattr(usage, "prompt_token_count", 0),
+                            "output": getattr(usage, "candidates_token_count", 0),
+                        }
+                    langfuse_span.update(
+                        output=result_text[:500],
+                        usage_details=usage_details if usage_details else None,
+                    )
+                    langfuse_span.__exit__(None, None, None)
+                except Exception:
+                    pass
+
+            return result_text
 
         except Exception as e:
             error_message = str(e)
             is_last_attempt = attempt == _MAX_RETRIES - 1
 
             if is_last_attempt:
-                return f"Gemini API 오류: {error_message}. 잠시 후 다시 시도해주세요."
+                error_result = f"Gemini API 오류: {error_message}. 잠시 후 다시 시도해주세요."
+
+                # Langfuse: 실패 시 에러 기록
+                if langfuse_span is not None:
+                    try:
+                        langfuse_span.update(
+                            output=error_result,
+                            level="ERROR",
+                            status_message=error_message,
+                        )
+                        langfuse_span.__exit__(None, None, None)
+                    except Exception:
+                        pass
+
+                return error_result
 
             time.sleep(_RETRY_DELAY_SECONDS)
 

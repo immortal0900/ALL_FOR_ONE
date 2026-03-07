@@ -5,14 +5,19 @@
 정책 관련 보도자료를 검색하는 LangChain tool을 제공합니다.
 """
 
+import logging
 from typing import Optional, List, Dict, Any
 from langchain_core.tools import tool
 from perplexity import Perplexity
 from dotenv import load_dotenv
 import os
 
+# Langfuse 수동 추적 (Graceful Degradation)
+from utils.langfuse_tracker import tracker as _langfuse_tracker
+
 load_dotenv()
 
+logger = logging.getLogger(__name__)
 
 class MolitSearchTool:
     """국토교통부 통계누리 검색 클래스"""
@@ -65,6 +70,29 @@ class MolitSearchTool:
                     "last_updated": result.last_updated,
                 })
                 print(result)
+
+            # Langfuse 수동 추적: 국토부 검색 기록
+            langfuse_client = _langfuse_tracker.get_client()
+            if langfuse_client is not None:
+                try:
+                    import json
+                    output_data = json.dumps(results, ensure_ascii=False)
+                    if len(output_data) > 2000:
+                        output_data = output_data[:2000] + "...(truncated)"
+                        
+                    with langfuse_client.start_as_current_observation(
+                        as_type="generation",
+                        name="molit-search",
+                        model="perplexity-search-api",
+                        input=full_query[:500],
+                    ) as span:
+                        span.update(
+                            output=output_data,
+                            metadata={"result_count": len(results)},
+                        )
+                except Exception:
+                    pass
+
             return results
 
         except Exception as e:

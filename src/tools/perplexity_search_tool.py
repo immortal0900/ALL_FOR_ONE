@@ -7,18 +7,53 @@ Structured Output: https://docs.perplexity.ai/guides/structured-outputs
 """
 
 import os
+import logging
 from typing import Optional
 
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 from perplexity import Perplexity
 
+# Langfuse 수동 추적 (Graceful Degradation)
+from utils.langfuse_tracker import tracker as _langfuse_tracker
+
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 client = Perplexity(api_key=PERPLEXITY_API_KEY)
 
 _DEFAULT_MODEL = "sonar-reasoning-pro"
+
+
+def _track_perplexity_generation(name: str, model: str, query: str, result: str):
+    """Perplexity API 호출을 Langfuse에 generation으로 기록합니다.
+
+    [존재 이유]
+    Perplexity SDK는 LangChain CallbackHandler를 지원하지 않으므로
+    수동으로 Langfuse에 generation 정보를 전송해야 합니다.
+
+    Args:
+        name:   추적 이름 (예: "perplexity-search")
+        model:  사용된 모델명
+        query:  입력 쿼리
+        result: API 응답 텍스트
+    """
+    langfuse_client = _langfuse_tracker.get_client()
+    if langfuse_client is None:
+        return
+
+    try:
+        with langfuse_client.start_as_current_observation(
+            as_type="generation",
+            name=name,
+            model=model,
+            input=query[:500],
+        ) as span:
+            span.update(output=result[:2000])
+    except Exception as e:
+        logger.debug("Langfuse Perplexity 추적 실패 (무시 가능): %s", e)
 
 
 @tool
@@ -53,6 +88,9 @@ def perplexity_search(query: str) -> str:
             result += f"\n{idx}. {citation}"
     else:
         result += "\n\n[출처: Perplexity AI 검색]"
+
+    # Langfuse 수동 추적
+    _track_perplexity_generation("perplexity-search", _DEFAULT_MODEL, query, result)
 
     return result
 
@@ -101,4 +139,11 @@ def perplexity_search_structured(
         },
     )
 
-    return response.choices[0].message.content
+    result = response.choices[0].message.content
+
+    # Langfuse 수동 추적
+    _track_perplexity_generation(
+        "perplexity-search-structured", _DEFAULT_MODEL, query, result
+    )
+
+    return result
