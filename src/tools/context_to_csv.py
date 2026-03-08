@@ -3,6 +3,7 @@ import pandas as pd
 from utils.llm import LLMProfile
 from utils.google_drive_uploader import upload_to_drive
 from utils.util import get_data_dir
+from agents.state.structured_schemas import HousingRuleList
 
 get_data_dir() / "temp"
 
@@ -35,21 +36,12 @@ def housing_rule_context_to_drive(data_list):
     다음은 여러 조문과 항목이 섞인 원문이야.
     이걸 사람이 보기 좋은 표 구조로 요약해줘.
 
-    각 조문을 분석해 다음 필드로 구성된 JSON 배열로 출력해:
-    - 조문명: "제35조(국민주택의 특별공급)" 같은 형식
-    - 핵심요약: 핵심 내용 1~2줄
-    - 주요조건: 핵심 조건들을 bullet 형태 리스트로
-    - 적용대상: 조문이 다루는 대상 (있다면)
-    - 비고: 부가 설명 또는 특이사항 (있다면)
-
-    출력은 반드시 JSON 배열만으로 하세요.
     --- 원문 시작 ---
     {content}
     --- 원문 끝 ---
     """
-    res = LLMProfile.dev_llm().invoke(prompt)
-    summary_json = res.content
-    rows = json.loads(summary_json)
+    res = LLMProfile.dev_llm().with_structured_output(HousingRuleList).invoke(prompt)
+    rows = [rule.model_dump() for rule in res.rules]
     df = pd.DataFrame(rows)
     link = upload_to_drive(data=df, filename="주택공급규칙_temp.csv", mime_type="text/csv")
     print("📎 주택공급규칙_temp.csv 링크:", link)
@@ -301,10 +293,39 @@ def planning_move_to_csv(data_list,address):
     return link
 
 def pre_promise_competition_to_csv(data_list,address):
+    # data_list는 Pydantic model_dump() 결과로 넘어온 list[dict] 형태임.
+    # 안전장치로서 문자열로 넘어올 경우를 대비 (fallback 방어 목적 외에는 동작 안함)
     if isinstance(data_list, str):
-        data_list = json.loads(data_list)
+        try:
+            cleaned_data = data_list.replace("```json", "").replace("```", "").strip()
+            if not cleaned_data or "제공된 청약 내용이 없습니다." in cleaned_data:
+                data_list = []
+            else:
+                data_list = json.loads(cleaned_data)
+        except json.JSONDecodeError:
+            data_list = []
+
+    if not data_list:
+        df = pd.DataFrame(columns=["주소", "공고일", "경쟁률"])
+        link = upload_to_drive(
+            data=df,
+            filename=f"{address}_청약경쟁률_temp.csv",
+            mime_type="text/csv"
+        )
+        print("📎 _청약경쟁률_temp 링크 (빈 데이터):", link)
+        return link
 
     df = pd.DataFrame(data_list)
+    
+    if "공고일" not in df.columns:
+        df = pd.DataFrame(columns=["주소", "공고일", "경쟁률"])
+        link = upload_to_drive(
+            data=df,
+            filename=f"{address}_청약경쟁률_temp.csv",
+            mime_type="text/csv"
+        )
+        print("📎 _청약경쟁률_temp 링크 (빈 데이터):", link)
+        return link
     df["공고일"] = pd.to_datetime(df["공고일"], errors="coerce")
     def parse_rate(x):
         if isinstance(x, str):

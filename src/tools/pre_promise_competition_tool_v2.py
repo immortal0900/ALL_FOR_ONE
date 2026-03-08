@@ -3,6 +3,7 @@
 from tools.tavily_search_tool import tavily_search
 from utils.llm import LLMProfile
 from langchain_core.messages import ToolMessage
+from agents.state.structured_schemas import PrePromiseCompetitionResult
 import sys
 
 
@@ -91,7 +92,7 @@ async def pre_promise(query):
                 )
             )
 
-        final = await llm.ainvoke(
+        final = await llm.with_structured_output(PrePromiseCompetitionResult).ainvoke(
             [
                 response,
                 *tool_outputs,
@@ -100,29 +101,19 @@ async def pre_promise(query):
                     "content": """
                     [지침]
                     - 직접 아는 내용을 말하지 마라.
-                    - 검색 결과를 바탕으로 `JSON`만 반환한다.
-                    - 절대로 자연어 설명을 하지 마라.
-                    - 출력 형식은 아래 예시와 완전히 동일해야 한다.
+                    - 검색 결과를 바탕으로 요구된 정보를 정확히 추출한다.
 
                     [주의 사항]
-                    - 무순위 경쟁률은 찾지마십시오
-                    - 실제 청약시의 경쟁률을 기준으로 찾아주십시오 
-
-                    [출력 형식]
-                    - 공고일은 명확하게 해주세요 잘 모르겠으면 2025-10 까지 월까지 적으십시오.
-                    - 경쟁률은 항상 :1 로 뒤에 붙여주십시오.
-                    [
-                      {
-                        "주소": "서울특별시 동작구 사당동 155-4번지 일원",
-                        "공고일": "2025-10-02",
-                        "경쟁률": "447.90:1"
-                      }
-                    ]
+                    - 무순위 경쟁률은 찾지마십시오.
+                    - 실제 청약시의 경쟁률을 기준으로 찾아주십시오.
+                    - 공고일은 명확하게 기재하고, 일자를 모를 경우 2025-10 처럼 월까지만 적으십시오.
+                    - 경쟁률은 항상 `:1` 로 뒤에 붙여주십시오.
                 """,
                 },
             ]
         )
-        return final.content
+        # LLM이 Pydantic 객체를 반환하므로, 이를 dict list 포맷으로 변환 (기존 호환성 유지)
+        return final.model_dump()["results"]
 
     else:
-        return "제공된 청약 내용이 없습니다."
+        return []

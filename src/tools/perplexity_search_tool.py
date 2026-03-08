@@ -27,36 +27,81 @@ client = Perplexity(api_key=PERPLEXITY_API_KEY)
 _DEFAULT_MODEL = "sonar-reasoning-pro"
 
 
-def _track_perplexity_generation(
-    name: str, model: str, query: str, result: str, usage_meta: Optional[dict] = None
-):
-    """Perplexity API 호출을 Langfuse에 generation으로 기록합니다.
+@_langfuse_tracker.observe(as_type="generation")
+def _call_perplexity_api(
+    name: str,
+    query: str,
+    response_schema: Optional[dict] = None
+) -> str:
+    """Perplexity API 호출 및 Langfuse 추적을 수행하는 헬퍼 함수.
 
     [존재 이유]
-    Perplexity SDK는 LangChain CallbackHandler를 지원하지 않으므로
-    수동으로 Langfuse에 generation 정보를 전송해야 합니다.
-
-    Args:
-        name:   추적 이름 (예: "perplexity-search")
-        model:  사용된 모델명
-        query:  입력 쿼리
-        result: API 응답 텍스트
-        usage_meta: 사용량 메타데이터 딕셔너리 (input, output, total)
+    일반 검색(perplexity_search)과 구조화 검색(perplexity_search_structured)
+    모두에서 중복되는 API 호출 및 추적 로직을 통합합니다.
     """
-    langfuse_client = _langfuse_tracker.get_client()
-    if langfuse_client is None:
-        return
+    _langfuse_tracker.update_observation(
+        name=name,
+        model=_DEFAULT_MODEL,
+        input=query[:500],
+        metadata={"has_schema": response_schema is not None},
+    )
+
+    kwargs: dict = {
+        "model": _DEFAULT_MODEL,
+        "messages": [{"role": "user", "content": query}]
+    }
+
+    if response_schema is not None:
+         kwargs["response_format"] = {
+             "type": "json_schema",
+             "json_schema": {"schema": response_schema},
+         }
 
     try:
-        with langfuse_client.start_as_current_observation(
-            as_type="generation",
-            name=name,
-            model=model,
-            input=query[:500],
-        ) as span:
-            span.update(output=result[:2000], usage=usage_meta)
+        response = client.chat.completions.create(**kwargs)
+        content = response.choices[0].message.content
+
+        # citations 추가 로직 (일반 텍스트 응답일 때만)
+        if response_schema is None:
+            citations = getattr(response, "citations", [])
+            if citations:
+                content += "\n\n[Perplexity 출처]"
+                for idx, citation in enumerate(citations, 1):
+                    content += f"\n{idx}. {citation}"
+            else:
+                content += "\n\n[출처: Perplexity AI 검색]"
+
+        usage = getattr(response, "usage", None)
+        usage_meta = None
+        if usage:
+            input_tokens = getattr(usage, "prompt_tokens", 0)
+            output_tokens = getattr(usage, "completion_tokens", 0)
+            total_tokens = getattr(usage, "total_tokens", input_tokens + output_tokens)
+            usage_meta = {
+                "input": input_tokens,
+                "output": output_tokens,
+                "total": total_tokens,
+            }
+
+        _langfuse_tracker.update_observation(
+            output=content[:2000],
+            usage=usage_meta
+        )
+
+        return content
+
     except Exception as e:
-        logger.debug("Langfuse Perplexity 추적 실패 (무시 가능): %s", e)
+        error_msg = f"Perplexity API 오류: {str(e)}"
+        _langfuse_tracker.update_observation(
+            output=error_msg,
+            level="ERROR",
+            status_message=str(e),
+        )
+        # 에이전트가 재시도할 수 있도록 예외를 던지거나 에러 문자열을 반환합니다.
+        # 기존 로직과 맞추기 위해 에러 발생 시 Exception을 그대로 raise 할 수도 있으나,
+        # Gemini 쪽과 유사하게 에러 메시지 반환을 선호할 수 있습니다. 
+        # 원본 구조를 최대한 유지합니다.
+        raise
 
 
 @tool
@@ -73,41 +118,7 @@ def perplexity_search(query: str) -> str:
     Returns:
         str: Perplexity AI의 검색 결과 및 출처 링크
     """
-    response = client.chat.completions.create(
-        model=_DEFAULT_MODEL,
-        messages=[{"role": "user", "content": query}],
-    )
-
-    content = response.choices[0].message.content
-
-    citations = []
-    if hasattr(response, "citations") and response.citations:
-        citations = response.citations
-
-    result = content
-    if citations:
-        result += "\n\n[Perplexity 출처]"
-        for idx, citation in enumerate(citations, 1):
-            result += f"\n{idx}. {citation}"
-    else:
-        result += "\n\n[출처: Perplexity AI 검색]"
-
-    usage = getattr(response, "usage", None)
-    usage_meta = None
-    if usage:
-        input_tokens = getattr(usage, "prompt_tokens", 0)
-        output_tokens = getattr(usage, "completion_tokens", 0)
-        total_tokens = getattr(usage, "total_tokens", input_tokens + output_tokens)
-        usage_meta = {
-            "input": input_tokens,
-            "output": output_tokens,
-            "total": total_tokens,
-        }
-
-    # Langfuse 수동 추적
-    _track_perplexity_generation("perplexity-search", _DEFAULT_MODEL, query, result, usage_meta)
-
-    return result
+    return _call_perplexity_api("perplexity-search", query)
 
 
 def perplexity_search_structured(
@@ -143,34 +154,4 @@ def perplexity_search_structured(
 
     공식 문서: https://docs.perplexity.ai/guides/structured-outputs
     """
-    # response_format: type="json_schema" + json_schema dict 전달
-    # 참고: https://docs.perplexity.ai/guides/structured-outputs
-    response = client.chat.completions.create(
-        model=_DEFAULT_MODEL,
-        messages=[{"role": "user", "content": query}],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {"schema": response_schema},
-        },
-    )
-
-    result = response.choices[0].message.content
-
-    usage = getattr(response, "usage", None)
-    usage_meta = None
-    if usage:
-        input_tokens = getattr(usage, "prompt_tokens", 0)
-        output_tokens = getattr(usage, "completion_tokens", 0)
-        total_tokens = getattr(usage, "total_tokens", input_tokens + output_tokens)
-        usage_meta = {
-            "input": input_tokens,
-            "output": output_tokens,
-            "total": total_tokens,
-        }
-
-    # Langfuse 수동 추적
-    _track_perplexity_generation(
-        "perplexity-search-structured", _DEFAULT_MODEL, query, result, usage_meta
-    )
-
-    return result
+    return _call_perplexity_api("perplexity-search-structured", query, response_schema)

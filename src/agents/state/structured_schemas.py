@@ -133,3 +133,35 @@ class NearbyMarketPerplexitySchema(BaseModel):
     분양아파트: List[VerifiedNewApartment] = Field(
         description="Perplexity로 검색·검증된 분양아파트 정보 목록"
     )
+
+# ---------------------------------------------------------------------------
+# 4. SupplyDemand (공급과 수요) – 청약경쟁률 출력 스키마
+#    파일: pre_promise_competition_tool_v2.py > pre_promise()
+# ---------------------------------------------------------------------------
+
+class CompetitionItem(BaseModel):
+    주소: str = Field(description="아파트 단지 공식 주소")
+    공고일: str = Field(description="청약 공고일 (예: '2025-10-02')")
+    경쟁률: str = Field(description="청약 경쟁률 (예: '447.90:1'). 항상 ':1' 형식을 준수하세요.")
+
+class PrePromiseCompetitionResult(BaseModel):
+    results: List[CompetitionItem] = Field(
+        description="검색된 청약 경쟁률 정보 목록. 제공된 청약 내용이 없으면 빈 배열([])을 반환합니다."
+    )
+
+
+# ---------------------------------------------------------------------------
+# 5. HousingRule (주택공급규칙) – 주택공급규칙 요약 스키마
+#    파일: context_to_csv.py > housing_rule_context_to_drive()
+# ---------------------------------------------------------------------------
+
+class HousingRuleItem(BaseModel):
+    조문명: str = Field(description="조문명 (예: '제35조(국민주택의 특별공급)')")
+    핵심요약: str = Field(description="핵심 내용 1~2줄 요약")
+    주요조건: List[str] = Field(description="핵심 조건들을 bullet 형태 리스트 항목으로 분리")
+    적용대상: str = Field(default="", description="조문이 다루는 대상 (있다면)")
+    비고: str = Field(default="", description="부가 설명 또는 특이사항 (있다면)")
+
+class HousingRuleList(BaseModel):
+    rules: List[HousingRuleItem] = Field(description="주택공급규칙 조문별 요약 결과 목록")
+

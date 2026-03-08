@@ -34,6 +34,7 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
 
     [Langfuse 추적]
     호출 시 Langfuse에 generation으로 기록됩니다.
+    @tracker.observe 데코레이터를 사용하여 안전하게 토큰과 비용을 추적합니다.
     LANGFUSE_ENABLED=false이면 추적 없이 기존과 동일하게 동작합니다.
 
     [response_schema 없을 때]
@@ -59,6 +60,9 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
     Raises:
         최대 재시도 횟수 초과 시 오류 메시지 문자열을 반환합니다(예외 전파 없이).
     """
+
+@_langfuse_tracker.observe(as_type="generation")
+def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
     # response_schema 가 전달된 경우에만 JSON 강제 모드로 호출
     # 참고: https://ai.google.dev/gemini-api/docs/structured-output
     generation_config = (
@@ -70,20 +74,13 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
         else None
     )
 
-    # Langfuse 수동 추적: generation 시작
-    langfuse_client = _langfuse_tracker.get_client()
-    langfuse_span = None
-    if langfuse_client is not None:
-        try:
-            langfuse_span = langfuse_client.start_as_current_observation(
-                as_type="generation",
-                name="gemini-search",
-                model=_DEFAULT_MODEL,
-                input=prompt[:500],  # 프롬프트 앞부분만 기록 (비용 절약)
-                metadata={"has_schema": response_schema is not None},
-            )
-        except Exception:
-            langfuse_span = None
+    # Langfuse 수동 추적: 컨텍스트에 메타데이터 기록
+    _langfuse_tracker.update_observation(
+        name="gemini-search",
+        model=_DEFAULT_MODEL,
+        input=prompt[:500],  # 프롬프트 앞부분만 기록 (비용 절약)
+        metadata={"has_schema": response_schema is not None},
+    )
 
     for attempt in range(_MAX_RETRIES):
         try:
@@ -95,30 +92,28 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
             result_text = response.text
 
             # Langfuse: 성공 시 출력 및 usage 기록
-            if langfuse_span is not None:
-                try:
-                    # response: 데이터를 꺼내올 대상 객체,
-                    # usage_metadata: 사용량 관련 메타데이터
-                    usage = getattr(response, "usage_metadata", None)
-                    usage_details = None
-                    if usage:
-                        input_tokens = getattr(usage, "prompt_token_count", 0)
-                        output_tokens = getattr(usage, "candidates_token_count", 0)
-                        total_tokens = getattr(usage, "total_token_count", input_tokens + output_tokens)
-                        
-                        usage_details = {
-                            "input": input_tokens,
-                            "output": output_tokens,
-                            "total": total_tokens
-                        }
+            try:
+                # response: 데이터를 꺼내올 대상 객체,
+                # usage_metadata: 사용량 관련 메타데이터
+                usage = getattr(response, "usage_metadata", None)
+                usage_details = None
+                if usage:
+                    input_tokens = getattr(usage, "prompt_token_count", 0)
+                    output_tokens = getattr(usage, "candidates_token_count", 0)
+                    total_tokens = getattr(usage, "total_token_count", input_tokens + output_tokens)
+                    
+                    usage_details = {
+                        "input": input_tokens,
+                        "output": output_tokens,
+                        "total": total_tokens
+                    }
 
-                    langfuse_span.update(
-                        output=result_text[:500],
-                        usage=usage_details,
-                    )
-                    langfuse_span.__exit__(None, None, None)
-                except Exception:
-                    pass
+                _langfuse_tracker.update_observation(
+                    output=result_text[:500],
+                    usage=usage_details,
+                )
+            except Exception:
+                pass
 
             return result_text
 
@@ -130,16 +125,14 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
                 error_result = f"Gemini API 오류: {error_message}. 잠시 후 다시 시도해주세요."
 
                 # Langfuse: 실패 시 에러 기록
-                if langfuse_span is not None:
-                    try:
-                        langfuse_span.update(
-                            output=error_result,
-                            level="ERROR",
-                            status_message=error_message,
-                        )
-                        langfuse_span.__exit__(None, None, None)
-                    except Exception:
-                        pass
+                try:
+                    _langfuse_tracker.update_observation(
+                        output=error_result,
+                        level="ERROR",
+                        status_message=error_message,
+                    )
+                except Exception:
+                    pass
 
                 return error_result
 

@@ -250,6 +250,28 @@ class TokenTracker:
 
         return self._observe_func(*args, **kwargs)
 
+    def update_observation(self, **kwargs):
+        """현재 활성화된 관찰(observation) 객체에 데이터를 추가합니다.
+        
+        @observe 데코레이터로 감싸진 함수 내부에서 호출하여
+        입출력 텍스트, 토큰 사용량(usage), 메타데이터 등을 기록합니다.
+
+        [동작 원리]
+        from langfuse.decorators import langfuse_context 를 사용하여
+        현재 실행 컨텍스트의 observation 단위에 안전하게 접근합니다.
+        가장 최근에 열린 span 또는 generation에 적용됩니다.
+        """
+        if not self._enabled:
+            return
+
+        try:
+            from langfuse.decorators import langfuse_context
+            langfuse_context.update_current_observation(**kwargs)
+        except ImportError:
+            pass
+        except Exception as e:
+            logger.debug("Langfuse update_observation 실패 (무시 가능): %s", e)
+
     def get_client(self):
         """Langfuse 클라이언트를 반환합니다.
 

@@ -134,12 +134,12 @@ def gemini_search_tool(state: LocationInsightState) -> LocationInsightState:
     """
 
     # Structured Output: LocationInsightGeminiSchema 스키마 강제
-    raw_json = gemini_search(
+    raw_dict = gemini_search(
         prompt,
-        response_schema=LocationInsightGeminiSchema.model_json_schema(),
+        response_schema=LocationInsightGeminiSchema,
     )
 
-    return {gemini_search_key: raw_json}
+    return {gemini_search_key: raw_dict}
 
 
 def kakao_api_distance_tool(state: LocationInsightState) -> LocationInsightState:
