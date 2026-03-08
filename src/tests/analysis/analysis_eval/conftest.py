@@ -105,8 +105,8 @@ def e2e_result():
     }
     
     print("\n[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...")
-    # 최대 20분 대기
-    result_dict = client.run_pipeline(start_input=start_input, timeout=1200)
+    # 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)
+    result_dict = client.run_pipeline(start_input=start_input, timeout=2400)
     print("[E2E] 파이프라인 리턴 완료. 결과 객체를 캐싱합니다.")
     
     return result_dict

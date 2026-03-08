@@ -70,7 +70,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
     unstructured>=0.18.15 \
     weasyprint>=66.0 \
     xhtml2pdf>=0.2.17 \
-    deepeval>=3.8.8
+    deepeval>=3.8.8 \
+    langfuse>=3.0.0
 
 # PyTorch CPU 설치
 RUN pip install --no-cache-dir \
