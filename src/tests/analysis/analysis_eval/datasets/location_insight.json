@@ -1,0 +1,9 @@
+[
+    {
+        "id": "location_insight_001",
+        "type": "analysis_report",
+        "description": "실시간 API 기반 강남구 대치동 입지 분석",
+        "input": "[사업지] 서울특별시 강남구 대치동\n[타입] 84㎡\n[세대수] 500세대\n이 지역의 교통, 학군, 상권 등 입지 환경과 향후 주변 호재를 분석하라.",
+        "actual_output": ""
+    }
+]

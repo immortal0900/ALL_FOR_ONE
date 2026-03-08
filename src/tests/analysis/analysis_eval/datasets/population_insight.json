@@ -1,0 +1,9 @@
+[
+    {
+        "id": "population_insight_001",
+        "type": "analysis_report",
+        "description": "실시간 API 기반 강남구 연령/이동 인구 분석",
+        "input": "[사업지] 서울특별시 강남구 대치동\n이 지역의 연령별 인구 구조와 전입/전출 등 인구 이동 추이를 분석하여 주거 수요를 도출하라.",
+        "actual_output": ""
+    }
+]

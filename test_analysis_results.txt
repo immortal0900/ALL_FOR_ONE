@@ -11,7 +11,7 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
 [E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...
 
 [E2EClient] 서버(https://allforone-production.up.railway.app)에 파이프라인 요청 중...
-[E2EClient] Job ID 할당됨: a45cb0c2-a089-462a-a311-1cfbf955d267
+[E2EClient] Job ID 할당됨: 54912b00-f639-4ec2-b242-a1768d6478cf
   ...진행중 (상태: running)
   ...진행중 (상태: running)
   ...진행중 (상태: running)
@@ -21,480 +21,493 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
   ...진행중 (상태: running)
   ...진행중 (상태: running)
   ...진행중 (상태: running)
-[31mERROR[0m
-src/tests/analysis/analysis_eval/test_analysis.py::test_policy [31mERROR[0m
-src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand [31mERROR[0m
-src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market [31mERROR[0m
-src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight [31mERROR[0m
-src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight [31mERROR[0m
-src/tests/analysis/analysis_eval/test_analysis.py::test_unsold_insight [31mERROR[0mRunning teardown with pytest sessionfinish...
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+  ...진행중 (상태: running)
+[E2EClient] 파이프라인 완료 (2221.0초)
+[E2E] 파이프라인 리턴 완료. 결과 객체를 캐싱합니다.
+[31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_policy [31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand [31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market [31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight [31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight [31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_unsold_insight [31mFAILED[0mRunning teardown with pytest sessionfinish...
 
 
-=================================== ERRORS ====================================
-[31m[1m_____________________ ERROR at setup of test_housing_faq ______________________[0m
+================================== FAILURES ===================================
+[31m[1m______________________________ test_housing_faq _______________________________[0m
 
-fixturedef = <FixtureDef argname='e2e_result' scope='session' baseid='src/tests/analysis/analysis_eval'>
-request = <SubRequest 'e2e_result' for <Function test_housing_faq>>
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-    [0m[37m@pytest[39;49;00m.hookimpl(wrapper=[94mTrue[39;49;00m)[90m[39;49;00m
-    [94mdef[39;49;00m[90m [39;49;00m[92mpytest_fixture_setup[39;49;00m(fixturedef: FixtureDef, request) -> [96mobject[39;49;00m | [94mNone[39;49;00m:[90m[39;49;00m
-        asyncio_mode = _get_asyncio_mode(request.config)[90m[39;49;00m
-        [94mif[39;49;00m [95mnot[39;49;00m _is_asyncio_fixture_function(fixturedef.func):[90m[39;49;00m
-            [94mif[39;49;00m asyncio_mode == Mode.STRICT:[90m[39;49;00m
-                [90m# Ignore async fixtures without explicit asyncio mark in strict mode[39;49;00m[90m[39;49;00m
-                [90m# This applies to pytest_trio fixtures, for example[39;49;00m[90m[39;49;00m
->               [94mreturn[39;49;00m ([94myield[39;49;00m)[90m[39;49;00m
-                        ^^^^^[90m[39;49;00m
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_housing_faq[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""청약 FAQ 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33mhousing_faq[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
 
-[1m[31m.venv\Lib\site-packages\pytest_asyncio\plugin.py[0m:728: 
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:183: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: in e2e_result
-    [0mresult_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x00000257FF1AC4A0>
-start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 2400
+agent_name = 'housing_faq'
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_evaluation_for_agent[39;49;00m(agent_name: [96mstr[39;49;00m, e2e_result: [96mdict[39;49;00m):[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    서버에 생성 파이프라인(/invoke)을 요청하고[39;49;00m
-    [33m    결과가 나올 때까지 폴링하여 최종 output을 반환합니다.[39;49;00m
+    [33m    특정 분석 에이전트의 데이터셋을 로드하고 평가를 실행합니다.[39;49;00m
     [33m[39;49;00m
-    [33m    timeout: 최대 대기 시간 (초)[39;49;00m
+    [33m    [핵심] 각 테스트 케이스마다 metric.measure(test_case) 개별 호출[39;49;00m
+    [33m    -> evaluate() 일괄 실행 대신 메트릭별 결과를 세밀하게 수집[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m        e2e_result: conftest에서 주입된 서버 파이프라인 전체 실행 결과 객체[39;49;00m
     [33m    """[39;49;00m[90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m[E2EClient] 서버([39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m)에 파이프라인 요청 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        dataset = load_dataset(agent_name)[90m[39;49;00m
+        summary = {[33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name, [33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m: []}[90m[39;49;00m
     [90m[39;49;00m
-        [90m# 1. 파이프라인 트리거[39;49;00m[90m[39;49;00m
-        [94mtry[39;49;00m:[90m[39;49;00m
-            resp = httpx.post([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/invoke[39;49;00m[33m"[39;49;00m, json={[33m"[39;49;00m[33mstart_input[39;49;00m[33m"[39;49;00m: start_input})[90m[39;49;00m
-            resp.raise_for_status()[90m[39;49;00m
-        [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
-            [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m서버 /invoke 호출 실패: [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [90m# e2e_result에서 이 에이전트의 결과물 추출[39;49;00m[90m[39;49;00m
+        [90m# 예: e2e_result["housing_faq_output"]["result"][39;49;00m[90m[39;49;00m
+        output_key = [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m_output[39;49;00m[33m"[39;49;00m[90m[39;49;00m
     [90m[39;49;00m
-        job_id = resp.json()[[33m"[39;49;00m[33mjob_id[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] Job ID 할당됨: [39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        [90m# 2. 결과 폴링[39;49;00m[90m[39;49;00m
-        start_time = time.time()[90m[39;49;00m
-        [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
-            [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
-                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
-            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-    [90m[39;49;00m
-            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-                [94mbreak[39;49;00m[90m[39;49;00m
-            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
->               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'[0m
+        [90m# 서버 결과 형식 검증[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m output_key [95mnot[39;49;00m [95min[39;49;00m e2e_result [95mor[39;49;00m [33m"[39;49;00m[33mresult[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m e2e_result[output_key]:[90m[39;49;00m
+>           pytest.fail([33mf[39;49;00m[33m"[39;49;00m[33m서버 결과에 [39;49;00m[33m{[39;49;00moutput_key[33m}[39;49;00m[33m[[39;49;00m[33m'[39;49;00m[33mresult[39;49;00m[33m'[39;49;00m[33m] 데이터가 없습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           Failed: 서버 결과에 housing_faq_output['result'] 데이터가 없습니다.[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
-[31m[1m________________________ ERROR at setup of test_policy ________________________[0m
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:90: Failed
+[31m[1m_________________________________ test_policy _________________________________[0m
 
-    [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [94mdef[39;49;00m[90m [39;49;00m[92me2e_result[39;49;00m():[90m[39;49;00m
-    [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    모든 분석 에이전트 평가 전에 딱 한 번 서버 파이프라인을 호출합니다.[39;49;00m
-    [33m    """[39;49;00m[90m[39;49;00m
-        client = E2EClient()[90m[39;49;00m
-        [90m# 임의의 기준 입력 (이 값을 기준으로 모든 테스트 문항 채점)[39;49;00m[90m[39;49;00m
-        start_input = {[90m[39;49;00m
-            [33m"[39;49;00m[33mtarget_area[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m서울특별시 강남구 대치동[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mmain_type[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m84㎡[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33memail[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mimmortal0900@gmail.com[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mtotal_units[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m500[39;49;00m[33m"[39;49;00m[90m[39;49;00m
-        }[90m[39;49;00m
-    [90m[39;49;00m
-        [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_policy[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""정책 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33mpolicy[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:188: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x00000257FF1AC4A0>
-start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 2400
+agent_name = 'policy'
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_evaluation_for_agent[39;49;00m(agent_name: [96mstr[39;49;00m, e2e_result: [96mdict[39;49;00m):[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    서버에 생성 파이프라인(/invoke)을 요청하고[39;49;00m
-    [33m    결과가 나올 때까지 폴링하여 최종 output을 반환합니다.[39;49;00m
+    [33m    특정 분석 에이전트의 데이터셋을 로드하고 평가를 실행합니다.[39;49;00m
     [33m[39;49;00m
-    [33m    timeout: 최대 대기 시간 (초)[39;49;00m
+    [33m    [핵심] 각 테스트 케이스마다 metric.measure(test_case) 개별 호출[39;49;00m
+    [33m    -> evaluate() 일괄 실행 대신 메트릭별 결과를 세밀하게 수집[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m        e2e_result: conftest에서 주입된 서버 파이프라인 전체 실행 결과 객체[39;49;00m
     [33m    """[39;49;00m[90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m[E2EClient] 서버([39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m)에 파이프라인 요청 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        dataset = load_dataset(agent_name)[90m[39;49;00m
+        summary = {[33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name, [33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m: []}[90m[39;49;00m
     [90m[39;49;00m
-        [90m# 1. 파이프라인 트리거[39;49;00m[90m[39;49;00m
-        [94mtry[39;49;00m:[90m[39;49;00m
-            resp = httpx.post([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/invoke[39;49;00m[33m"[39;49;00m, json={[33m"[39;49;00m[33mstart_input[39;49;00m[33m"[39;49;00m: start_input})[90m[39;49;00m
-            resp.raise_for_status()[90m[39;49;00m
-        [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
-            [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m서버 /invoke 호출 실패: [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [90m# e2e_result에서 이 에이전트의 결과물 추출[39;49;00m[90m[39;49;00m
+        [90m# 예: e2e_result["housing_faq_output"]["result"][39;49;00m[90m[39;49;00m
+        output_key = [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m_output[39;49;00m[33m"[39;49;00m[90m[39;49;00m
     [90m[39;49;00m
-        job_id = resp.json()[[33m"[39;49;00m[33mjob_id[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] Job ID 할당됨: [39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        [90m# 2. 결과 폴링[39;49;00m[90m[39;49;00m
-        start_time = time.time()[90m[39;49;00m
-        [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
-            [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
-                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
-            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-    [90m[39;49;00m
-            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-                [94mbreak[39;49;00m[90m[39;49;00m
-            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
->               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'[0m
+        [90m# 서버 결과 형식 검증[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m output_key [95mnot[39;49;00m [95min[39;49;00m e2e_result [95mor[39;49;00m [33m"[39;49;00m[33mresult[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m e2e_result[output_key]:[90m[39;49;00m
+>           pytest.fail([33mf[39;49;00m[33m"[39;49;00m[33m서버 결과에 [39;49;00m[33m{[39;49;00moutput_key[33m}[39;49;00m[33m[[39;49;00m[33m'[39;49;00m[33mresult[39;49;00m[33m'[39;49;00m[33m] 데이터가 없습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           Failed: 서버 결과에 policy_output['result'] 데이터가 없습니다.[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
-[31m[1m____________________ ERROR at setup of test_supply_demand _____________________[0m
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:90: Failed
+[31m[1m_____________________________ test_supply_demand ______________________________[0m
 
-    [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [94mdef[39;49;00m[90m [39;49;00m[92me2e_result[39;49;00m():[90m[39;49;00m
-    [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    모든 분석 에이전트 평가 전에 딱 한 번 서버 파이프라인을 호출합니다.[39;49;00m
-    [33m    """[39;49;00m[90m[39;49;00m
-        client = E2EClient()[90m[39;49;00m
-        [90m# 임의의 기준 입력 (이 값을 기준으로 모든 테스트 문항 채점)[39;49;00m[90m[39;49;00m
-        start_input = {[90m[39;49;00m
-            [33m"[39;49;00m[33mtarget_area[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m서울특별시 강남구 대치동[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mmain_type[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m84㎡[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33memail[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mimmortal0900@gmail.com[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mtotal_units[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m500[39;49;00m[33m"[39;49;00m[90m[39;49;00m
-        }[90m[39;49;00m
-    [90m[39;49;00m
-        [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_supply_demand[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""수급 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33msupply_demand[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:193: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x00000257FF1AC4A0>
-start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 2400
+agent_name = 'supply_demand'
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_evaluation_for_agent[39;49;00m(agent_name: [96mstr[39;49;00m, e2e_result: [96mdict[39;49;00m):[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    서버에 생성 파이프라인(/invoke)을 요청하고[39;49;00m
-    [33m    결과가 나올 때까지 폴링하여 최종 output을 반환합니다.[39;49;00m
+    [33m    특정 분석 에이전트의 데이터셋을 로드하고 평가를 실행합니다.[39;49;00m
     [33m[39;49;00m
-    [33m    timeout: 최대 대기 시간 (초)[39;49;00m
+    [33m    [핵심] 각 테스트 케이스마다 metric.measure(test_case) 개별 호출[39;49;00m
+    [33m    -> evaluate() 일괄 실행 대신 메트릭별 결과를 세밀하게 수집[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m        e2e_result: conftest에서 주입된 서버 파이프라인 전체 실행 결과 객체[39;49;00m
     [33m    """[39;49;00m[90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m[E2EClient] 서버([39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m)에 파이프라인 요청 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        dataset = load_dataset(agent_name)[90m[39;49;00m
+        summary = {[33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name, [33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m: []}[90m[39;49;00m
     [90m[39;49;00m
-        [90m# 1. 파이프라인 트리거[39;49;00m[90m[39;49;00m
-        [94mtry[39;49;00m:[90m[39;49;00m
-            resp = httpx.post([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/invoke[39;49;00m[33m"[39;49;00m, json={[33m"[39;49;00m[33mstart_input[39;49;00m[33m"[39;49;00m: start_input})[90m[39;49;00m
-            resp.raise_for_status()[90m[39;49;00m
-        [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
-            [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m서버 /invoke 호출 실패: [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [90m# e2e_result에서 이 에이전트의 결과물 추출[39;49;00m[90m[39;49;00m
+        [90m# 예: e2e_result["housing_faq_output"]["result"][39;49;00m[90m[39;49;00m
+        output_key = [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m_output[39;49;00m[33m"[39;49;00m[90m[39;49;00m
     [90m[39;49;00m
-        job_id = resp.json()[[33m"[39;49;00m[33mjob_id[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] Job ID 할당됨: [39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        [90m# 2. 결과 폴링[39;49;00m[90m[39;49;00m
-        start_time = time.time()[90m[39;49;00m
-        [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
-            [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
-                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
-            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-    [90m[39;49;00m
-            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-                [94mbreak[39;49;00m[90m[39;49;00m
-            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
->               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'[0m
+        [90m# 서버 결과 형식 검증[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m output_key [95mnot[39;49;00m [95min[39;49;00m e2e_result [95mor[39;49;00m [33m"[39;49;00m[33mresult[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m e2e_result[output_key]:[90m[39;49;00m
+>           pytest.fail([33mf[39;49;00m[33m"[39;49;00m[33m서버 결과에 [39;49;00m[33m{[39;49;00moutput_key[33m}[39;49;00m[33m[[39;49;00m[33m'[39;49;00m[33mresult[39;49;00m[33m'[39;49;00m[33m] 데이터가 없습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           Failed: 서버 결과에 supply_demand_output['result'] 데이터가 없습니다.[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
-[31m[1m____________________ ERROR at setup of test_nearby_market _____________________[0m
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:90: Failed
+[31m[1m_____________________________ test_nearby_market ______________________________[0m
 
-    [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [94mdef[39;49;00m[90m [39;49;00m[92me2e_result[39;49;00m():[90m[39;49;00m
-    [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    모든 분석 에이전트 평가 전에 딱 한 번 서버 파이프라인을 호출합니다.[39;49;00m
-    [33m    """[39;49;00m[90m[39;49;00m
-        client = E2EClient()[90m[39;49;00m
-        [90m# 임의의 기준 입력 (이 값을 기준으로 모든 테스트 문항 채점)[39;49;00m[90m[39;49;00m
-        start_input = {[90m[39;49;00m
-            [33m"[39;49;00m[33mtarget_area[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m서울특별시 강남구 대치동[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mmain_type[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m84㎡[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33memail[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mimmortal0900@gmail.com[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mtotal_units[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m500[39;49;00m[33m"[39;49;00m[90m[39;49;00m
-        }[90m[39;49;00m
-    [90m[39;49;00m
-        [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_nearby_market[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""주변 시장 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33mnearby_market[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:198: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x00000257FF1AC4A0>
-start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 2400
+agent_name = 'nearby_market'
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_evaluation_for_agent[39;49;00m(agent_name: [96mstr[39;49;00m, e2e_result: [96mdict[39;49;00m):[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    서버에 생성 파이프라인(/invoke)을 요청하고[39;49;00m
-    [33m    결과가 나올 때까지 폴링하여 최종 output을 반환합니다.[39;49;00m
+    [33m    특정 분석 에이전트의 데이터셋을 로드하고 평가를 실행합니다.[39;49;00m
     [33m[39;49;00m
-    [33m    timeout: 최대 대기 시간 (초)[39;49;00m
+    [33m    [핵심] 각 테스트 케이스마다 metric.measure(test_case) 개별 호출[39;49;00m
+    [33m    -> evaluate() 일괄 실행 대신 메트릭별 결과를 세밀하게 수집[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m        e2e_result: conftest에서 주입된 서버 파이프라인 전체 실행 결과 객체[39;49;00m
     [33m    """[39;49;00m[90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m[E2EClient] 서버([39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m)에 파이프라인 요청 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        dataset = load_dataset(agent_name)[90m[39;49;00m
+        summary = {[33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name, [33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m: []}[90m[39;49;00m
     [90m[39;49;00m
-        [90m# 1. 파이프라인 트리거[39;49;00m[90m[39;49;00m
-        [94mtry[39;49;00m:[90m[39;49;00m
-            resp = httpx.post([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/invoke[39;49;00m[33m"[39;49;00m, json={[33m"[39;49;00m[33mstart_input[39;49;00m[33m"[39;49;00m: start_input})[90m[39;49;00m
-            resp.raise_for_status()[90m[39;49;00m
-        [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
-            [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m서버 /invoke 호출 실패: [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [90m# e2e_result에서 이 에이전트의 결과물 추출[39;49;00m[90m[39;49;00m
+        [90m# 예: e2e_result["housing_faq_output"]["result"][39;49;00m[90m[39;49;00m
+        output_key = [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m_output[39;49;00m[33m"[39;49;00m[90m[39;49;00m
     [90m[39;49;00m
-        job_id = resp.json()[[33m"[39;49;00m[33mjob_id[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] Job ID 할당됨: [39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        [90m# 2. 결과 폴링[39;49;00m[90m[39;49;00m
-        start_time = time.time()[90m[39;49;00m
-        [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
-            [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
-                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
-            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-    [90m[39;49;00m
-            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-                [94mbreak[39;49;00m[90m[39;49;00m
-            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
->               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'[0m
+        [90m# 서버 결과 형식 검증[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m output_key [95mnot[39;49;00m [95min[39;49;00m e2e_result [95mor[39;49;00m [33m"[39;49;00m[33mresult[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m e2e_result[output_key]:[90m[39;49;00m
+>           pytest.fail([33mf[39;49;00m[33m"[39;49;00m[33m서버 결과에 [39;49;00m[33m{[39;49;00moutput_key[33m}[39;49;00m[33m[[39;49;00m[33m'[39;49;00m[33mresult[39;49;00m[33m'[39;49;00m[33m] 데이터가 없습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           Failed: 서버 결과에 nearby_market_output['result'] 데이터가 없습니다.[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
-[31m[1m___________________ ERROR at setup of test_location_insight ___________________[0m
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:90: Failed
+[31m[1m____________________________ test_location_insight ____________________________[0m
 
-    [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [94mdef[39;49;00m[90m [39;49;00m[92me2e_result[39;49;00m():[90m[39;49;00m
-    [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    모든 분석 에이전트 평가 전에 딱 한 번 서버 파이프라인을 호출합니다.[39;49;00m
-    [33m    """[39;49;00m[90m[39;49;00m
-        client = E2EClient()[90m[39;49;00m
-        [90m# 임의의 기준 입력 (이 값을 기준으로 모든 테스트 문항 채점)[39;49;00m[90m[39;49;00m
-        start_input = {[90m[39;49;00m
-            [33m"[39;49;00m[33mtarget_area[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m서울특별시 강남구 대치동[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mmain_type[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m84㎡[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33memail[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mimmortal0900@gmail.com[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mtotal_units[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m500[39;49;00m[33m"[39;49;00m[90m[39;49;00m
-        }[90m[39;49;00m
-    [90m[39;49;00m
-        [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_location_insight[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""입지 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33mlocation_insight[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:203: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:81: in run_evaluation_for_agent
+    [0mdataset = load_dataset(agent_name)[90m[39;49;00m
+              ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x00000257FF1AC4A0>
-start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 2400
+agent_name = 'location_insight'
 
-    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mload_dataset[39;49;00m(agent_name: [96mstr[39;49;00m) -> [96mlist[39;49;00m[[96mdict[39;49;00m]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    서버에 생성 파이프라인(/invoke)을 요청하고[39;49;00m
-    [33m    결과가 나올 때까지 폴링하여 최종 output을 반환합니다.[39;49;00m
+    [33m    에이전트별 테스트 데이터셋 JSON 파일을 로드합니다.[39;49;00m
     [33m[39;49;00m
-    [33m    timeout: 최대 대기 시간 (초)[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m[39;49;00m
+    [33m    Returns:[39;49;00m
+    [33m        테스트 케이스 딕셔너리 리스트[39;49;00m
+    [33m[39;49;00m
+    [33m    Raises:[39;49;00m
+    [33m        FileNotFoundError: 데이터셋 파일이 없는 경우[39;49;00m
     [33m    """[39;49;00m[90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m[E2EClient] 서버([39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m)에 파이프라인 요청 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        filename = AGENT_DATASET_MAP.get(agent_name)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m filename:[90m[39;49;00m
+            [94mraise[39;49;00m [96mValueError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m알 수 없는 에이전트: [39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
     [90m[39;49;00m
-        [90m# 1. 파이프라인 트리거[39;49;00m[90m[39;49;00m
-        [94mtry[39;49;00m:[90m[39;49;00m
-            resp = httpx.post([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/invoke[39;49;00m[33m"[39;49;00m, json={[33m"[39;49;00m[33mstart_input[39;49;00m[33m"[39;49;00m: start_input})[90m[39;49;00m
-            resp.raise_for_status()[90m[39;49;00m
-        [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
-            [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m서버 /invoke 호출 실패: [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        job_id = resp.json()[[33m"[39;49;00m[33mjob_id[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] Job ID 할당됨: [39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        [90m# 2. 결과 폴링[39;49;00m[90m[39;49;00m
-        start_time = time.time()[90m[39;49;00m
-        [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
-            [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
-                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
-            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-    [90m[39;49;00m
-            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-                [94mbreak[39;49;00m[90m[39;49;00m
-            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
->               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'[0m
+        filepath = os.path.join(DATASETS_DIR, filename)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m os.path.exists(filepath):[90m[39;49;00m
+>           [94mraise[39;49;00m [96mFileNotFoundError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m데이터셋 파일 없음: [39;49;00m[33m{[39;49;00mfilepath[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           FileNotFoundError: 데이터셋 파일 없음: C:\1.Project\ALL_FOR_ONE\src\tests\analysis\analysis_eval\datasets\location_insight.json[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
-[31m[1m__________________ ERROR at setup of test_population_insight __________________[0m
+[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:50: FileNotFoundError
+[31m[1m___________________________ test_population_insight ___________________________[0m
 
-    [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [94mdef[39;49;00m[90m [39;49;00m[92me2e_result[39;49;00m():[90m[39;49;00m
-    [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    모든 분석 에이전트 평가 전에 딱 한 번 서버 파이프라인을 호출합니다.[39;49;00m
-    [33m    """[39;49;00m[90m[39;49;00m
-        client = E2EClient()[90m[39;49;00m
-        [90m# 임의의 기준 입력 (이 값을 기준으로 모든 테스트 문항 채점)[39;49;00m[90m[39;49;00m
-        start_input = {[90m[39;49;00m
-            [33m"[39;49;00m[33mtarget_area[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m서울특별시 강남구 대치동[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mmain_type[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m84㎡[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33memail[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mimmortal0900@gmail.com[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mtotal_units[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m500[39;49;00m[33m"[39;49;00m[90m[39;49;00m
-        }[90m[39;49;00m
-    [90m[39;49;00m
-        [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_population_insight[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""인구 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33mpopulation_insight[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:81: in run_evaluation_for_agent
+    [0mdataset = load_dataset(agent_name)[90m[39;49;00m
+              ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x00000257FF1AC4A0>
-start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 2400
+agent_name = 'population_insight'
 
-    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mload_dataset[39;49;00m(agent_name: [96mstr[39;49;00m) -> [96mlist[39;49;00m[[96mdict[39;49;00m]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    서버에 생성 파이프라인(/invoke)을 요청하고[39;49;00m
-    [33m    결과가 나올 때까지 폴링하여 최종 output을 반환합니다.[39;49;00m
+    [33m    에이전트별 테스트 데이터셋 JSON 파일을 로드합니다.[39;49;00m
     [33m[39;49;00m
-    [33m    timeout: 최대 대기 시간 (초)[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m[39;49;00m
+    [33m    Returns:[39;49;00m
+    [33m        테스트 케이스 딕셔너리 리스트[39;49;00m
+    [33m[39;49;00m
+    [33m    Raises:[39;49;00m
+    [33m        FileNotFoundError: 데이터셋 파일이 없는 경우[39;49;00m
     [33m    """[39;49;00m[90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m[E2EClient] 서버([39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m)에 파이프라인 요청 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        filename = AGENT_DATASET_MAP.get(agent_name)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m filename:[90m[39;49;00m
+            [94mraise[39;49;00m [96mValueError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m알 수 없는 에이전트: [39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
     [90m[39;49;00m
-        [90m# 1. 파이프라인 트리거[39;49;00m[90m[39;49;00m
-        [94mtry[39;49;00m:[90m[39;49;00m
-            resp = httpx.post([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/invoke[39;49;00m[33m"[39;49;00m, json={[33m"[39;49;00m[33mstart_input[39;49;00m[33m"[39;49;00m: start_input})[90m[39;49;00m
-            resp.raise_for_status()[90m[39;49;00m
-        [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
-            [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m서버 /invoke 호출 실패: [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        job_id = resp.json()[[33m"[39;49;00m[33mjob_id[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] Job ID 할당됨: [39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        [90m# 2. 결과 폴링[39;49;00m[90m[39;49;00m
-        start_time = time.time()[90m[39;49;00m
-        [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
-            [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
-                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
-            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-    [90m[39;49;00m
-            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-                [94mbreak[39;49;00m[90m[39;49;00m
-            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
->               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'[0m
+        filepath = os.path.join(DATASETS_DIR, filename)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m os.path.exists(filepath):[90m[39;49;00m
+>           [94mraise[39;49;00m [96mFileNotFoundError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m데이터셋 파일 없음: [39;49;00m[33m{[39;49;00mfilepath[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           FileNotFoundError: 데이터셋 파일 없음: C:\1.Project\ALL_FOR_ONE\src\tests\analysis\analysis_eval\datasets\population_insight.json[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
-[31m[1m____________________ ERROR at setup of test_unsold_insight ____________________[0m
+[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:50: FileNotFoundError
+[31m[1m_____________________________ test_unsold_insight _____________________________[0m
 
-    [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [94mdef[39;49;00m[90m [39;49;00m[92me2e_result[39;49;00m():[90m[39;49;00m
-    [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    모든 분석 에이전트 평가 전에 딱 한 번 서버 파이프라인을 호출합니다.[39;49;00m
-    [33m    """[39;49;00m[90m[39;49;00m
-        client = E2EClient()[90m[39;49;00m
-        [90m# 임의의 기준 입력 (이 값을 기준으로 모든 테스트 문항 채점)[39;49;00m[90m[39;49;00m
-        start_input = {[90m[39;49;00m
-            [33m"[39;49;00m[33mtarget_area[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m서울특별시 강남구 대치동[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mmain_type[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m84㎡[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33memail[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mimmortal0900@gmail.com[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
-            [33m"[39;49;00m[33mtotal_units[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m500[39;49;00m[33m"[39;49;00m[90m[39;49;00m
-        }[90m[39;49;00m
-    [90m[39;49;00m
-        [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-[1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_unsold_insight[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""미분양 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33munsold_insight[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:213: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x00000257FF1AC4A0>
-start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 2400
+agent_name = 'unsold_insight'
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...시면 알려주시면 표(파일명·형식·레코드수 등)로 정리해 드리겠습니다.\n\n원하시면 각 지표별로 보고서에 넣을 수 있는 “출처 표기 문구(간단 문장)”도 만들어 드리겠습니다. 필요하시면 말씀해 주세요.', ...}
 
-    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_evaluation_for_agent[39;49;00m(agent_name: [96mstr[39;49;00m, e2e_result: [96mdict[39;49;00m):[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
-    [33m    서버에 생성 파이프라인(/invoke)을 요청하고[39;49;00m
-    [33m    결과가 나올 때까지 폴링하여 최종 output을 반환합니다.[39;49;00m
+    [33m    특정 분석 에이전트의 데이터셋을 로드하고 평가를 실행합니다.[39;49;00m
     [33m[39;49;00m
-    [33m    timeout: 최대 대기 시간 (초)[39;49;00m
+    [33m    [핵심] 각 테스트 케이스마다 metric.measure(test_case) 개별 호출[39;49;00m
+    [33m    -> evaluate() 일괄 실행 대신 메트릭별 결과를 세밀하게 수집[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m        e2e_result: conftest에서 주입된 서버 파이프라인 전체 실행 결과 객체[39;49;00m
     [33m    """[39;49;00m[90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m[E2EClient] 서버([39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m)에 파이프라인 요청 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        dataset = load_dataset(agent_name)[90m[39;49;00m
+        summary = {[33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name, [33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m: []}[90m[39;49;00m
     [90m[39;49;00m
-        [90m# 1. 파이프라인 트리거[39;49;00m[90m[39;49;00m
-        [94mtry[39;49;00m:[90m[39;49;00m
-            resp = httpx.post([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/invoke[39;49;00m[33m"[39;49;00m, json={[33m"[39;49;00m[33mstart_input[39;49;00m[33m"[39;49;00m: start_input})[90m[39;49;00m
-            resp.raise_for_status()[90m[39;49;00m
-        [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
-            [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m서버 /invoke 호출 실패: [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [90m# e2e_result에서 이 에이전트의 결과물 추출[39;49;00m[90m[39;49;00m
+        [90m# 예: e2e_result["housing_faq_output"]["result"][39;49;00m[90m[39;49;00m
+        output_key = [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m_output[39;49;00m[33m"[39;49;00m[90m[39;49;00m
     [90m[39;49;00m
-        job_id = resp.json()[[33m"[39;49;00m[33mjob_id[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-        [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] Job ID 할당됨: [39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        [90m# 2. 결과 폴링[39;49;00m[90m[39;49;00m
-        start_time = time.time()[90m[39;49;00m
-        [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
-            [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
-                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
-            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-    [90m[39;49;00m
-            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-                [94mbreak[39;49;00m[90m[39;49;00m
-            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
-                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
->               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'[0m
+        [90m# 서버 결과 형식 검증[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m output_key [95mnot[39;49;00m [95min[39;49;00m e2e_result [95mor[39;49;00m [33m"[39;49;00m[33mresult[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m e2e_result[output_key]:[90m[39;49;00m
+>           pytest.fail([33mf[39;49;00m[33m"[39;49;00m[33m서버 결과에 [39;49;00m[33m{[39;49;00moutput_key[33m}[39;49;00m[33m[[39;49;00m[33m'[39;49;00m[33mresult[39;49;00m[33m'[39;49;00m[33m] 데이터가 없습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           Failed: 서버 결과에 unsold_insight_output['result'] 데이터가 없습니다.[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:90: Failed
 ============================ slowest 10 durations =============================
-103.80s setup    src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
+2224.57s setup    src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
+0.02s call     src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
+0.01s call     src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand
+0.01s call     src/tests/analysis/analysis_eval/test_analysis.py::test_policy
+0.01s call     src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market
+0.01s call     src/tests/analysis/analysis_eval/test_analysis.py::test_unsold_insight
 
-(9 durations < 0.005s hidden.  Use -vv to show these durations.)
+(4 durations < 0.005s hidden.  Use -vv to show these durations.)
 [36m[1m=========================== short test summary info ===========================[0m
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_housing_faq[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_policy[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_supply_demand[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_nearby_market[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_location_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_population_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_unsold_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: '입주예정월'
-[31m================== [33m3 warnings[0m, [31m[1m7 errors[0m[31m in 115.52s (0:01:55)[0m[31m ==================[0m
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_housing_faq[0m - Failed: 서버 결과에 housing_faq_output['result'] 데이터가 없습니다.
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_policy[0m - Failed: 서버 결과에 policy_output['result'] 데이터가 없습니다.
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_supply_demand[0m - Failed: 서버 결과에 supply_demand_output['result'] 데이터가 없습니다.
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_nearby_market[0m - Failed: 서버 결과에 nearby_market_output['result'] 데이터가 없습니다.
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_location_insight[0m - FileNotFoundError: 데이터셋 파일 없음: C:\1.Project\ALL_FOR_ONE\src\tests\a...
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_population_insight[0m - FileNotFoundError: 데이터셋 파일 없음: C:\1.Project\ALL_FOR_ONE\src\tests\a...
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_unsold_insight[0m - Failed: 서버 결과에 unsold_insight_output['result'] 데이터가 없습니다.
+[31m================= [31m[1m7 failed[0m, [33m3 warnings[0m[31m in 2237.78s (0:37:17)[0m[31m ==================[0m
 No test cases found, please try again.

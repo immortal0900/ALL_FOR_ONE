@@ -82,19 +82,18 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
     summary = {"agent": agent_name, "results": []}
 
     # e2e_result에서 이 에이전트의 결과물 추출
-    # 예: e2e_result["housing_faq_output"]["result"]
-    output_key = f"{agent_name}_output"
-    
-    # 서버 결과 형식 검증
-    if output_key not in e2e_result or "result" not in e2e_result[output_key]:
-        pytest.fail(f"서버 결과에 {output_key}['result'] 데이터가 없습니다.")
+    # 예: e2e_result["analysis_outputs"]["housing_faq"]["result"]
+    if "analysis_outputs" not in e2e_result:
+        pytest.fail("서버 결과에 'analysis_outputs' 키가 없습니다.")
         
-    actual_agent_record = e2e_result[output_key]["result"]
-
-    actual_agent_record = e2e_result[output_key]["result"]
+    outputs = e2e_result["analysis_outputs"]
+    if agent_name not in outputs or "result" not in outputs[agent_name]:
+        pytest.fail(f"서버 결과에 {agent_name}['result'] 데이터가 없습니다.")
+        
+    actual_agent_record = outputs[agent_name]["result"]
 
     # RAG 메트릭 채점을 위해 서버 응답에서 관련 데이터 추출
-    retrieval_context = _extract_retrieval_contexts(agent_name, e2e_result[output_key])
+    retrieval_context = _extract_retrieval_contexts(agent_name, outputs[agent_name])
 
     # 유형별로 테스트 케이스 그룹핑
     cases_by_type: dict[str, list[tuple]] = {}

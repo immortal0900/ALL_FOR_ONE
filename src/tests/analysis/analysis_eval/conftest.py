@@ -109,4 +109,8 @@ def e2e_result():
     result_dict = client.run_pipeline(start_input=start_input, timeout=2400)
     print("[E2E] 파이프라인 리턴 완료. 결과 객체를 캐싱합니다.")
     
+    # 결과 객체를 JSON 파일로 저장
+    with open("e2e_result.json", "w", encoding="utf-8") as f:
+        json.dump(result_dict, f, ensure_ascii=False, indent=4)
+
     return result_dict
