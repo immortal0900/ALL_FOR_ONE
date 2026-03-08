@@ -91,11 +91,14 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 async def run_graph_task(job_id: str, start_input: dict):
     """백그라운드에서 그래프 실행하는 함수"""
+    from utils.langfuse_tracker import tracker
     try:
         jobs[job_id]["status"] = "running"
         jobs[job_id]["message"] = "작업 실행 중..."
 
-        result = await graph.ainvoke({"start_input": start_input})
+        # Langfuse Session ID를 job_id로 주입하여 1회 파이프라인 전체를 단일 Session으로 묶음
+        config = tracker.get_langfuse_config(session_id=job_id)
+        result = await graph.ainvoke({"start_input": start_input}, config=config)
 
         jobs[job_id]["status"] = "completed"
         jobs[job_id]["message"] = "작업 완료"

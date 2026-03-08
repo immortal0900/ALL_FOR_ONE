@@ -222,7 +222,10 @@ class TokenTracker:
         else:
             existing_callbacks = []
 
-        existing_callbacks.append(handler)
+        # 기존 콜백 리스트에 이미 Langfuse CallbackHandler가 있는지 확인하여 중복 방지
+        if self._callback_handler_class and not any(isinstance(c, self._callback_handler_class) for c in existing_callbacks):
+            existing_callbacks.append(handler)
+
         merged["callbacks"] = existing_callbacks
 
         return merged
