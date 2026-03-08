@@ -11,114 +11,7 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
 [E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...
 
 [E2EClient] 서버(https://allforone-production.up.railway.app)에 파이프라인 요청 중...
-[E2EClient] Job ID 할당됨: c710de73-f9c5-475d-aa03-caf5042d1312
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
-  ...진행중 (상태: running)
+[E2EClient] Job ID 할당됨: 25b49d90-7f8c-461a-b860-3e5a620af35b
 [31mERROR[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_policy [31mERROR[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand [31mERROR[0m
@@ -147,13 +40,13 @@ request = <SubRequest 'e2e_result' for <Function test_housing_faq>>
 [1m[31m.venv\Lib\site-packages\pytest_asyncio\plugin.py[0m:728: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: in e2e_result
-    [0mresult_dict = client.run_pipeline(start_input=start_input, timeout=[94m1200[39;49;00m)[90m[39;49;00m
+    [0mresult_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x0000022910B33890>
+self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 1200
+timeout = 2400
 
     [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
@@ -178,10 +71,20 @@ timeout = 1200
         start_time = time.time()[90m[39;49;00m
         [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
             [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
->               [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               TimeoutError: 파이프라인 실행 시간 초과 (1200초)[0m
+                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
+            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                [94mbreak[39;49;00m[90m[39;49;00m
+            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:38: TimeoutError
+[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m________________________ ERROR at setup of test_policy ________________________[0m
 
     [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
@@ -199,16 +102,16 @@ timeout = 1200
         }[90m[39;49;00m
     [90m[39;49;00m
         [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 20분 대기[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m1200[39;49;00m)[90m[39;49;00m
+        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
+>       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x0000022910B33890>
+self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 1200
+timeout = 2400
 
     [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
@@ -233,10 +136,20 @@ timeout = 1200
         start_time = time.time()[90m[39;49;00m
         [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
             [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
->               [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               TimeoutError: 파이프라인 실행 시간 초과 (1200초)[0m
+                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
+            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                [94mbreak[39;49;00m[90m[39;49;00m
+            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:38: TimeoutError
+[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m____________________ ERROR at setup of test_supply_demand _____________________[0m
 
     [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
@@ -254,16 +167,16 @@ timeout = 1200
         }[90m[39;49;00m
     [90m[39;49;00m
         [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 20분 대기[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m1200[39;49;00m)[90m[39;49;00m
+        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
+>       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x0000022910B33890>
+self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 1200
+timeout = 2400
 
     [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
@@ -288,10 +201,20 @@ timeout = 1200
         start_time = time.time()[90m[39;49;00m
         [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
             [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
->               [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               TimeoutError: 파이프라인 실행 시간 초과 (1200초)[0m
+                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
+            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                [94mbreak[39;49;00m[90m[39;49;00m
+            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:38: TimeoutError
+[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m____________________ ERROR at setup of test_nearby_market _____________________[0m
 
     [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
@@ -309,16 +232,16 @@ timeout = 1200
         }[90m[39;49;00m
     [90m[39;49;00m
         [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 20분 대기[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m1200[39;49;00m)[90m[39;49;00m
+        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
+>       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x0000022910B33890>
+self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 1200
+timeout = 2400
 
     [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
@@ -343,10 +266,20 @@ timeout = 1200
         start_time = time.time()[90m[39;49;00m
         [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
             [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
->               [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               TimeoutError: 파이프라인 실행 시간 초과 (1200초)[0m
+                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
+            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                [94mbreak[39;49;00m[90m[39;49;00m
+            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:38: TimeoutError
+[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m___________________ ERROR at setup of test_location_insight ___________________[0m
 
     [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
@@ -364,16 +297,16 @@ timeout = 1200
         }[90m[39;49;00m
     [90m[39;49;00m
         [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 20분 대기[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m1200[39;49;00m)[90m[39;49;00m
+        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
+>       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x0000022910B33890>
+self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 1200
+timeout = 2400
 
     [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
@@ -398,10 +331,20 @@ timeout = 1200
         start_time = time.time()[90m[39;49;00m
         [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
             [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
->               [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               TimeoutError: 파이프라인 실행 시간 초과 (1200초)[0m
+                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
+            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                [94mbreak[39;49;00m[90m[39;49;00m
+            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:38: TimeoutError
+[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m__________________ ERROR at setup of test_population_insight __________________[0m
 
     [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
@@ -419,16 +362,16 @@ timeout = 1200
         }[90m[39;49;00m
     [90m[39;49;00m
         [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 20분 대기[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m1200[39;49;00m)[90m[39;49;00m
+        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
+>       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x0000022910B33890>
+self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 1200
+timeout = 2400
 
     [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
@@ -453,10 +396,20 @@ timeout = 1200
         start_time = time.time()[90m[39;49;00m
         [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
             [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
->               [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               TimeoutError: 파이프라인 실행 시간 초과 (1200초)[0m
+                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
+            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                [94mbreak[39;49;00m[90m[39;49;00m
+            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:38: TimeoutError
+[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m____________________ ERROR at setup of test_unsold_insight ____________________[0m
 
     [0m[37m@pytest[39;49;00m.fixture(scope=[33m"[39;49;00m[33msession[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
@@ -474,16 +427,16 @@ timeout = 1200
         }[90m[39;49;00m
     [90m[39;49;00m
         [96mprint[39;49;00m([33m"[39;49;00m[33m\n[39;49;00m[33m[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-        [90m# 최대 20분 대기[39;49;00m[90m[39;49;00m
->       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m1200[39;49;00m)[90m[39;49;00m
+        [90m# 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)[39;49;00m[90m[39;49;00m
+>       result_dict = client.run_pipeline(start_input=start_input, timeout=[94m2400[39;49;00m)[90m[39;49;00m
                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x0000022910B33890>
+self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
-timeout = 1200
+timeout = 2400
 
     [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_pipeline[39;49;00m([96mself[39;49;00m, start_input: Dict[[96mstr[39;49;00m, Any], timeout: [96mint[39;49;00m = [94m1200[39;49;00m) -> Dict[[96mstr[39;49;00m, Any]:[90m[39;49;00m
     [90m    [39;49;00m[33m"""[39;49;00m
@@ -508,21 +461,31 @@ timeout = 1200
         start_time = time.time()[90m[39;49;00m
         [94mwhile[39;49;00m [94mTrue[39;49;00m:[90m[39;49;00m
             [94mif[39;49;00m time.time() - start_time > timeout:[90m[39;49;00m
->               [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               TimeoutError: 파이프라인 실행 시간 초과 (1200초)[0m
+                [94mraise[39;49;00m [96mTimeoutError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 시간 초과 ([39;49;00m[33m{[39;49;00mtimeout[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            status_resp = httpx.get([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mself[39;49;00m.base_url[33m}[39;49;00m[33m/status/[39;49;00m[33m{[39;49;00mjob_id[33m}[39;49;00m[33m"[39;49;00m).json()[90m[39;49;00m
+            status = status_resp[[33m"[39;49;00m[33mstatus[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+            [94mif[39;49;00m status == [33m"[39;49;00m[33mcompleted[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m[E2EClient] 파이프라인 완료 ([39;49;00m[33m{[39;49;00mtime.time()[90m [39;49;00m-[90m [39;49;00mstart_time[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33m초)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                [94mbreak[39;49;00m[90m[39;49;00m
+            [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
 
-[1m[31msrc\tests\e2e_client.py[0m:38: TimeoutError
+[1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 ============================ slowest 10 durations =============================
-1204.50s setup    src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
+2.44s setup    src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
 
 (9 durations < 0.005s hidden.  Use -vv to show these durations.)
 [36m[1m=========================== short test summary info ===========================[0m
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_housing_faq[0m - TimeoutError: 파이프라인 실행 시간 초과 (1200초)
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_policy[0m - TimeoutError: 파이프라인 실행 시간 초과 (1200초)
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_supply_demand[0m - TimeoutError: 파이프라인 실행 시간 초과 (1200초)
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_nearby_market[0m - TimeoutError: 파이프라인 실행 시간 초과 (1200초)
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_location_insight[0m - TimeoutError: 파이프라인 실행 시간 초과 (1200초)
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_population_insight[0m - TimeoutError: 파이프라인 실행 시간 초과 (1200초)
-[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_unsold_insight[0m - TimeoutError: 파이프라인 실행 시간 초과 (1200초)
-[31m================= [33m3 warnings[0m, [31m[1m7 errors[0m[31m in 1214.21s (0:20:14)[0m[31m ==================[0m
+[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_housing_faq[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
+[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_policy[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
+[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_supply_demand[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
+[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_nearby_market[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
+[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_location_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
+[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_population_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
+[31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_unsold_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
+[31m======================= [33m3 warnings[0m, [31m[1m7 errors[0m[31m in 47.53s[0m[31m ========================[0m
 No test cases found, please try again.

@@ -189,7 +189,14 @@ class TokenTracker:
         merged = dict(existing_config)
 
         # 기존 callbacks 리스트에 langfuse handler 추가 (덮어쓰기 금지)
-        existing_callbacks = list(merged.get("callbacks", []))
+        # LangGraph 내부에서 callbacks로 AsyncCallbackManager 객체를 전달할 수 있으므로
+        # list/tuple이 아닌 경우 새 리스트로 감싸서 TypeError 방지
+        raw_callbacks = merged.get("callbacks", [])
+        if isinstance(raw_callbacks, (list, tuple)):
+            existing_callbacks = list(raw_callbacks)
+        else:
+            # AsyncCallbackManager 등 이터러블이 아닌 객체가 들어온 경우
+            existing_callbacks = [raw_callbacks]
         existing_callbacks.append(handler)
         merged["callbacks"] = existing_callbacks
 
