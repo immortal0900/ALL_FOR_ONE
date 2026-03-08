@@ -97,16 +97,24 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
             # Langfuse: 성공 시 출력 및 usage 기록
             if langfuse_span is not None:
                 try:
+                    # response: 데이터를 꺼내올 대상 객체,
+                    # usage_metadata: 사용량 관련 메타데이터
                     usage = getattr(response, "usage_metadata", None)
-                    usage_details = {}
+                    usage_details = None
                     if usage:
+                        input_tokens = getattr(usage, "prompt_token_count", 0)
+                        output_tokens = getattr(usage, "candidates_token_count", 0)
+                        total_tokens = getattr(usage, "total_token_count", input_tokens + output_tokens)
+                        
                         usage_details = {
-                            "input": getattr(usage, "prompt_token_count", 0),
-                            "output": getattr(usage, "candidates_token_count", 0),
+                            "input": input_tokens,
+                            "output": output_tokens,
+                            "total": total_tokens
                         }
+
                     langfuse_span.update(
                         output=result_text[:500],
-                        usage_details=usage_details if usage_details else None,
+                        usage=usage_details,
                     )
                     langfuse_span.__exit__(None, None, None)
                 except Exception:

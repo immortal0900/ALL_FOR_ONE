@@ -27,7 +27,9 @@ client = Perplexity(api_key=PERPLEXITY_API_KEY)
 _DEFAULT_MODEL = "sonar-reasoning-pro"
 
 
-def _track_perplexity_generation(name: str, model: str, query: str, result: str):
+def _track_perplexity_generation(
+    name: str, model: str, query: str, result: str, usage_meta: Optional[dict] = None
+):
     """Perplexity API 호출을 Langfuse에 generation으로 기록합니다.
 
     [존재 이유]
@@ -39,6 +41,7 @@ def _track_perplexity_generation(name: str, model: str, query: str, result: str)
         model:  사용된 모델명
         query:  입력 쿼리
         result: API 응답 텍스트
+        usage_meta: 사용량 메타데이터 딕셔너리 (input, output, total)
     """
     langfuse_client = _langfuse_tracker.get_client()
     if langfuse_client is None:
@@ -51,7 +54,7 @@ def _track_perplexity_generation(name: str, model: str, query: str, result: str)
             model=model,
             input=query[:500],
         ) as span:
-            span.update(output=result[:2000])
+            span.update(output=result[:2000], usage=usage_meta)
     except Exception as e:
         logger.debug("Langfuse Perplexity 추적 실패 (무시 가능): %s", e)
 
@@ -89,8 +92,20 @@ def perplexity_search(query: str) -> str:
     else:
         result += "\n\n[출처: Perplexity AI 검색]"
 
+    usage = getattr(response, "usage", None)
+    usage_meta = None
+    if usage:
+        input_tokens = getattr(usage, "prompt_tokens", 0)
+        output_tokens = getattr(usage, "completion_tokens", 0)
+        total_tokens = getattr(usage, "total_tokens", input_tokens + output_tokens)
+        usage_meta = {
+            "input": input_tokens,
+            "output": output_tokens,
+            "total": total_tokens,
+        }
+
     # Langfuse 수동 추적
-    _track_perplexity_generation("perplexity-search", _DEFAULT_MODEL, query, result)
+    _track_perplexity_generation("perplexity-search", _DEFAULT_MODEL, query, result, usage_meta)
 
     return result
 
@@ -141,9 +156,21 @@ def perplexity_search_structured(
 
     result = response.choices[0].message.content
 
+    usage = getattr(response, "usage", None)
+    usage_meta = None
+    if usage:
+        input_tokens = getattr(usage, "prompt_tokens", 0)
+        output_tokens = getattr(usage, "completion_tokens", 0)
+        total_tokens = getattr(usage, "total_tokens", input_tokens + output_tokens)
+        usage_meta = {
+            "input": input_tokens,
+            "output": output_tokens,
+            "total": total_tokens,
+        }
+
     # Langfuse 수동 추적
     _track_perplexity_generation(
-        "perplexity-search-structured", _DEFAULT_MODEL, query, result
+        "perplexity-search-structured", _DEFAULT_MODEL, query, result, usage_meta
     )
 
     return result
