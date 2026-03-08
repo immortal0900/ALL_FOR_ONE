@@ -76,17 +76,20 @@ def segment_directive(seg: int) -> str:
 
 
 def prev_segment_context(state: JungMinJaeState) -> str | None:
-    seg = state.get(segment_key, 1)
-    if seg <= 1:
-        return None
+    # 이전 대화 기록이 LLM의 Memory(messages)에 누적되므로 
+    # 별도로 요약(summary)을 생성할 필요가 없어 비활성화 처리합니다. (토큰 폭발 방지)
+    # seg = state.get(segment_key, 1)
+    # if seg <= 1:
+    #     return None
 
-    summary_prompt = PromptManager(PromptType.JUNG_MIN_JAE_SUMMARY).get_prompt()
-    buffers = state.get(segment_buffers_key, {})
-    segments = list(buffers.values())
-    response = LLMProfile.dev_llm().invoke(
-        [SystemMessage(content=summary_prompt), HumanMessage(content=str(segments))]
-    )
-    return f"# 이전 세그먼트 요약/맥락\n{response.content}"
+    # summary_prompt = PromptManager(PromptType.JUNG_MIN_JAE_SUMMARY).get_prompt()
+    # buffers = state.get(segment_buffers_key, {})
+    # segments = list(buffers.values())
+    # response = LLMProfile.dev_llm().invoke(
+    #     [SystemMessage(content=summary_prompt), HumanMessage(content=str(segments))]
+    # )
+    # return f"# 이전 세그먼트 요약/맥락\n{response.content}"
+    return None
 
 
 def retriever(state: JungMinJaeState) -> JungMinJaeState:
@@ -113,29 +116,38 @@ def reporting(state: JungMinJaeState) -> JungMinJaeState:
     unsold_insight = analysis_outputs.get(unsold_insight_output_key, {})["result"]
 
     directive = segment_directive(seg)
-    prev_context = prev_segment_context(state) or ""
+    # prev_context = prev_segment_context(state) or ""
+    prev_context = ""
 
-    system_prompt = PromptManager(PromptType.JUNG_MIN_JAE_SYSTEM).get_prompt(
-        date=get_today_str()
-    )
+    # 기초 자료(Context)는 첫 번째 세그먼트(seg==1)에서 단 한 번만 주입하여 
+    # State(messages)에 중복복사되는 토큰 폭발을 막습니다. 
+    # LLM의 Attention 기능으로 seg 2,3,4 도 이 내용을 완벽히 참조합니다.
+    if seg == 1:
+        system_prompt = PromptManager(PromptType.JUNG_MIN_JAE_SYSTEM).get_prompt(
+            date=get_today_str()
+        )
+        human_prompt = PromptManager(PromptType.JUNG_MIN_JAE_HUMAN).get_prompt(
+            target_area=target_area,
+            main_type=main_type,
+            total_units=total_units,
+            housing_faq=housing_faq,
+            location_insight=location_insight,
+            policy=policy,
+            supply_demand=supply_demand,
+            unsold_insight=unsold_insight,
+            population_insight=population_insight,
+            nearby_market=nearby_market,
+        )
+        messages = [
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=f"{human_prompt}\n\n{directive}"),
+        ]
+    else:
+        # 두 번째 세그먼트부터는 (방대한 기초 자료 없이) 해당 세그먼트 지시서만 전달
+        messages = [
+            HumanMessage(content=f"이어지는 작성 지침입니다:\n{directive}")
+        ]
 
-    human_prompt = PromptManager(PromptType.JUNG_MIN_JAE_HUMAN).get_prompt(
-        target_area=target_area,
-        main_type=main_type,
-        total_units=total_units,
-        housing_faq=housing_faq,
-        location_insight=location_insight,
-        policy=policy,
-        supply_demand=supply_demand,
-        unsold_insight=unsold_insight,
-        population_insight=population_insight,
-        nearby_market=nearby_market,
-    )
-
-    messages = [
-        SystemMessage(content=system_prompt),
-        HumanMessage(content=f"{directive}\n\n{prev_context}\n\n{human_prompt}"),
-    ]
     return {messages_key: messages}
 
 
