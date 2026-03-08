@@ -21,6 +21,7 @@ LANGFUSE_ENABLED=false 이거나 langfuse 패키지가 미설치된 환경에서
 
 import os
 import logging
+import contextlib
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -271,6 +272,32 @@ class TokenTracker:
             pass
         except Exception as e:
             logger.debug("Langfuse update_observation 실패 (무시 가능): %s", e)
+
+    @contextlib.contextmanager
+    def session_context(self, session_id: str):
+        """세션 ID를 하위 모든 관찰 객체(@observe)에 전파하는 컨텍스트 매니저.
+        
+        [존재 이유]
+        LangChain의 config metadata 방식만으로는 @observe 로 감싸진 외부 도구
+        (Gemini, Perplexity 통신 등)까지 세션 ID가 안정적으로 전달되지 않습니다.
+        이 블록으로 실행부를 감싸면 모든 하위 호출이 같은 세션으로 묶입니다.
+        
+        [Graceful Degradation]
+        비활성화 시 내부 동작 없이 안전하게 yield 합니다.
+        """
+        if not self._enabled:
+            yield
+            return
+
+        try:
+            from langfuse.decorators import propagate_attributes
+            with propagate_attributes(session_id=session_id):
+                yield
+        except ImportError:
+            yield
+        except Exception as e:
+            logger.debug("Langfuse session_context 실패 (무시 가능): %s", e)
+            yield
 
     def get_client(self):
         """Langfuse 클라이언트를 반환합니다.

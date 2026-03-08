@@ -84,8 +84,11 @@ class HousingChatAgentLangGraph:
             "sources": [],
         }
 
-        # 그래프 실행
-        result = self.graph.invoke(initial_state)
+        from utils.langfuse_tracker import tracker
+        
+        # 외부 도구(Gemini, Perplexity)까지 세션 ID를 전파하기 위해 session_context 사용
+        with tracker.session_context(session_id=session_id):
+            result = self.graph.invoke(initial_state)
 
         answer = result["response"]
         sources = result["sources"]
@@ -151,22 +154,26 @@ class HousingChatAgentLangGraph:
         full_response = ""
         sources = []
 
-        async for event in self.graph.astream_events(initial_state, version="v2"):
-            kind = event["event"]
-
-            # LLM 스트리밍 이벤트 처리
-            if kind == "on_chat_model_stream":
-                content = event["data"]["chunk"].content
-                if content:
-                    full_response += content
-                    yield {"type": "text", "content": content}
-
-            # 최종 상태 처리
-            elif kind == "on_chain_end":
-                if "output" in event["data"]:
-                    output = event["data"]["output"]
-                    if "sources" in output:
-                        sources = output["sources"]
+        # 외부 도구(Gemini, Perplexity)까지 세션 ID를 전파하기 위해 session_context 사용
+        from utils.langfuse_tracker import tracker
+        
+        with tracker.session_context(session_id=session_id):
+            async for event in self.graph.astream_events(initial_state, version="v2"):
+                kind = event["event"]
+    
+                # LLM 스트리밍 이벤트 처리
+                if kind == "on_chat_model_stream":
+                    content = event["data"]["chunk"].content
+                    if content:
+                        full_response += content
+                        yield {"type": "text", "content": content}
+    
+                # 최종 상태 처리
+                elif kind == "on_chain_end":
+                    if "output" in event["data"]:
+                        output = event["data"]["output"]
+                        if "sources" in output:
+                            sources = output["sources"]
 
         # 대화 기록 업데이트
         if session_id:

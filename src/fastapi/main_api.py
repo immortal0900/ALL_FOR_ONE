@@ -98,7 +98,10 @@ async def run_graph_task(job_id: str, start_input: dict):
 
         # Langfuse Session ID를 job_id로 주입하여 1회 파이프라인 전체를 단일 Session으로 묶음
         config = tracker.get_langfuse_config(session_id=job_id)
-        result = await graph.ainvoke({"start_input": start_input}, config=config)
+        
+        # 외부 통신(도구)들의 관찰 내역까지 모두 포괄하기 위해 session_context 사용
+        with tracker.session_context(session_id=job_id):
+            result = await graph.ainvoke({"start_input": start_input}, config=config)
 
         jobs[job_id]["status"] = "completed"
         jobs[job_id]["message"] = "작업 완료"
