@@ -270,11 +270,26 @@ def housing_sales_volume_to_drive(data_list,address):
 def planning_move_to_csv(data_list,address):
     
     if isinstance(data_list, str):
-        data_list = json.loads(data_list)
+        try:
+            data_list = json.loads(data_list)
+        except json.JSONDecodeError:
+            data_list = []
 
     df = pd.DataFrame(data_list)
+    
+    # 데이터가 비어있거나 필수 컬럼이 없는 경우 방어 (KeyError 방지)
+    if df.empty or "입주예정월" not in df.columns:
+        df = pd.DataFrame(columns=["입주예정월", "지역", "사업유형", "주소", "주택명", "세대수"])
+        link = upload_to_drive(
+            data=df,
+            filename=f"{address}_입주예정단지_temp.csv",
+            mime_type="text/csv"
+        )
+        print("📎 _입주예정단지_temp 링크 (빈 데이터):", link)
+        return link
+
     df["입주예정월"] = df["입주예정월"].astype(str).apply(
-        lambda x: f"{x[:4]}-{x[4:]}"
+        lambda x: f"{x[:4]}-{x[4:]}" if len(x) >= 6 else x
     )
     df = df.sort_values("입주예정월")
     link = upload_to_drive(
