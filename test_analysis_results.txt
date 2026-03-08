@@ -11,7 +11,7 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
 [E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...
 
 [E2EClient] 서버(https://allforone-production.up.railway.app)에 파이프라인 요청 중...
-[E2EClient] Job ID 할당됨: 25b49d90-7f8c-461a-b860-3e5a620af35b
+[E2EClient] Job ID 할당됨: 34b185d1-b824-413d-ab79-9562d3633928
 [31mERROR[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_policy [31mERROR[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand [31mERROR[0m
@@ -44,7 +44,7 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
+self = <tests.e2e_client.E2EClient object at 0x000001C5652A7050>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
 timeout = 2400
 
@@ -82,7 +82,7 @@ timeout = 2400
             [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
                 err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
 >               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object has no attribute 'run_inline'[0m
 
 [1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m________________________ ERROR at setup of test_policy ________________________[0m
@@ -109,7 +109,7 @@ timeout = 2400
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
+self = <tests.e2e_client.E2EClient object at 0x000001C5652A7050>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
 timeout = 2400
 
@@ -147,7 +147,7 @@ timeout = 2400
             [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
                 err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
 >               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object has no attribute 'run_inline'[0m
 
 [1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m____________________ ERROR at setup of test_supply_demand _____________________[0m
@@ -174,7 +174,7 @@ timeout = 2400
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
+self = <tests.e2e_client.E2EClient object at 0x000001C5652A7050>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
 timeout = 2400
 
@@ -212,7 +212,7 @@ timeout = 2400
             [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
                 err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
 >               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object has no attribute 'run_inline'[0m
 
 [1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m____________________ ERROR at setup of test_nearby_market _____________________[0m
@@ -239,7 +239,7 @@ timeout = 2400
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
+self = <tests.e2e_client.E2EClient object at 0x000001C5652A7050>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
 timeout = 2400
 
@@ -277,7 +277,7 @@ timeout = 2400
             [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
                 err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
 >               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object has no attribute 'run_inline'[0m
 
 [1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m___________________ ERROR at setup of test_location_insight ___________________[0m
@@ -304,7 +304,7 @@ timeout = 2400
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
+self = <tests.e2e_client.E2EClient object at 0x000001C5652A7050>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
 timeout = 2400
 
@@ -342,7 +342,7 @@ timeout = 2400
             [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
                 err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
 >               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object has no attribute 'run_inline'[0m
 
 [1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m__________________ ERROR at setup of test_population_insight __________________[0m
@@ -369,7 +369,7 @@ timeout = 2400
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
+self = <tests.e2e_client.E2EClient object at 0x000001C5652A7050>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
 timeout = 2400
 
@@ -407,7 +407,7 @@ timeout = 2400
             [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
                 err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
 >               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object has no attribute 'run_inline'[0m
 
 [1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 [31m[1m____________________ ERROR at setup of test_unsold_insight ____________________[0m
@@ -434,7 +434,7 @@ timeout = 2400
 [1m[31msrc\tests\analysis\analysis_eval\conftest.py[0m:109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <tests.e2e_client.E2EClient object at 0x000002C215A4A3F0>
+self = <tests.e2e_client.E2EClient object at 0x000001C5652A7050>
 start_input = {'email': 'immortal0900@gmail.com', 'main_type': '84㎡', 'target_area': '서울특별시 강남구 대치동', 'total_units': '500'}
 timeout = 2400
 
@@ -472,7 +472,7 @@ timeout = 2400
             [94melif[39;49;00m status == [33m"[39;49;00m[33mfailed[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
                 err_msg = status_resp.get([33m"[39;49;00m[33mmessage[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m알 수 없는 에러[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
 >               [94mraise[39;49;00m [96mRuntimeError[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m파이프라인 실행 중 서버 에러: [39;49;00m[33m{[39;49;00merr_msg[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object is not iterable[0m
+[1m[31mE               RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManager' object has no attribute 'run_inline'[0m
 
 [1m[31msrc\tests\e2e_client.py[0m:48: RuntimeError
 ============================ slowest 10 durations =============================
@@ -487,5 +487,5 @@ timeout = 2400
 [31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_location_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
 [31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_population_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
 [31mERROR[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_unsold_insight[0m - RuntimeError: 파이프라인 실행 중 서버 에러: 작업 실패: 'AsyncCallbackManage...
-[31m======================= [33m3 warnings[0m, [31m[1m7 errors[0m[31m in 47.53s[0m[31m ========================[0m
+[31m======================= [33m3 warnings[0m, [31m[1m7 errors[0m[31m in 11.91s[0m[31m ========================[0m
 No test cases found, please try again.

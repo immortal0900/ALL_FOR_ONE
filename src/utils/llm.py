@@ -39,6 +39,11 @@ def patch_google_genai():
 patch_google_genai()
 
 
+# 재시도하지 않을 구조적 에러 (코드 버그)
+# 이 에러들은 반복해도 결과가 동일하므로 즉시 전파하여 디버깅을 빠르게 합니다.
+_NON_RETRYABLE_ERRORS = (AttributeError, TypeError, ValueError, ImportError, SyntaxError)
+
+
 class RetryableChatOpenAI(ChatOpenAI):
     """Exponential Backoff 재시도 로직과 Langfuse 자동 추적이 적용된 ChatOpenAI 클래스.
 
@@ -76,6 +81,9 @@ class RetryableChatOpenAI(ChatOpenAI):
         for i in range(max_retries):
             try:
                 return super().invoke(input, config=config, **kwargs)
+            except _NON_RETRYABLE_ERRORS:
+                # 구조적 에러는 재시도 무의미 → 즉시 전파
+                raise
             except Exception as e:
                 error_str = str(e)
 
@@ -104,6 +112,9 @@ class RetryableChatOpenAI(ChatOpenAI):
         for i in range(max_retries):
             try:
                 return await super().ainvoke(input, config=config, **kwargs)
+            except _NON_RETRYABLE_ERRORS:
+                # 구조적 에러는 재시도 무의미 → 즉시 전파
+                raise
             except Exception as e:
                 error_str = str(e)
 

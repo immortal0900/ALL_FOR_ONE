@@ -163,10 +163,20 @@ class TokenTracker:
         기존 callbacks를 덮어쓰면 도구 호출이 실패하므로, 반드시 append 방식으로
         병합해야 합니다.
 
-        [메모리 흐름]
+        [메모리 흐름 — 리스트인 경우]
         existing_config = {"callbacks": [tool_callback]}
                                     ↓ merge
         merged_config   = {"callbacks": [tool_callback, langfuse_handler]}
+
+        [메모리 흐름 — AsyncCallbackManager인 경우]
+        existing_config = {"callbacks": AsyncCallbackManager(...)}
+                                    ↓ add_handler
+        merged_config   = {"callbacks": AsyncCallbackManager(handlers=[..., langfuse_handler])}
+
+        [주의]
+        AsyncCallbackManager를 리스트에 넣으면([manager, handler]) langchain-core가
+        매니저 객체를 일반 handler로 취급하여 .run_inline 등의 속성에 접근 시
+        AttributeError가 발생합니다. 반드시 add_handler()로 등록해야 합니다.
 
         Args:
             existing_config: 기존 LangChain config (None 가능)
@@ -188,15 +198,30 @@ class TokenTracker:
         # 기존 config를 복사하여 원본 보호
         merged = dict(existing_config)
 
-        # 기존 callbacks 리스트에 langfuse handler 추가 (덮어쓰기 금지)
-        # LangGraph 내부에서 callbacks로 AsyncCallbackManager 객체를 전달할 수 있으므로
-        # list/tuple이 아닌 경우 새 리스트로 감싸서 TypeError 방지
-        raw_callbacks = merged.get("callbacks", [])
+        raw_callbacks = merged.get("callbacks")
+
+        # LangGraph가 전달하는 AsyncCallbackManager/CallbackManager 처리
+        # 매니저 객체를 리스트에 넣으면 langchain-core가 handler로 오인하여 크래시
+        # 따라서 매니저의 add_handler()를 통해 직접 등록
+        try:
+            from langchain_core.callbacks.manager import (
+                AsyncCallbackManager,
+                CallbackManager,
+            )
+            if isinstance(raw_callbacks, (AsyncCallbackManager, CallbackManager)):
+                raw_callbacks.add_handler(handler)
+                return merged
+        except ImportError:
+            pass
+
+        # 일반 리스트인 경우: 기존 리스트에 handler 추가
         if isinstance(raw_callbacks, (list, tuple)):
             existing_callbacks = list(raw_callbacks)
-        else:
-            # AsyncCallbackManager 등 이터러블이 아닌 객체가 들어온 경우
+        elif raw_callbacks is not None:
             existing_callbacks = [raw_callbacks]
+        else:
+            existing_callbacks = []
+
         existing_callbacks.append(handler)
         merged["callbacks"] = existing_callbacks
 
