@@ -76,6 +76,7 @@ class MolitSearchTool:
             if langfuse_client is not None:
                 try:
                     import json
+                    # ensure_ascii=False 로 한글 깨짐 방지-> default: True
                     output_data = json.dumps(results, ensure_ascii=False)
                     if len(output_data) > 2000:
                         output_data = output_data[:2000] + "...(truncated)"

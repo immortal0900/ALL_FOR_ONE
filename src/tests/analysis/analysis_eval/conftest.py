@@ -9,7 +9,6 @@
 import json
 import os
 import pytest
-from tests.e2e_client import E2EClient
 
 # ============================================================
 # 데이터셋 로더
@@ -78,39 +77,21 @@ def print_summary_report(request):
         print(f"\n--- {agent} ---")
 
         for type_result in result.get("results", []):
-            q_type = type_result["type"]
-            score = type_result["score"]
+            agent_type = type_result["type"]
+            analysis = type_result.get("analysis_score", 0.0)
             count = type_result["count"]
-            status = "PASS" if score >= 0.7 else "FAIL"
-            print(f"  [{status}] {q_type}: {score:.2%} ({count}건)")
+            status = "PASS" if analysis >= 0.7 else "FAIL"
+            print(f"  [{status}] {agent_type}: 분석 {analysis:.2%} ({count}건)")
+
+            rag_score = type_result.get("rag_score")
+            if rag_score is not None:
+                rag_status = "PASS" if rag_score >= 0.7 else "FAIL"
+                print(f"  [{rag_status}] {agent_type}: RAG {rag_score:.2%}")
 
     print("\n" + "=" * 70)
 
 
-# ============================================================
-# E2E 서버 연동 fixture (세션 단위 1회 호출)
-# ============================================================
-@pytest.fixture(scope="session")
-def e2e_result():
-    """
-    모든 분석 에이전트 평가 전에 딱 한 번 서버 파이프라인을 호출합니다.
-    """
-    client = E2EClient()
-    # 임의의 기준 입력 (이 값을 기준으로 모든 테스트 문항 채점)
-    start_input = {
-        "target_area": "서울특별시 강남구 대치동",
-        "main_type": "84㎡",
-        "email": "immortal0900@gmail.com",
-        "total_units": "500"
-    }
-    
-    print("\n[E2E] 분석 에이전트 채점을 위한 파이프라인 서버 호출 시작...")
-    # 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)
-    result_dict = client.run_pipeline(start_input=start_input, timeout=2400)
-    print("[E2E] 파이프라인 리턴 완료. 결과 객체를 캐싱합니다.")
-    
-    # 결과 객체를 JSON 파일로 저장
-    with open("e2e_result.json", "w", encoding="utf-8") as f:
-        json.dump(result_dict, f, ensure_ascii=False, indent=4)
 
-    return result_dict
+# e2e_result fixture는 src/tests/conftest.py에 정의되어 있습니다.
+# pytest가 상위 디렉토리의 conftest.py를 자동 탐색하므로
+# analysis/source/final_report 테스트에서 공유됩니다.

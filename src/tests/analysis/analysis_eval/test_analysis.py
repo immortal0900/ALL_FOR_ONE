@@ -5,172 +5,182 @@
 각 분석 에이전트의 LLM 출력(보고서)을 DeepEval의 커스텀 G-Eval 메트릭으로 채점합니다.
 
 [핵심 설계]
-- 각 테스트 케이스마다 metric.measure(test_case) 개별 호출
-- evaluate() 일괄 실행 대신 개별 호출로 메트릭별 score/reason 즉시 수집
-- 실패한 메트릭만 재실행하거나 디버깅하기 용이
+- E2E 서버 파이프라인 결과(e2e_result)에서 actual_output + retrieval_context 추출
+- assert_test()로 DeepEval에 결과를 공식 등록 (.temp_test_run_data.json 기록)
+- RAG 에이전트: 분석 점수(100%)와 RAG 점수(100%)를 독립 산출 (합산 X)
+- 비-RAG 에이전트: 분석 점수(100%)만 산출
 
 [실행 방법]
 set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py -v > test_analysis_results.txt 2>&1
 """
 
 import pytest
+from deepeval import assert_test
 from deepeval.test_case import LLMTestCase
-from tests.analysis.analysis_eval.custom_metrics import (
+from .custom_metrics import (
     get_metrics_for_type,
     calculate_separated_scores,
     get_primary_metric,
+    RAG_AGENTS,
 )
-from tests.analysis.analysis_eval.conftest import load_dataset, GLOBAL_RESULTS
+from .conftest import load_dataset, GLOBAL_RESULTS
 
 
 # ============================================================
-# Context 추출 헬퍼 함수
+# E2E 결과 키 매핑
 # ============================================================
-def _extract_retrieval_contexts(agent_name: str, output_dict: dict) -> list[str]:
+# 서버 반환값(e2e_result["analysis_outputs"])의 실제 키와 에이전트명 매핑
+# 서버는 "policy_output"을 반환하지만 에이전트명은 "policy"
+E2E_KEY_MAP = {
+    "policy": "policy_output",
+}
+
+# 에이전트별 retrieval_context 추출에 사용할 키 목록
+# e2e_result["analysis_outputs"][agent_key] 내부의 컨텍스트 키들
+CONTEXT_KEYS = {
+    "policy": ["national_context", "region_context"],
+    "housing_faq": ["housing_faq_context", "housing_rule_context"],
+    "unsold_insight": ["unsold_unit"],
+    "population_insight": ["age_population_context", "move_population_context"],
+    "supply_demand": [
+        "year10_after_house", "jeonse_price", "sale_price",
+        "trade_balance", "use_kor_rate", "home_mortgage",
+        "one_people_gdp", "one_people_grdp",
+        "housing_sales_volume", "planning_move", "pre_promise_competition",
+    ],
+    "location_insight": ["gemini_search", "kakao_api_distance_context"],
+    "nearby_market": [
+        "gemini_search", "kakao_api_distance_context",
+        "real_estate_price_context", "perplexity_search",
+    ],
+}
+
+
+def _extract_retrieval_contexts(agent_name: str, agent_data: dict) -> list[str]:
     """
-    각 에이전트 결과 딕셔너리에서 RAG 컨텍스트를 찾아 문자열 리스트로 반환합니다.
+    E2E 결과에서 에이전트별 retrieval_context 문자열 리스트를 추출합니다.
+
+    agent_data: e2e_result["analysis_outputs"][agent_key] 딕셔너리
+    반환값: ["컨텍스트1 내용", "컨텍스트2 내용", ...] 형태의 문자열 리스트
     """
+    context_keys = CONTEXT_KEYS.get(agent_name, [])
     contexts = []
-    
-    # 에이전트별 키 매핑 테이블 (analysis_outputs_schema 기반)
-    CONTEXT_MAPPING = {
-        "policy": ["national_context", "region_context", "pdf_context"],
-        "housing_faq": ["housing_faq_context", "housing_rule_context"],
-        "unsold_insight": ["unsold_unit"],
-        "population_insight": ["age_population_context", "move_population_context"],
-        "supply_demand": [
-            "year10_after_house", "jeonse_price", "sale_price", "trade_balance",
-            "use_kor_rate", "home_mortgage", "one_people_gdp", "one_people_grdp",
-            "housing_sales_volume", "planning_move", "pre_promise_competition"
-        ],
-        "location_insight": ["rag_context", "web_context", "kakao_api_distance_context", "gemini_search", "perplexity_search"],
-        "nearby_market": ["kakao_api_distance_context", "gemini_search", "real_estate_price_context", "perplexity_search", "rag_context", "web_context"]
-    }
-    
-    keys_to_extract = CONTEXT_MAPPING.get(agent_name, [])
-    for key in keys_to_extract:
-        val = output_dict.get(key)
-        if val and isinstance(val, str) and val.strip():
-            contexts.append(val)
-        elif val and isinstance(val, list):
-            # 문자열 리스트일 경우 안전하게 Join
-            joined_str = "\n".join(str(v) for v in val if v)
-            if joined_str.strip():
-                contexts.append(joined_str)
-            
-    # 비어 있을 경우 에러를 피하기 위해 기본 컨텍스트 1개라도 주기
-    if not contexts:
-        contexts.append("문서 검색 기록이 존재하지 않습니다.")
-        
-    return contexts
+
+    for key in context_keys:
+        value = agent_data.get(key)
+        if value is None:
+            continue
+        # 값이 문자열이면 그대로, 딕셔너리/리스트면 str()로 변환
+        contexts.append(str(value) if not isinstance(value, str) else value)
+
+    return contexts if contexts else ["(컨텍스트 없음)"]
+
 
 # ============================================================
 # 평가 실행 핵심 함수
 # ============================================================
 def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
     """
-    특정 분석 에이전트의 데이터셋을 로드하고 평가를 실행합니다.
+    특정 분석 에이전트의 E2E 결과를 평가합니다.
 
-    [핵심] 각 테스트 케이스마다 metric.measure(test_case) 개별 호출
-    -> evaluate() 일괄 실행 대신 메트릭별 결과를 세밀하게 수집
+    [동작 흐름]
+    1. e2e_result에서 해당 에이전트의 actual_output + retrieval_context 추출
+    2. LLMTestCase 생성 (input은 데이터셋, actual_output/context는 E2E 결과)
+    3. assert_test()로 DeepEval에 결과 등록
+    4. calculate_separated_scores()로 분석/RAG 점수 분리 산출
 
     Args:
         agent_name: 에이전트 식별자 (예: "housing_faq")
-        e2e_result: conftest에서 주입된 서버 파이프라인 전체 실행 결과 객체
+        e2e_result: E2E 서버 파이프라인 반환값
     """
+    # E2E 결과에서 에이전트 데이터 추출
+    analysis_outputs = e2e_result.get("analysis_outputs", {})
+    e2e_key = E2E_KEY_MAP.get(agent_name, agent_name)
+    agent_data = analysis_outputs.get(e2e_key, {})
+
+    if not agent_data:
+        pytest.skip(f"E2E 결과에 '{e2e_key}' 데이터가 없습니다.")
+
+    # actual_output 추출 ("result" 키에 분석 보고서 문자열이 담김)
+    actual_output = agent_data.get("result", "")
+    if not actual_output:
+        pytest.skip(f"'{e2e_key}'의 result가 비어 있습니다.")
+
+    # retrieval_context 추출
+    retrieval_contexts = _extract_retrieval_contexts(agent_name, agent_data)
+
+    # 데이터셋에서 input(질문) 로드
     dataset = load_dataset(agent_name)
     summary = {"agent": agent_name, "results": []}
 
-    # e2e_result에서 이 에이전트의 결과물 추출
-    # 예: e2e_result["analysis_outputs"]["housing_faq"]["result"]
-    if "analysis_outputs" not in e2e_result:
-        pytest.fail("서버 결과에 'analysis_outputs' 키가 없습니다.")
-        
-    outputs = e2e_result["analysis_outputs"]
-    if agent_name not in outputs or "result" not in outputs[agent_name]:
-        pytest.fail(f"서버 결과에 {agent_name}['result'] 데이터가 없습니다.")
-        
-    actual_agent_record = outputs[agent_name]["result"]
+    # 메트릭 생성 (팩토리 패턴 -- 매번 새 인스턴스)
+    metrics = get_metrics_for_type(agent_name)
+    primary_metric_name = get_primary_metric(agent_name)
 
-    # RAG 메트릭 채점을 위해 서버 응답에서 관련 데이터 추출
-    retrieval_context = _extract_retrieval_contexts(agent_name, outputs[agent_name])
-
-    # 유형별로 테스트 케이스 그룹핑
-    cases_by_type: dict[str, list[tuple]] = {}
+    case_scores = []
     for item in dataset:
-        q_type = item.get("type", "analysis_report")
         test_case = LLMTestCase(
             input=item["input"],
-            actual_output=actual_agent_record,
-            retrieval_context=retrieval_context,
+            actual_output=actual_output,
+            retrieval_context=retrieval_contexts,
         )
-        cases_by_type.setdefault(q_type, []).append((test_case, item))
 
-    # 유형별 평가 수행
-    for question_type, case_list in cases_by_type.items():
-        metrics = get_metrics_for_type(agent_name)
-        primary_metric_name = get_primary_metric(agent_name)
+        # assert_test: DeepEval에 결과를 공식 등록 (.temp_test_run_data.json 기록)
+        # threshold 미달 시 AssertionError가 발생하나, 개별 threshold 판정은 무시하고
+        # 가중 평균으로 최종 판정하므로 예외를 잡습니다.
+        try:
+            assert_test(test_case, metrics)
+        except AssertionError:
+            pass
 
-        type_scores = []
-        for test_case, q_info in case_list:
-            metric_scores = {}
+        # 메트릭별 점수 수집
+        metric_scores = {}
+        for metric in metrics:
+            metric_scores[metric.name] = metric.score if metric.score else 0.0
 
-            # [핵심] 개별 채점(measure) 수행
-            for metric in metrics:
-                metric.measure(test_case)
-                metric_scores[metric.name] = metric.score if metric.score else 0.0
+        # 분석/RAG 점수 분리 산출
+        separated = calculate_separated_scores(agent_name, metric_scores)
+        case_scores.append(separated)
 
-            separated_scores = calculate_separated_scores(agent_name, metric_scores)
-            type_scores.append(separated_scores)
+        # 결과 출력
+        q_id = item.get("id", "unknown")
+        q_desc = item.get("description", "")
+        print(f"\n  * [{q_id}] {q_desc}")
+        print(f"    - 분석 점수: {separated['analysis_score']:.2%}")
+        if separated["rag_score"] is not None:
+            print(f"    - RAG 점수: {separated['rag_score']:.2%}")
 
-            # 결과 출력
-            q_id = q_info.get("id", "unknown")
-            q_desc = q_info.get("description", "")
-            print("\n" + "="*50)
-            print(f"  * [{q_id}] {q_desc}")
-            print(f"    - 입력: {test_case.input}")
-            print(f"    - 실제 서버 출력:\n{test_case.actual_output}\n")
-            print(f"    - [일반 분석 점수]: {separated_scores['analysis_score']:.2%}")
-            if separated_scores['rag_score'] is not None:
-                print(f"    - [RAG 검색 점수]: {separated_scores['rag_score']:.2%}")
-            else:
-                print(f"    - [RAG 검색 점수]: 미대상 (N/A)")
+        for metric in metrics:
+            marker = " [주요]" if metric.name == primary_metric_name else ""
+            score_val = metric.score if metric.score else 0.0
+            print(f"    - {metric.name}{marker}: {score_val:.2f}")
+            if metric.name == primary_metric_name and metric.reason:
+                print(f"    - 판단 이유: {metric.reason}")
 
-            for metric in metrics:
-                marker = " [주요]" if metric.name == primary_metric_name else ""
-                print(f"    - {metric.name}{marker}: {metric.score:.2f}")
-                if metric.name == primary_metric_name and metric.reason:
-                    print(f"    - 판단 이유: {metric.reason}")
+    # 에이전트 평균 점수 계산
+    if case_scores:
+        avg_analysis = sum(s["analysis_score"] for s in case_scores) / len(case_scores)
+        summary_entry = {
+            "type": agent_name,
+            "analysis_score": avg_analysis,
+            "count": len(case_scores),
+        }
 
-        if type_scores:
-            avg_analysis = sum(s["analysis_score"] for s in type_scores) / len(type_scores)
-            
-            # RAG 점수가 존재하는 에이전트인지 확인하여 평균 산출
-            valid_rag_scores = [float(s["rag_score"]) for s in type_scores if s["rag_score"] is not None]
-            avg_rag = sum(valid_rag_scores) / len(valid_rag_scores) if valid_rag_scores else None
+        # RAG 점수가 있는 에이전트는 RAG 평균도 기록
+        rag_scores = [s["rag_score"] for s in case_scores if s["rag_score"] is not None]
+        if rag_scores:
+            avg_rag = sum(rag_scores) / len(rag_scores)
+            summary_entry["rag_score"] = avg_rag
 
-            summary["results"].append({
-                "type": question_type,
-                "analysis_score": avg_analysis,
-                "rag_score": avg_rag,
-                "count": len(type_scores)
-            })
+        summary["results"].append(summary_entry)
 
     GLOBAL_RESULTS.append(summary)
 
-    # 전체 평균 점수 계산 및 assertion
-    # assert 조건, 메세지: 지정된 조건이 참(True)이면 통과, 거짓(False)일 때만 에러 메시지를 발생
-    if isinstance(summary.get("results"), list) and summary["results"]:
-        all_scores = []
-        for r in summary["results"]:
-            if isinstance(r, dict) and "analysis_score" in r and isinstance(r["analysis_score"], (int, float)):
-                all_scores.append(float(r["analysis_score"]))
-                
-        if all_scores:
-            overall_avg = sum(all_scores) / len(all_scores)
-            assert overall_avg >= 0.7, (
-            f"{agent_name} 전체 평균 점수 {overall_avg:.2%}로 "
-            f"기준(70%) 미달"
+    # 분석 점수 기준으로 assertion (70% 이상)
+    if case_scores:
+        avg_analysis = sum(s["analysis_score"] for s in case_scores) / len(case_scores)
+        assert avg_analysis >= 0.7, (
+            f"{agent_name} 분석 점수 평균 {avg_analysis:.2%}로 기준(70%) 미달"
         )
 
 

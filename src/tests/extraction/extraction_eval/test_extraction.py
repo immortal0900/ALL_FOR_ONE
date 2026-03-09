@@ -6,6 +6,7 @@
 set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/extraction/extraction_eval/test_extraction.py -v > test_extraction_results.txt 2>&1
 """
 
+from deepeval import assert_test
 from deepeval.test_case import LLMTestCase
 from .custom_metrics import get_all_metrics
 from .conftest import load_extraction_dataset, GLOBAL_RESULTS
@@ -14,14 +15,21 @@ from .conftest import load_extraction_dataset, GLOBAL_RESULTS
 def test_extraction():
     """데이터 추출 정확성 평가"""
     dataset = load_extraction_dataset()
-    metrics = get_all_metrics()
     scores = []
 
     for item in dataset:
+        # 팩토리 패턴: 매 테스트 케이스마다 새 메트릭 인스턴스 생성
+        metrics = get_all_metrics()
         tc = LLMTestCase(input=item["input"], actual_output=item["actual_output"])
+
+        # assert_test: DeepEval에 결과를 공식 등록 (.temp_test_run_data.json 기록)
+        try:
+            assert_test(tc, metrics)
+        except AssertionError:
+            pass
+
         item_scores = {}
         for m in metrics:
-            m.measure(tc)
             item_scores[m.name] = m.score if m.score else 0.0
 
         avg = sum(item_scores.values()) / len(item_scores)
@@ -29,7 +37,8 @@ def test_extraction():
         q_id = item.get("id", "unknown")
         print(f"  * [{q_id}] 점수: {avg:.2%}")
         for m in metrics:
-            print(f"    - {m.name}: {m.score:.2f}")
+            score_val = m.score if m.score else 0.0
+            print(f"    - {m.name}: {score_val:.2f}")
             if m.reason:
                 print(f"    - 판단 이유: {m.reason}")
         GLOBAL_RESULTS.append({"id": q_id, "score": avg})
