@@ -22,9 +22,17 @@ LANGFUSE_ENABLED=false 이거나 langfuse 패키지가 미설치된 환경에서
 import os
 import logging
 import contextlib
+import contextvars
 from typing import Optional
 
 from dotenv import load_dotenv
+
+# 현재 활성 세션 ID를 비동기/스레드 안전하게 전파하는 ContextVar.
+# asyncio.create_task() 및 run_in_executor() 호출 시 자동으로 복사되므로
+# LangGraph 노드 함수들이 config를 명시적으로 전달하지 않아도 session_id가 유지됩니다.
+_active_session_id: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
+    "langfuse_session_id", default=None
+)
 
 load_dotenv()
 
@@ -101,6 +109,12 @@ class TokenTracker:
             return None
 
         try:
+            # session_context() 활성화 중이면 그 session_id로 handler를 생성합니다.
+            # LangGraph 노드 함수들이 config를 LLM에 전달하지 않아도
+            # ContextVar를 통해 session_id가 자동으로 주입됩니다.
+            session_id = _active_session_id.get()
+            if session_id:
+                return self._callback_handler_class(session_id=session_id)
             return self._callback_handler_class()
         except Exception as e:
             logger.warning("CallbackHandler 생성 실패: %s", e)
@@ -289,6 +303,9 @@ class TokenTracker:
             yield
             return
 
+        # ContextVar에 session_id를 저장하여 get_callback_handler() 호출 시
+        # 자동으로 주입되도록 합니다.
+        token = _active_session_id.set(session_id)
         try:
             from langfuse.decorators import propagate_attributes
             with propagate_attributes(session_id=session_id):
@@ -298,6 +315,8 @@ class TokenTracker:
         except Exception as e:
             logger.debug("Langfuse session_context 실패 (무시 가능): %s", e)
             yield
+        finally:
+            _active_session_id.reset(token)
 
     def get_client(self):
         """Langfuse 클라이언트를 반환합니다.

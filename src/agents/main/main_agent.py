@@ -1,8 +1,12 @@
+import logging
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 from tools.send_gmail import gmail_authenticate, send_gmail
+
+logger = logging.getLogger(__name__)
 
 from langgraph.graph.state import Command, Literal
 
@@ -249,14 +253,20 @@ def final_node(state: MainState) -> MainState:
     start_input = state[start_input_key]
     title = f"{start_input['target_area']} {start_input['main_type']} {start_input['total_units']} 사업보고서 작성"
 
-    gmail_authenticate()
-    send_gmail(
-        to=email,
-        title=title,
-        md_content_final=state[final_report_key],
-        md_content_source=res.content,
-        drive_links=_build_drive_links(analysis_outputs),
-    )
+    try:
+        gmail_authenticate()
+        send_gmail(
+            to=email,
+            title=title,
+            md_content_final=state[final_report_key],
+            md_content_source=res.content,
+            drive_links=_build_drive_links(analysis_outputs),
+        )
+        logger.info("이메일 전송 완료: %s", email)
+    except Exception as e:
+        # exc_info=True 로 전체 스택 트레이스를 Railway 로그에 출력하여 원인 파악
+        logger.error("이메일 전송 실패 (to=%s): %s", email, e, exc_info=True)
+        raise
 
     return {"source": res.content, status_key: "DONE"}
 
