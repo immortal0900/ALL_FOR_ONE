@@ -22,7 +22,9 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
-client = Perplexity(api_key=PERPLEXITY_API_KEY)
+# sonar-reasoning-pro는 복잡한 질의에서 수분 소요 가능 → 180초 제한
+# Ref: https://docs.perplexity.ai/reference/post_chat_completions
+client = Perplexity(api_key=PERPLEXITY_API_KEY, timeout=180.0)
 
 _DEFAULT_MODEL = "sonar-reasoning-pro"
 

@@ -84,10 +84,12 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
 
     for attempt in range(_MAX_RETRIES):
         try:
+            # Ref: https://googleapis.github.io/python-genai/
             response = client.models.generate_content(
                 model=_DEFAULT_MODEL,
                 contents=prompt,
                 config=generation_config,
+                timeout=180.0,
             )
             result_text = response.text
 

@@ -172,6 +172,7 @@ class LLMProfile(StrEnum):
         return RetryableChatOpenAI(
             model=LLMProfile.RENDERING.value,
             temperature=0,
+            request_timeout=300,
         )
         # return ChatAnthropic(
         #     model_name=LLMProfile.RENDERING.value, temperature=0.0, max_tokens=32000
@@ -182,6 +183,7 @@ class LLMProfile(StrEnum):
         return RetryableChatOpenAI(
             model=LLMProfile.DEV.value,
             temperature=0,
+            request_timeout=300,
         )
 
     @staticmethod
@@ -189,6 +191,7 @@ class LLMProfile(StrEnum):
         return RetryableChatOpenAI(
             model=LLMProfile.CHAT_BOT.value,
             temperature=0,
+            request_timeout=300,
         )
 
     @staticmethod
@@ -196,6 +199,7 @@ class LLMProfile(StrEnum):
         return RetryableChatOpenAI(
             model=LLMProfile.ANALYSIS.value,
             temperature=0,
+            request_timeout=300,
             # reasoning_effort="high", # minimal, low, medium, high
             # verbosity="high",
         )
@@ -212,6 +216,8 @@ class LLMProfile(StrEnum):
 
     @staticmethod
     def report_llm():
+        # jung_min_jae 6회 순차 호출(4세그먼트+검토+수정), 대용량 컨텍스트 고려
         return RetryableChatOpenAI(
             model=LLMProfile.REPORT.value,
+            request_timeout=300,
         )
