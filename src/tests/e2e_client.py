@@ -6,7 +6,7 @@ from typing import Dict, Any
 
 def get_server_url() -> str:
     # 기본적으로 로컬 8080 포트를 사용하거나 환경변수를 따름
-    return os.getenv("DEEPEVAL_SERVER_URL", "http://localhost:8080")
+    return os.getenv("DEEPEVAL_SERVER_URL", "http://localhost:8080").strip()
 
 class E2EClient:
     def __init__(self, base_url: str = None):
