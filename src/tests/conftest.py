@@ -7,9 +7,15 @@ analysis / final_report / source 등 E2E 연동 테스트에서 공유합니다.
 
 [중요] autouse=False — judge/extraction/renderer 등 정적 데이터셋만
 사용하는 모듈은 서버 호출 없이 독립 실행 가능합니다.
+
+[타임아웃 설정]
+서버 파이프라인 정상 완주 시간은 38~55분입니다.
+기본값 7200초(2시간)으로 충분한 여유를 확보합니다.
+환경변수 PIPELINE_TIMEOUT으로 조정 가능합니다.
 """
 
 import json
+import os
 import pytest
 from tests.e2e_client import E2EClient
 
@@ -17,7 +23,7 @@ from tests.e2e_client import E2EClient
 @pytest.fixture(scope="session")
 def e2e_result():
     """
-    E2E 서버 파이프라인을 세션당 1회 호출하고 결과를 캐싱합니다.
+    E2E 서버 파이프라인을 세션당 1회 호출하고 결과를 반환합니다.
 
     사용 모듈: analysis_eval, report_eval, source_eval
     미사용 모듈: judge_eval, extraction_eval, renderer_eval (정적 데이터셋)
@@ -32,6 +38,10 @@ def e2e_result():
             "messages": list,
         }
     """
+    # 환경변수로 타임아웃 조정 가능 (기본값 7200초 = 2시간)
+    # 서버 파이프라인 정상 완주 시간 38~55분을 고려한 안전 마진
+    timeout = int(os.getenv("PIPELINE_TIMEOUT", "7200"))
+
     client = E2EClient()
     start_input = {
         "target_area": "서울특별시 강남구 대치동",
@@ -40,10 +50,9 @@ def e2e_result():
         "total_units": "500",
     }
 
-    print("\n[E2E] 파이프라인 서버 호출 시작...")
-    # 최대 40분 대기 (서버 파이프라인 완주에 약 30분 소요)
-    result_dict = client.run_pipeline(start_input=start_input, timeout=2400)
-    print("[E2E] 파이프라인 리턴 완료. 결과 객체를 캐싱합니다.")
+    print(f"\n[E2E] 파이프라인 서버 호출 시작... (최대 대기: {timeout}초 / {timeout//60}분)")
+    result_dict = client.run_pipeline(start_input=start_input, timeout=timeout)
+    print("[E2E] 파이프라인 리턴 완료. 결과 객체를 저장합니다.")
 
     # 결과 객체를 JSON 파일로 저장 (디버깅/재활용 용도)
     with open("e2e_result.json", "w", encoding="utf-8") as f:

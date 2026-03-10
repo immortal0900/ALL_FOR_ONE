@@ -76,6 +76,11 @@ package-dir = {"" = "src"}
 where = ["src"]
 include = ["*"]  # src 하위의 패키지 전부(예: tools, utils 등). 각 폴더에 __init__.py 필요
 
+[tool.pytest.ini_options]
+# asyncio_mode=strict: 모든 async 테스트에 @pytest.mark.asyncio 명시 필요
+# 현재 pytest-asyncio가 STRICT 모드로 이미 실행되고 있으므로 명시적으로 고정
+asyncio_mode = "strict"
+
 [tool.uv]
 override-dependencies = ["bitsandbytes==0.0.0"]
-package = true  
+package = true
