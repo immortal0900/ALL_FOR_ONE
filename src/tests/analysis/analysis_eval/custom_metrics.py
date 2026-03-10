@@ -53,6 +53,7 @@ def _create_analysis_metrics() -> list[GEval]:
         ],
         threshold=0.7,
         model=evaluator_llm,
+        verbose_mode=False,
     )
 
     data_fidelity = GEval(
@@ -70,6 +71,7 @@ def _create_analysis_metrics() -> list[GEval]:
         ],
         threshold=0.8,
         model=evaluator_llm,
+        verbose_mode=False,
     )
 
     structural_completeness = GEval(
@@ -86,6 +88,7 @@ def _create_analysis_metrics() -> list[GEval]:
         evaluation_params=[LLMTestCaseParams.ACTUAL_OUTPUT],
         threshold=0.7,
         model=evaluator_llm,
+        verbose_mode=False,
     )
 
     return [analysis_depth, data_fidelity, structural_completeness]
@@ -97,9 +100,9 @@ def _create_analysis_metrics() -> list[GEval]:
 def _create_rag_metrics() -> list:
     """RAG 3대 지표 인스턴스를 새로 생성합니다."""
     return [
-        FaithfulnessMetric(threshold=0.7, model=evaluator_llm),
-        ContextualRelevancyMetric(threshold=0.7, model=evaluator_llm),
-        AnswerRelevancyMetric(threshold=0.7, model=evaluator_llm),
+        FaithfulnessMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False),
+        ContextualRelevancyMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False),
+        AnswerRelevancyMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False),
     ]
 
 

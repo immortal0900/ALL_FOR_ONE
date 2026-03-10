@@ -34,6 +34,7 @@ def _create_report_professionalism() -> GEval:
         evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
         threshold=0.7,
         model=evaluator_llm,
+        verbose_mode=False,
     )
 
 
@@ -51,6 +52,7 @@ def _create_analysis_coverage() -> GEval:
         evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
         threshold=0.7,
         model=evaluator_llm,
+        verbose_mode=False,
     )
 
 

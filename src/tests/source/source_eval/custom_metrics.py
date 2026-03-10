@@ -23,6 +23,7 @@ def _create_source_completeness() -> GEval:
         evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
         threshold=0.7,
         model=evaluator_llm,
+        verbose_mode=False,
     )
 
 

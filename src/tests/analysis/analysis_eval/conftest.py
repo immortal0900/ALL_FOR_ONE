@@ -8,7 +8,6 @@
 
 import json
 import os
-import pytest
 
 # ============================================================
 # 데이터셋 로더
@@ -53,44 +52,10 @@ def load_dataset(agent_name: str) -> list[dict]:
 
 
 # ============================================================
-# 종합 리포트 fixture
+# 전역 결과 저장소
 # ============================================================
-# 전역 결과 저장소 — 테스트 전체에서 결과를 누적합니다.
+# 테스트 전체에서 결과를 누적합니다.
 GLOBAL_RESULTS = []
-
-
-@pytest.fixture(scope="session", autouse=True)
-def print_summary_report(request):
-    """세션 종료 시 종합 리포트를 출력합니다."""
-
-    yield  # 모든 테스트 실행 후
-
-    if not GLOBAL_RESULTS:
-        return
-
-    print("\n" + "=" * 70)
-    print("  분석 에이전트 DeepEval 평가 종합 리포트")
-    print("=" * 70)
-
-    for result in GLOBAL_RESULTS:
-        agent = result["agent"]
-        print(f"\n--- {agent} ---")
-
-        for type_result in result.get("results", []):
-            agent_type = type_result["type"]
-            analysis = type_result.get("analysis_score", 0.0)
-            count = type_result["count"]
-            status = "PASS" if analysis >= 0.7 else "FAIL"
-            print(f"  [{status}] {agent_type}: 분석 {analysis:.2%} ({count}건)")
-
-            rag_score = type_result.get("rag_score")
-            if rag_score is not None:
-                rag_status = "PASS" if rag_score >= 0.7 else "FAIL"
-                print(f"  [{rag_status}] {agent_type}: RAG {rag_score:.2%}")
-
-    print("\n" + "=" * 70)
-
-
 
 # e2e_result fixture는 src/tests/conftest.py에 정의되어 있습니다.
 # pytest가 상위 디렉토리의 conftest.py를 자동 탐색하므로

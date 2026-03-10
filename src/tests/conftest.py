@@ -50,3 +50,24 @@ def e2e_result():
         json.dump(result_dict, f, ensure_ascii=False, indent=4)
 
     return result_dict
+
+
+@pytest.fixture(scope="session", autouse=True)
+def unified_summary_report():
+    """
+    모든 테스트 종료 후 통합 종합 리포트를 출력하고
+    전체 상세 결과를 JSON 파일로 저장합니다.
+
+    [설계 결정]
+    각 모듈 conftest.py의 GLOBAL_RESULTS를 import하는 방식은
+    pytest의 conftest 자동 로딩과 패키지 import의 모듈 경로가 달라
+    서로 다른 객체를 참조하는 문제가 있었습니다.
+    따라서 format_utils._JSON_DETAIL_STORE(단일 모듈 전역 변수)에서
+    직접 빌드하는 방식으로 변경했습니다.
+    """
+    yield  # 모든 테스트 실행 후
+
+    from tests.format_utils import print_final_summary, save_detail_json
+    # all_results=None이면 _JSON_DETAIL_STORE에서 자동 빌드
+    print_final_summary()
+    save_detail_json()

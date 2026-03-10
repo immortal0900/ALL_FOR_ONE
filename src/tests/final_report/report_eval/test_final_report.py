@@ -9,10 +9,10 @@ set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/final_report/re
 """
 
 import pytest
-from deepeval import assert_test
 from deepeval.test_case import LLMTestCase
 from .custom_metrics import get_all_metrics, calculate_weighted_score, PRIMARY_METRIC
 from .conftest import GLOBAL_RESULTS
+from tests.format_utils import print_module_header, print_case_result, append_detail
 
 
 def _format_input_from_e2e(start_input: dict) -> str:
@@ -46,25 +46,34 @@ def test_final_report(e2e_result):
         actual_output=final_report,
     )
 
-    # assert_test: DeepEval에 결과를 공식 등록 (.temp_test_run_data.json 기록)
-    try:
-        assert_test(test_case, metrics)
-    except AssertionError:
-        pass
-
+    # metric.measure() 반환값 직접 사용
     metric_scores = {}
     for metric in metrics:
-        metric_scores[metric.name] = metric.score if metric.score else 0.0
+        metric_scores[metric.name] = metric.measure(test_case)
 
     weighted = calculate_weighted_score(metric_scores)
 
-    print(f"\n  * [E2E] 최종 보고서 가중 점수: {weighted:.2%}")
-    for metric in metrics:
-        marker = " [주요]" if metric.name == PRIMARY_METRIC else ""
-        score_val = metric.score if metric.score else 0.0
-        print(f"    - {metric.name}{marker}: {score_val:.2f}")
-        if metric.name == PRIMARY_METRIC and metric.reason:
-            print(f"    - 판단 이유: {metric.reason}")
+    # 주요 메트릭의 판단 이유 추출
+    primary = next((m for m in metrics if m.name == PRIMARY_METRIC), metrics[0])
+
+    print_module_header("최종 보고서(Final Report)", 1)
+    print_case_result(
+        case_id="e2e_final_report",
+        description="E2E 서버 생산 최종 분양성 검토 보고서",
+        input_text=input_text,
+        output_text=final_report,
+        score=weighted,
+        reason=primary.reason,
+    )
+
+    append_detail("final_report", {
+        "id": "e2e_final_report",
+        "input": input_text,
+        "output": final_report,
+        "score": weighted,
+        "metric_scores": metric_scores,
+        "reason": primary.reason,
+    })
 
     GLOBAL_RESULTS.append({"id": "e2e_final_report", "score": weighted})
 

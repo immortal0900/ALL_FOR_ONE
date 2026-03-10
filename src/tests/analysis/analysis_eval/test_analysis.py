@@ -6,7 +6,7 @@
 
 [핵심 설계]
 - E2E 서버 파이프라인 결과(e2e_result)에서 actual_output + retrieval_context 추출
-- assert_test()로 DeepEval에 결과를 공식 등록 (.temp_test_run_data.json 기록)
+- metric.measure()로 원본 metric 객체에 .score/.reason 직접 설정
 - RAG 에이전트: 분석 점수(100%)와 RAG 점수(100%)를 독립 산출 (합산 X)
 - 비-RAG 에이전트: 분석 점수(100%)만 산출
 
@@ -15,7 +15,6 @@ set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analys
 """
 
 import pytest
-from deepeval import assert_test
 from deepeval.test_case import LLMTestCase
 from .custom_metrics import (
     get_metrics_for_type,
@@ -24,6 +23,11 @@ from .custom_metrics import (
     RAG_AGENTS,
 )
 from .conftest import load_dataset, GLOBAL_RESULTS
+from tests.format_utils import (
+    print_module_header,
+    print_analysis_case_result,
+    append_detail,
+)
 
 
 # ============================================================
@@ -86,7 +90,7 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
     [동작 흐름]
     1. e2e_result에서 해당 에이전트의 actual_output + retrieval_context 추출
     2. LLMTestCase 생성 (input은 데이터셋, actual_output/context는 E2E 결과)
-    3. assert_test()로 DeepEval에 결과 등록
+    3. metric.measure()로 각 메트릭 평가 실행
     4. calculate_separated_scores()로 분석/RAG 점수 분리 산출
 
     Args:
@@ -117,6 +121,8 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
     metrics = get_metrics_for_type(agent_name)
     primary_metric_name = get_primary_metric(agent_name)
 
+    print_module_header(f"분석 에이전트 - {agent_name}", len(dataset))
+
     case_scores = []
     for item in dataset:
         test_case = LLMTestCase(
@@ -125,37 +131,39 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
             retrieval_context=retrieval_contexts,
         )
 
-        # assert_test: DeepEval에 결과를 공식 등록 (.temp_test_run_data.json 기록)
-        # threshold 미달 시 AssertionError가 발생하나, 개별 threshold 판정은 무시하고
-        # 가중 평균으로 최종 판정하므로 예외를 잡습니다.
-        try:
-            assert_test(test_case, metrics)
-        except AssertionError:
-            pass
-
-        # 메트릭별 점수 수집
+        # metric.measure() 반환값 직접 사용
         metric_scores = {}
         for metric in metrics:
-            metric_scores[metric.name] = metric.score if metric.score else 0.0
+            metric_scores[metric.name] = metric.measure(test_case)
 
         # 분석/RAG 점수 분리 산출
         separated = calculate_separated_scores(agent_name, metric_scores)
         case_scores.append(separated)
 
-        # 결과 출력
         q_id = item.get("id", "unknown")
         q_desc = item.get("description", "")
-        print(f"\n  * [{q_id}] {q_desc}")
-        print(f"    - 분석 점수: {separated['analysis_score']:.2%}")
-        if separated["rag_score"] is not None:
-            print(f"    - RAG 점수: {separated['rag_score']:.2%}")
+        primary = next((m for m in metrics if m.name == primary_metric_name), metrics[0])
 
-        for metric in metrics:
-            marker = " [주요]" if metric.name == primary_metric_name else ""
-            score_val = metric.score if metric.score else 0.0
-            print(f"    - {metric.name}{marker}: {score_val:.2f}")
-            if metric.name == primary_metric_name and metric.reason:
-                print(f"    - 판단 이유: {metric.reason}")
+        print_analysis_case_result(
+            case_id=q_id,
+            description=q_desc,
+            input_text=item["input"],
+            output_text=actual_output,
+            analysis_score=separated["analysis_score"],
+            rag_score=separated["rag_score"],
+            reason=primary.reason,
+        )
+
+        append_detail("analysis", {
+            "agent": agent_name,
+            "id": q_id,
+            "description": q_desc,
+            "input": item["input"],
+            "output": actual_output,
+            "analysis_score": separated["analysis_score"],
+            "rag_score": separated["rag_score"],
+            "reason": primary.reason,
+        })
 
     # 에이전트 평균 점수 계산
     if case_scores:

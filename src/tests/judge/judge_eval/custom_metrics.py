@@ -25,6 +25,7 @@ def _create_critique_accuracy() -> GEval:
         evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
         threshold=0.7,
         model=evaluator_llm,
+        verbose_mode=False,
     )
 
 

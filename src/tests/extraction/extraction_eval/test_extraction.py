@@ -6,10 +6,10 @@
 set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/extraction/extraction_eval/test_extraction.py -v > test_extraction_results.txt 2>&1
 """
 
-from deepeval import assert_test
 from deepeval.test_case import LLMTestCase
 from .custom_metrics import get_all_metrics
 from .conftest import load_extraction_dataset, GLOBAL_RESULTS
+from tests.format_utils import print_module_header, print_case_result, append_detail
 
 
 def test_extraction():
@@ -17,30 +17,41 @@ def test_extraction():
     dataset = load_extraction_dataset()
     scores = []
 
+    print_module_header("데이터 추출(Extraction)", len(dataset))
+
     for item in dataset:
-        # 팩토리 패턴: 매 테스트 케이스마다 새 메트릭 인스턴스 생성
         metrics = get_all_metrics()
         tc = LLMTestCase(input=item["input"], actual_output=item["actual_output"])
 
-        # assert_test: DeepEval에 결과를 공식 등록 (.temp_test_run_data.json 기록)
-        try:
-            assert_test(tc, metrics)
-        except AssertionError:
-            pass
-
-        item_scores = {}
+        metric_scores = {}
         for m in metrics:
-            item_scores[m.name] = m.score if m.score else 0.0
+            metric_scores[m.name] = m.measure(tc)
 
-        avg = sum(item_scores.values()) / len(item_scores)
+        avg = sum(metric_scores.values()) / len(metric_scores)
         scores.append(avg)
+
         q_id = item.get("id", "unknown")
-        print(f"  * [{q_id}] 점수: {avg:.2%}")
-        for m in metrics:
-            score_val = m.score if m.score else 0.0
-            print(f"    - {m.name}: {score_val:.2f}")
-            if m.reason:
-                print(f"    - 판단 이유: {m.reason}")
+        q_desc = item.get("description", "")
+        primary = metrics[0]
+
+        print_case_result(
+            case_id=q_id,
+            description=q_desc,
+            input_text=item["input"],
+            output_text=item["actual_output"],
+            score=avg,
+            reason=primary.reason,
+        )
+
+        append_detail("extraction", {
+            "id": q_id,
+            "description": q_desc,
+            "input": item["input"],
+            "output": item["actual_output"],
+            "score": avg,
+            "reason": primary.reason,
+        })
+
         GLOBAL_RESULTS.append({"id": q_id, "score": avg})
 
     if scores:

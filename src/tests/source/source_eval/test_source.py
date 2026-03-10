@@ -11,10 +11,10 @@ set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/source/source_e
 """
 
 import pytest
-from deepeval import assert_test
 from deepeval.test_case import LLMTestCase
 from .custom_metrics import get_all_metrics
 from .conftest import GLOBAL_RESULTS
+from tests.format_utils import print_module_header, print_case_result, append_detail
 
 
 def test_source(e2e_result):
@@ -37,24 +37,31 @@ def test_source(e2e_result):
         actual_output=source_output,
     )
 
-    # assert_test: DeepEval에 결과를 공식 등록 (.temp_test_run_data.json 기록)
-    try:
-        assert_test(tc, metrics)
-    except AssertionError:
-        pass
-
-    item_scores = {}
+    # metric.measure() 반환값 직접 사용
+    metric_scores = {}
     for m in metrics:
-        item_scores[m.name] = m.score if m.score else 0.0
+        metric_scores[m.name] = m.measure(tc)
 
-    avg = sum(item_scores.values()) / len(item_scores)
+    avg = sum(metric_scores.values()) / len(metric_scores)
+    primary = metrics[0]
 
-    print(f"\n  * [E2E] 출처 추출 점수: {avg:.2%}")
-    for m in metrics:
-        score_val = m.score if m.score else 0.0
-        print(f"    - {m.name}: {score_val:.2f}")
-        if m.reason:
-            print(f"    - 판단 이유: {m.reason}")
+    print_module_header("출처 추출(Source)", 1)
+    print_case_result(
+        case_id="e2e_source",
+        description="E2E 서버 생산 출처 추출 결과",
+        input_text=final_report,
+        output_text=source_output,
+        score=avg,
+        reason=primary.reason,
+    )
+
+    append_detail("source", {
+        "id": "e2e_source",
+        "input": final_report,
+        "output": source_output,
+        "score": avg,
+        "reason": primary.reason,
+    })
 
     GLOBAL_RESULTS.append({"id": "e2e_source", "score": avg})
 
