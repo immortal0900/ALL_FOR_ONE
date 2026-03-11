@@ -20,7 +20,12 @@ load_dotenv()
 
 # Gemini API 클라이언트 생성
 # 공식 문서: https://ai.google.dev/gemini-api/docs/python-sdk
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+# generate_content()는 timeout 직접 파라미터 미지원 → Client 레벨에서 설정
+# Ref: https://googleapis.github.io/python-genai/
+client = genai.Client(
+    api_key=os.getenv("GEMINI_API_KEY"),
+    http_options={"timeout": 180_000},
+)
 
 _DEFAULT_MODEL = "gemini-2.5-pro"
 _MAX_RETRIES = 3
@@ -89,7 +94,6 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
                 model=_DEFAULT_MODEL,
                 contents=prompt,
                 config=generation_config,
-                timeout=180.0,
             )
             result_text = response.text
 

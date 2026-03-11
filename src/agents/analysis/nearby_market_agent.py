@@ -345,13 +345,13 @@ def agent(state: NearbyMarketState) -> NearbyMarketState:
     new_state = {**state, messages_key: new_messages}
     new_state[output_key] = {
         "result": response.content,
-        gemini_search_key: state[gemini_search_key],
-        kakao_api_distance_context_key: state[kakao_api_distance_context_key],
-        real_estate_price_context_key: state[real_estate_price_context_key],
-        perplexity_search_key: state[perplexity_search_key],
-        kakao_api_distance_download_link_key: state[
+        gemini_search_key: state.get(gemini_search_key),
+        kakao_api_distance_context_key: state.get(kakao_api_distance_context_key),
+        real_estate_price_context_key: state.get(real_estate_price_context_key),
+        perplexity_search_key: state.get(perplexity_search_key),
+        kakao_api_distance_download_link_key: state.get(
             kakao_api_distance_download_link_key
-        ],
+        ),
     }
     return new_state
 

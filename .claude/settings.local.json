@@ -22,7 +22,9 @@
       "Bash(python -c \":*)",
       "Bash(python3 -m json.tool)",
       "Bash(done)",
-      "Bash(python3 -c \":*)"
+      "Bash(python3 -c \":*)",
+      "WebFetch(domain:langfuse.com)",
+      "WebFetch(domain:googleapis.github.io)"
     ]
   }
 }

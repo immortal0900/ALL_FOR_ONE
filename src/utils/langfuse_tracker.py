@@ -109,12 +109,10 @@ class TokenTracker:
             return None
 
         try:
-            # session_context() 활성화 중이면 그 session_id로 handler를 생성합니다.
-            # LangGraph 노드 함수들이 config를 LLM에 전달하지 않아도
-            # ContextVar를 통해 session_id가 자동으로 주입됩니다.
-            session_id = _active_session_id.get()
-            if session_id:
-                return self._callback_handler_class(session_id=session_id)
+            # Langfuse 3.x: CallbackHandler 생성자는 session_id를 직접 받지 않음.
+            # session_id는 session_context()의 propagate_attributes()를 통해
+            # SDK 내부적으로 자동 전파됩니다.
+            # Ref: https://langfuse.com/docs/integrations/langchain/tracing
             return self._callback_handler_class()
         except Exception as e:
             logger.warning("CallbackHandler 생성 실패: %s", e)
@@ -272,18 +270,20 @@ class TokenTracker:
         입출력 텍스트, 토큰 사용량(usage), 메타데이터 등을 기록합니다.
 
         [동작 원리]
-        from langfuse.decorators import langfuse_context 를 사용하여
-        현재 실행 컨텍스트의 observation 단위에 안전하게 접근합니다.
-        가장 최근에 열린 span 또는 generation에 적용됩니다.
+        get_client().update_current_generation() 를 사용하여
+        현재 실행 컨텍스트의 generation 단위에 안전하게 접근합니다.
+        @observe(as_type="generation") 으로 감싸진 함수 내부에서 호출됩니다.
         """
         if not self._enabled:
             return
 
         try:
-            from langfuse.decorators import langfuse_context
-            langfuse_context.update_current_observation(**kwargs)
-        except ImportError:
-            pass
+            # Langfuse 3.x: langfuse.decorators 모듈 삭제됨.
+            # get_client().update_current_generation()으로 대체.
+            # Ref: https://langfuse.com/docs/sdk/python
+            client = self.get_client()
+            if client is not None:
+                client.update_current_generation(**kwargs)
         except Exception as e:
             logger.debug("Langfuse update_observation 실패 (무시 가능): %s", e)
 
@@ -307,7 +307,8 @@ class TokenTracker:
         # 자동으로 주입되도록 합니다.
         token = _active_session_id.set(session_id)
         try:
-            from langfuse.decorators import propagate_attributes
+            # Langfuse 3.x: langfuse.decorators 모듈 삭제됨 → root에서 import
+            from langfuse import propagate_attributes
             with propagate_attributes(session_id=session_id):
                 yield
         except ImportError:

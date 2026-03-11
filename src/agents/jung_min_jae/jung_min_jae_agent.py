@@ -107,13 +107,13 @@ def reporting(state: JungMinJaeState) -> JungMinJaeState:
     main_type = start_input.get(main_type_key, "")
     total_units = start_input.get(total_units_key, "")
 
-    location_insight = analysis_outputs.get(location_insight_output_key, {})["result"]
-    policy = analysis_outputs.get(policy_output_key, {})["result"]
-    housing_faq = analysis_outputs.get(housing_faq_output_key, {})["result"]
-    nearby_market = analysis_outputs.get(nearby_market_output_key, {})["result"]
-    population_insight = analysis_outputs.get(population_insight_output_key, {})["result"]
-    supply_demand = analysis_outputs.get(supply_demand_output_key, {})["result"]
-    unsold_insight = analysis_outputs.get(unsold_insight_output_key, {})["result"]
+    location_insight = analysis_outputs.get(location_insight_output_key, {}).get("result", "")
+    policy = analysis_outputs.get(policy_output_key, {}).get("result", "")
+    housing_faq = analysis_outputs.get(housing_faq_output_key, {}).get("result", "")
+    nearby_market = analysis_outputs.get(nearby_market_output_key, {}).get("result", "")
+    population_insight = analysis_outputs.get(population_insight_output_key, {}).get("result", "")
+    supply_demand = analysis_outputs.get(supply_demand_output_key, {}).get("result", "")
+    unsold_insight = analysis_outputs.get(unsold_insight_output_key, {}).get("result", "")
 
     directive = segment_directive(seg)
     # prev_context = prev_segment_context(state) or ""

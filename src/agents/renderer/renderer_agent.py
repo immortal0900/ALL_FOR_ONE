@@ -110,10 +110,10 @@ def rendering(state: RendererState) -> RendererState:
     path = render_sliceplan_local(slide_plan)
     gmail_authenticate()
     send_gmail(
-        md_content=final_report,
         to=email,
         title=title,
-        attachment_path=path,
+        md_content_final=final_report,
+        md_content_source="",
     )
     
     return {
