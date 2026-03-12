@@ -21,7 +21,7 @@ COPY README.md ./
 # Python 의존성 설치 (서버 런타임에 필요한 패키지만)
 # Railway 캐시 마운트: id=s/<SERVICE_ID>-<경로> 형식 필수 (공식 문서)
 # --no-cache-dir 제거: 캐시 마운트에 pip 다운로드 파일을 저장하여 2회차 빌드 가속
-RUN --mount=type=cache,id=s/ea2c01d8-4819-433d-8c97-cefdf75e4722-/root/.cache/pip,target=/root/.cache/pip \
+RUN --mount=type=cache,id=s/714ca360-aa98-41ee-9a7a-e383f637ab4d-/root/.cache/pip,target=/root/.cache/pip \
     pip install --upgrade pip && \
     pip install \
     fastapi>=0.121.0 \
