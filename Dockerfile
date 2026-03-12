@@ -24,6 +24,7 @@ COPY README.md ./
 RUN --mount=type=cache,id=s/714ca360-aa98-41ee-9a7a-e383f637ab4d-/root/.cache/pip,target=/root/.cache/pip \
     pip install --upgrade pip && \
     pip install \
+    beautifulsoup4>=4.12.0 \
     fastapi>=0.121.0 \
     geopy>=2.4.1 \
     google-api-python-client>=2.0.0 \
