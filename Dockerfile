@@ -20,7 +20,7 @@ COPY README.md ./
 
 # Python 의존성 설치 (서버 런타임에 필요한 패키지만)
 # pip 캐시 마운트: 2회차 빌드부터 변경되지 않은 패키지는 캐시에서 즉시 로드
-RUN --mount=type=cache,target=/root/.cache/pip \
+RUN --mount=type=cache,id=pip-cache,target=/root/.cache/pip \
     pip install --upgrade pip && \
     pip install \
     fastapi>=0.121.0 \
