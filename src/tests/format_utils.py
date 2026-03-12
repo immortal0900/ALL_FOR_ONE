@@ -90,18 +90,62 @@ def print_analysis_case_result(
     input_text: str,
     output_text: str,
     analysis_score: float,
-    rag_score: float | None,
-    reason: str | None,
+    analysis_reason: str | None,
+    metric_scores: dict[str, float] | None = None,
 ):
-    """분석 에이전트용 개별 테스트 케이스 결과 출력 (이중 점수)"""
+    """
+    분석 에이전트용 [분석 평가] 섹션 출력
+
+    [시그니처 변경 이력]
+    - rag_score, reason 제거 -> analysis_reason, metric_scores 추가
+    - RAG 평가는 print_rag_case_result()로 분리
+    - 호출부: test_analysis.py:run_evaluation_for_agent() 1곳
+    """
     print(f"\n  * [{case_id}] {description}")
+    print(f"    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%")
     print(f"    - 입력: {truncate(input_text)}")
     print(f"    - 출력: {truncate(output_text)}")
     print(f"    - 분석 점수: {analysis_score:.2%}")
-    if rag_score is not None:
-        print(f"    - RAG 점수: {rag_score:.2%}")
-    if reason:
-        print(f"    - 판단 이유: {reason}")
+    if metric_scores:
+        details = " | ".join(f"{k}: {v:.2%}" for k, v in metric_scores.items())
+        print(f"      {details}")
+    if analysis_reason:
+        print(f"    - 판단 이유: {analysis_reason}")
+
+
+def print_rag_case_result(
+    retrieval_context: list[str],
+    output_text: str,
+    rag_score: float,
+    rag_reason: str | None,
+    metric_scores: dict[str, float] | None = None,
+):
+    """
+    분석 에이전트용 [RAG 평가] 섹션 출력
+
+    print_analysis_case_result() 직후에 호출됩니다.
+    case_id/description는 이미 분석 섹션에서 출력되었으므로 생략합니다.
+
+    [컨텍스트 표시 전략]
+    - 최대 3개까지 번호 매기기로 나열, 각 150자 절단
+    - EVAL_FULL_OUTPUT=1 이면 전체 표시
+    - 4개 이상이면 "... 외 N건" 표시
+    """
+    print(f"    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%")
+    ctx_parts = []
+    for i, ctx in enumerate(retrieval_context[:3], 1):
+        ctx_parts.append(f"[{i}] {truncate(ctx, max_len=150)}")
+    remaining = len(retrieval_context) - 3
+    if remaining > 0:
+        ctx_parts.append(f"... 외 {remaining}건")
+    print(f"    - 검색 컨텍스트: {' | '.join(ctx_parts)}")
+    print(f"    - 출력: {truncate(output_text)}")
+    print(f"    - RAG 점수: {rag_score:.2%}")
+    if metric_scores:
+        details = " | ".join(f"{k}: {v:.2%}" for k, v in metric_scores.items())
+        print(f"      {details}")
+    if rag_reason:
+        print(f"    - 판단 이유: {rag_reason}")
 
 
 # ============================================================

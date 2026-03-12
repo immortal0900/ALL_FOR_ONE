@@ -20,12 +20,14 @@ from .custom_metrics import (
     get_metrics_for_type,
     calculate_separated_scores,
     get_primary_metric,
+    get_rag_primary_metric,
     RAG_AGENTS,
 )
 from .conftest import load_dataset, GLOBAL_RESULTS
 from tests.format_utils import (
     print_module_header,
     print_analysis_case_result,
+    print_rag_case_result,
     append_detail,
 )
 
@@ -120,6 +122,11 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
     # 메트릭 생성 (팩토리 패턴 -- 매번 새 인스턴스)
     metrics = get_metrics_for_type(agent_name)
     primary_metric_name = get_primary_metric(agent_name)
+    rag_primary_metric_name = get_rag_primary_metric(agent_name)
+
+    # 분석/RAG 메트릭 이름 목록 (개별 점수 표시용)
+    analysis_metric_names = {"AnalysisDepth", "DataFidelity", "StructuralCompleteness"}
+    rag_metric_names = {"Faithfulness", "Contextual Relevancy", "Answer Relevancy"}
 
     print_module_header(f"분석 에이전트 - {agent_name}", len(dataset))
 
@@ -134,48 +141,90 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
         # metric.measure() 반환값 직접 사용
         # 개별 메트릭 실패 시 0.0으로 대체하여 테스트 전체 크래시 방지
         # 실패 원인은 [경고] 메시지로 출력하여 진단 가능
-        metric_scores = {}
+        all_metric_scores = {}
         for metric in metrics:
             # .name이 없는 메트릭(Built-in RAG 등) 대비 안전한 이름 추출
             m_name = getattr(metric, "name", type(metric).__name__)
             try:
                 score = metric.measure(test_case)
-                metric_scores[m_name] = score if score is not None else 0.0
+                all_metric_scores[m_name] = score if score is not None else 0.0
             except Exception as e:
                 print(f"  [경고] {m_name} 평가 실패: {e}")
-                metric_scores[m_name] = 0.0
+                all_metric_scores[m_name] = 0.0
 
         # 분석/RAG 점수 분리 산출
-        separated = calculate_separated_scores(agent_name, metric_scores)
+        separated = calculate_separated_scores(agent_name, all_metric_scores)
         case_scores.append(separated)
 
         q_id = item.get("id", "unknown")
         q_desc = item.get("description", "")
-        primary = next(
+
+        # --- 분석 대표 메트릭에서 reason 추출 ---
+        analysis_primary = next(
             (m for m in metrics if getattr(m, "name", None) == primary_metric_name),
             metrics[0],
         )
+        analysis_reason = getattr(analysis_primary, "reason", None)
 
+        # --- RAG 대표 메트릭에서 reason 추출 (RAG 에이전트만) ---
+        rag_reason = None
+        if rag_primary_metric_name:
+            rag_primary = next(
+                (m for m in metrics if getattr(m, "name", None) == rag_primary_metric_name),
+                None,
+            )
+            if rag_primary:
+                rag_reason = getattr(rag_primary, "reason", None)
+
+        # --- 개별 메트릭 점수를 분석/RAG로 분리 ---
+        analysis_metrics = {k: v for k, v in all_metric_scores.items() if k in analysis_metric_names}
+        rag_metrics = {k: v for k, v in all_metric_scores.items() if k in rag_metric_names}
+
+        # --- [분석 평가] 섹션 출력 ---
         print_analysis_case_result(
             case_id=q_id,
             description=q_desc,
             input_text=item["input"],
             output_text=actual_output,
             analysis_score=separated["analysis_score"],
-            rag_score=separated["rag_score"],
-            reason=primary.reason,
+            analysis_reason=analysis_reason,
+            metric_scores=analysis_metrics,
         )
 
-        append_detail("analysis", {
+        # --- [RAG 평가] 섹션 출력 (RAG 에이전트만) ---
+        if separated["rag_score"] is not None:
+            print_rag_case_result(
+                retrieval_context=retrieval_contexts,
+                output_text=actual_output,
+                rag_score=separated["rag_score"],
+                rag_reason=rag_reason,
+                metric_scores=rag_metrics,
+            )
+
+        # --- JSON 상세 결과 저장 ---
+        detail_entry = {
             "agent": agent_name,
             "id": q_id,
             "description": q_desc,
-            "input": item["input"],
-            "output": actual_output,
             "analysis_score": separated["analysis_score"],
             "rag_score": separated["rag_score"],
-            "reason": primary.reason,
-        })
+            "analysis": {
+                "input": item["input"],
+                "output": actual_output,
+                "score": separated["analysis_score"],
+                "reason": analysis_reason,
+                "metrics": analysis_metrics,
+            },
+        }
+        if separated["rag_score"] is not None:
+            detail_entry["rag"] = {
+                "retrieval_context": retrieval_contexts,
+                "output": actual_output,
+                "score": separated["rag_score"],
+                "reason": rag_reason,
+                "metrics": rag_metrics,
+            }
+        append_detail("analysis", detail_entry)
 
     # 에이전트 평균 점수 계산
     if case_scores:

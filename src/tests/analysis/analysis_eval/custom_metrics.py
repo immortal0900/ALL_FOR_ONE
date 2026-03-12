@@ -141,6 +141,19 @@ def get_primary_metric(agent_name: str) -> str:
     return "AnalysisDepth"
 
 
+def get_rag_primary_metric(agent_name: str) -> str | None:
+    """
+    RAG 대표 메트릭 이름 반환. 비-RAG 에이전트는 None.
+
+    Faithfulness 선택 이유:
+    RAG 파이프라인의 핵심 품질 = 검색 컨텍스트 기반 사실 충실도.
+    ContextualRelevancy/AnswerRelevancy는 보조 지표.
+    """
+    if agent_name in RAG_AGENTS:
+        return "Faithfulness"
+    return None
+
+
 def calculate_separated_scores(agent_name: str, scores: dict[str, float]) -> dict[str, Optional[float]]:
     """
     일반 분석 점수와 RAG 검색 점수를 명확히 분리하여 반환합니다.
@@ -152,9 +165,9 @@ def calculate_separated_scores(agent_name: str, scores: dict[str, float]) -> dic
     """
     # 1. 일반 분석 지표 (모든 에이전트 공통 적용)
     analysis_weights = {
-        "AnalysisDepth": 0.40,
-        "DataFidelity": 0.40,
-        "StructuralCompleteness": 0.20,
+        "AnalysisDepth": 0.60,          # 주 메트릭 (분석 심도)
+        "DataFidelity": 0.20,           # 보조 (데이터 정확성)
+        "StructuralCompleteness": 0.20, # 보조 (구조 완성도)
     }
 
     analysis_score = 0.0
