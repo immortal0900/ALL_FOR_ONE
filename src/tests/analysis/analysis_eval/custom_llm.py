@@ -64,6 +64,7 @@ class ProjectEvaluatorLLM(DeepEvalBaseLLM):
         self.model = RetryableChatOpenAI(
             model=model_name,
             temperature=temperature,
+            request_timeout=120,  # 평가 호출 무한 대기 방지 (120초)
             model_kwargs={"response_format": {"type": "json_object"}},
         )
         self._model_name = model_name

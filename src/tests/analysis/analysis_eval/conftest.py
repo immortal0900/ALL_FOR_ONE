@@ -14,6 +14,10 @@ import os
 # ============================================================
 DATASETS_DIR = os.path.join(os.path.dirname(__file__), "datasets")
 
+# EVAL_QUICK_MODE=1 설정 시 에이전트당 첫 번째 케이스만 평가 (3건 → 1건)
+# 빠른 반복 개발/디버깅 용도로, 평가 시간을 약 66% 절감합니다.
+QUICK_MODE = os.getenv("EVAL_QUICK_MODE", "0") == "1"
+
 # 에이전트명 → 데이터셋 파일명 매핑
 AGENT_DATASET_MAP = {
     "housing_faq": "housing_faq.json",
@@ -48,7 +52,13 @@ def load_dataset(agent_name: str) -> list[dict]:
         raise FileNotFoundError(f"데이터셋 파일 없음: {filepath}")
 
     with open(filepath, "r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+
+    if QUICK_MODE:
+        print(f"  [Quick Mode] {agent_name}: {len(data)}건 중 1건만 평가")
+        return data[:1]
+
+    return data
 
 
 # ============================================================

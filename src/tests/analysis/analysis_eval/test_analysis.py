@@ -14,6 +14,8 @@
 set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py -v > test_analysis_results.txt 2>&1
 """
 
+import time
+
 import pytest
 from deepeval.test_case import LLMTestCase
 from .custom_metrics import (
@@ -62,12 +64,35 @@ CONTEXT_KEYS = {
 }
 
 
+# ============================================================
+# 평가용 컨텍스트 절단 (Evaluation Context Truncation)
+# ============================================================
+# [존재 이유]
+# policy(130K자), population(79K자) 등 거대한 retrieval_context를
+# 평가 LLM(gpt-5-mini)에 그대로 전달하면 API 응답이 60-120초로 느려지고,
+# 126회 순차 호출 시 전체 평가가 2시간 이상 소요되어 사실상 완료 불가.
+# 10K자로 절단하면 평가 LLM 입력이 ~2,500토큰으로 제한되어 응답이 15-30초로 단축됨.
+# 절단은 평가 LLM에 전달하는 데이터만 영향 — E2E 파이프라인 자체에는 무관.
+MAX_CONTEXT_CHARS = 10_000  # 약 2,500 토큰
+
+
+def _truncate_context(text: str, max_chars: int = MAX_CONTEXT_CHARS) -> str:
+    """평가 성능을 위해 컨텍스트를 최대 길이로 절단합니다."""
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars] + "\n... (truncated for evaluation)"
+
+
 def _extract_retrieval_contexts(agent_name: str, agent_data: dict) -> list[str]:
     """
     E2E 결과에서 에이전트별 retrieval_context 문자열 리스트를 추출합니다.
 
     agent_data: e2e_result["analysis_outputs"][agent_key] 딕셔너리
     반환값: ["컨텍스트1 내용", "컨텍스트2 내용", ...] 형태의 문자열 리스트
+
+    [절단 정책]
+    각 컨텍스트 청크를 MAX_CONTEXT_CHARS(10K자)로 절단하여
+    평가 LLM의 응답 시간을 단축합니다.
     """
     context_keys = CONTEXT_KEYS.get(agent_name, [])
     contexts = []
@@ -76,8 +101,9 @@ def _extract_retrieval_contexts(agent_name: str, agent_data: dict) -> list[str]:
         value = agent_data.get(key)
         if value is None:
             continue
-        # 값이 문자열이면 그대로, 딕셔너리/리스트면 str()로 변환
-        contexts.append(str(value) if not isinstance(value, str) else value)
+        # 값이 문자열이면 그대로, 딕셔너리/리스트면 str()로 변환 후 절단
+        text = str(value) if not isinstance(value, str) else value
+        contexts.append(_truncate_context(text))
 
     return contexts if contexts else ["(컨텍스트 없음)"]
 
@@ -131,7 +157,9 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
     print_module_header(f"분석 에이전트 - {agent_name}", len(dataset))
 
     case_scores = []
-    for item in dataset:
+    for i, item in enumerate(dataset, 1):
+        print(f"\n  [{agent_name}] 케이스 {i}/{len(dataset)} 평가 중...")
+
         test_case = LLMTestCase(
             input=item["input"],
             actual_output=actual_output,
@@ -145,11 +173,15 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
         for metric in metrics:
             # .name이 없는 메트릭(Built-in RAG 등) 대비 안전한 이름 추출
             m_name = getattr(metric, "name", type(metric).__name__)
+            t0 = time.time()
             try:
                 score = metric.measure(test_case)
+                elapsed = time.time() - t0
+                print(f"    {m_name}: {score:.2f} ({elapsed:.1f}s)")
                 all_metric_scores[m_name] = score if score is not None else 0.0
             except Exception as e:
-                print(f"  [경고] {m_name} 평가 실패: {e}")
+                elapsed = time.time() - t0
+                print(f"    [경고] {m_name} 평가 실패 ({elapsed:.1f}s): {e}")
                 all_metric_scores[m_name] = 0.0
 
         # 분석/RAG 점수 분리 산출
