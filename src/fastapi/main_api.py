@@ -100,7 +100,7 @@ async def run_graph_task(job_id: str, start_input: dict):
         config = tracker.get_langfuse_config(session_id=job_id)
         
         # 외부 통신(도구)들의 관찰 내역까지 모두 포괄하기 위해 session_context 사용
-        with tracker.session_context(session_id=job_id):
+        async with tracker.session_context(session_id=job_id):
             result = await graph.ainvoke({"start_input": start_input}, config=config)
 
         jobs[job_id]["status"] = "completed"

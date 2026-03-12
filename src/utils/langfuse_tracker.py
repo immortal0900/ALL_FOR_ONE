@@ -287,15 +287,22 @@ class TokenTracker:
         except Exception as e:
             logger.debug("Langfuse update_observation 실패 (무시 가능): %s", e)
 
-    @contextlib.contextmanager
-    def session_context(self, session_id: str):
-        """세션 ID를 하위 모든 관찰 객체(@observe)에 전파하는 컨텍스트 매니저.
-        
+    @contextlib.asynccontextmanager
+    async def session_context(self, session_id: str):
+        """세션 ID를 하위 모든 관찰 객체(@observe)에 전파하는 비동기 컨텍스트 매니저.
+
         [존재 이유]
         LangChain의 config metadata 방식만으로는 @observe 로 감싸진 외부 도구
         (Gemini, Perplexity 통신 등)까지 세션 ID가 안정적으로 전달되지 않습니다.
         이 블록으로 실행부를 감싸면 모든 하위 호출이 같은 세션으로 묶입니다.
-        
+
+        [변경 이유: contextmanager → asynccontextmanager]
+        동기 CM에서 비동기 코드(await graph.ainvoke())를 감쌀 경우,
+        OpenTelemetry의 ContextVar 토큰이 다른 async Context에서 생성되어
+        detach 시 ValueError("was created in a different Context") 발생.
+        async CM으로 변경하여 async 경계를 올바르게 처리합니다.
+        Ref: https://langfuse.com/docs/observability/features/sessions
+
         [Graceful Degradation]
         비활성화 시 내부 동작 없이 안전하게 yield 합니다.
         """

@@ -132,9 +132,16 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
         )
 
         # metric.measure() 반환값 직접 사용
+        # 개별 메트릭 실패 시 0.0으로 대체하여 테스트 전체 크래시 방지
+        # 실패 원인은 [경고] 메시지로 출력하여 진단 가능
         metric_scores = {}
         for metric in metrics:
-            metric_scores[metric.name] = metric.measure(test_case)
+            try:
+                score = metric.measure(test_case)
+                metric_scores[metric.name] = score if score is not None else 0.0
+            except Exception as e:
+                print(f"  [경고] {metric.name} 평가 실패: {e}")
+                metric_scores[metric.name] = 0.0
 
         # 분석/RAG 점수 분리 산출
         separated = calculate_separated_scores(agent_name, metric_scores)
