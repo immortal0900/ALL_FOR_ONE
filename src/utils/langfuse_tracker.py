@@ -316,8 +316,20 @@ class TokenTracker:
         try:
             # Langfuse 3.x: langfuse.decorators 모듈 삭제됨 → root에서 import
             from langfuse import propagate_attributes
-            with propagate_attributes(session_id=session_id):
+
+            # propagate_attributes()는 동기 전용 CM(sync-only context manager)이므로
+            # async 함수 내에서 with 문으로 사용하면 OpenTelemetry ContextVar 토큰이
+            # 다른 async Context에서 생성/해제되어 "Failed to detach context" 발생.
+            # __enter__()로 컨텍스트를 설정하고, __exit__()의 detach 실패는 무시합니다.
+            pa = propagate_attributes(session_id=session_id)
+            pa.__enter__()
+            try:
                 yield
+            finally:
+                try:
+                    pa.__exit__(None, None, None)
+                except Exception:
+                    pass  # async 경계의 ContextVar 토큰 불일치 — 무해한 경고
         except ImportError:
             yield
         except Exception as e:

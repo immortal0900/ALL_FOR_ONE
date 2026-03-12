@@ -25,7 +25,13 @@ def test_renderer():
 
         metric_scores = {}
         for m in metrics:
-            metric_scores[m.name] = m.measure(tc)
+            m_name = getattr(m, "name", type(m).__name__)
+            try:
+                score = m.measure(tc)
+                metric_scores[m_name] = score if score is not None else 0.0
+            except Exception as e:
+                print(f"  [경고] {m_name} 평가 실패: {e}")
+                metric_scores[m_name] = 0.0
 
         avg = sum(metric_scores.values()) / len(metric_scores)
         scores.append(avg)

@@ -49,12 +49,21 @@ def test_final_report(e2e_result):
     # metric.measure() 반환값 직접 사용
     metric_scores = {}
     for metric in metrics:
-        metric_scores[metric.name] = metric.measure(test_case)
+        m_name = getattr(metric, "name", type(metric).__name__)
+        try:
+            score = metric.measure(test_case)
+            metric_scores[m_name] = score if score is not None else 0.0
+        except Exception as e:
+            print(f"  [경고] {m_name} 평가 실패: {e}")
+            metric_scores[m_name] = 0.0
 
     weighted = calculate_weighted_score(metric_scores)
 
     # 주요 메트릭의 판단 이유 추출
-    primary = next((m for m in metrics if m.name == PRIMARY_METRIC), metrics[0])
+    primary = next(
+        (m for m in metrics if getattr(m, "name", None) == PRIMARY_METRIC),
+        metrics[0],
+    )
 
     print_module_header("최종 보고서(Final Report)", 1)
     print_case_result(

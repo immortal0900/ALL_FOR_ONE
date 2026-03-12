@@ -98,12 +98,24 @@ def _create_analysis_metrics() -> list[GEval]:
 # 2. RAG 메트릭 팩토리 (RAG 에이전트 전용)
 # ============================================================
 def _create_rag_metrics() -> list:
-    """RAG 3대 지표 인스턴스를 새로 생성합니다."""
-    return [
-        FaithfulnessMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False),
-        ContextualRelevancyMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False),
-        AnswerRelevancyMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False),
-    ]
+    """RAG 3대 지표 인스턴스를 새로 생성합니다.
+
+    [존재 이유]
+    DeepEval의 Built-in RAG 메트릭(FaithfulnessMetric 등)은
+    GEval과 달리 생성자에 name 파라미터가 없고 .name 속성도 없습니다.
+    calculate_separated_scores()의 가중치 키와 일치시키기 위해
+    수동으로 .name을 설정합니다.
+    """
+    faithfulness = FaithfulnessMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False)
+    faithfulness.name = "Faithfulness"
+
+    contextual_relevancy = ContextualRelevancyMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False)
+    contextual_relevancy.name = "Contextual Relevancy"
+
+    answer_relevancy = AnswerRelevancyMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False)
+    answer_relevancy.name = "Answer Relevancy"
+
+    return [faithfulness, contextual_relevancy, answer_relevancy]
 
 
 # ============================================================

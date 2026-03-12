@@ -136,12 +136,14 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
         # 실패 원인은 [경고] 메시지로 출력하여 진단 가능
         metric_scores = {}
         for metric in metrics:
+            # .name이 없는 메트릭(Built-in RAG 등) 대비 안전한 이름 추출
+            m_name = getattr(metric, "name", type(metric).__name__)
             try:
                 score = metric.measure(test_case)
-                metric_scores[metric.name] = score if score is not None else 0.0
+                metric_scores[m_name] = score if score is not None else 0.0
             except Exception as e:
-                print(f"  [경고] {metric.name} 평가 실패: {e}")
-                metric_scores[metric.name] = 0.0
+                print(f"  [경고] {m_name} 평가 실패: {e}")
+                metric_scores[m_name] = 0.0
 
         # 분석/RAG 점수 분리 산출
         separated = calculate_separated_scores(agent_name, metric_scores)
@@ -149,7 +151,10 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
 
         q_id = item.get("id", "unknown")
         q_desc = item.get("description", "")
-        primary = next((m for m in metrics if m.name == primary_metric_name), metrics[0])
+        primary = next(
+            (m for m in metrics if getattr(m, "name", None) == primary_metric_name),
+            metrics[0],
+        )
 
         print_analysis_case_result(
             case_id=q_id,
