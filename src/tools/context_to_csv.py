@@ -437,7 +437,26 @@ def age_population_to_drive(text, address):
 
 # ['population_insight']['move_population_context']
 def move_population_to_drive(data_list, address):
+    # 방어: 문자열로 넘어올 경우 JSON 파싱 시도 (planning_move_to_csv 패턴)
+    if isinstance(data_list, str):
+        try:
+            data_list = json.loads(data_list)
+        except json.JSONDecodeError:
+            data_list = []
+
     df = pd.DataFrame(data_list)
+
+    # 데이터가 비어있거나 필수 컬럼이 없는 경우 방어 (KeyError 방지)
+    required_columns = ["year", "origin", "destination", "total"]
+    if df.empty or not all(col in df.columns for col in required_columns):
+        df = pd.DataFrame(columns=["기준연도", "전출지", "전입지", "이동인구수"])
+        link = upload_to_drive(
+            data=df,
+            filename=f"{address}_인구이동_temp.csv",
+            mime_type="text/csv"
+        )
+        print("📎 _인구이동_temp 링크 (빈 데이터):", link)
+        return link
 
     df = df[["year", "origin", "destination", "total"]]
     df = df.rename(columns={

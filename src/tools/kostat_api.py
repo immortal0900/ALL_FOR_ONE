@@ -301,9 +301,15 @@ system_prompt = """
 
 [출력 형식]
 - 사용자 질문에 맞는 PostgresSQL 쿼리문을 만들어주십시오
-- 사용자 질문이 위 스키마 범위를 벗어나면 스키마에서 가능한 선까지만 쿼리를 생성하시오. 
-- 반드시 SQL 코드만 출력하십시오. 어떤 형태의 설명, 따옴표, 백틱(`) 코드블록 마크다운(sql 등)도 포함하지 마십시오.
-- 출력은 오직 순수한 SQL 문 한 줄 이상으로만 구성되어야 합니다.
+- 사용자 질문이 위 스키마 범위를 벗어나면 스키마에서 가능한 선까지만 쿼리를 생성하시오.
+
+[필수 SELECT 컬럼 규칙]
+- SELECT 절에는 반드시 year, origin, destination, total 4개 컬럼만 포함하세요.
+- id 컬럼은 절대 SELECT에 포함하지 마세요.
+- SELECT * 를 사용하지 마세요.
+- 컬럼 alias(AS)를 사용하지 마세요. 반드시 원본 컬럼명 그대로 사용하세요.
+- 올바른 예: SELECT year, origin, destination, total FROM age_population WHERE ...
+- 잘못된 예: SELECT * FROM age_population / SELECT year AS "연도" ...
 """
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -313,8 +319,23 @@ from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 import os 
 
-def get_move_population(question:str):
+def get_move_population(question: str):
+    """인구 이동 통계를 PostgreSQL에서 조회합니다.
+
+    [동작 흐름]
+    1단계: LLM이 사용자 주소를 "서울 자치구" 형식으로 정규화
+    2단계: LLM이 정규화된 주소로 SQL 생성 (StructuredOutput으로 컬럼 고정)
+    3단계: SQL 실행 → list[dict] 반환
+
+    [StructuredOutput 적용 이유]
+    이전에 StrOutputParser()로 자유 텍스트 SQL을 받았을 때 LLM이
+    SELECT *, 한글 alias 등 변형 SQL을 생성하여 하류 move_population_to_drive()에서
+    KeyError("['origin', 'destination', 'total'] not in index") 발생.
+    MovePopulationQuery 스키마로 SELECT 컬럼을 year, origin, destination, total로 강제.
+    """
     load_dotenv()
+
+    # 1단계: 주소 정규화 (예: "서울특별시 송파구 석촌동" → "서울 송파구")
     gen_query_llm = LLMProfile.dev_llm().invoke(
         f"""
         당신은 질문을 맞춤으로 생성을 담당한 역할입니다. 주소를 입력으로 받습니다.
@@ -324,30 +345,35 @@ def get_move_population(question:str):
         1. "서울특별시 종로구" -> "서울 종로구"
         2. "서울 강동구 서초동" -> "서울 강남구"
         3. "서울특별시 송파구 석촌동" -> "서울 송파구"
-        
+
         [강력 지침]
-        - xxx구 까지만 얘기하세요 
+        - xxx구 까지만 얘기하세요
         - 자치구 말이외에 절대 다른말을 하지마세요
         - 자치구만 말씀하세요
-        - xx동은 절대 말하지마세요 
-        
+        - xx동은 절대 말하지마세요
 
         질문: {question}
         """
     )
     print(gen_query_llm.content)
     new_question = gen_query_llm.content
-    
+
+    # 2단계: SQL 생성 (StructuredOutput으로 컬럼 고정)
+    from agents.state.structured_schemas import MovePopulationQuery
+
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
-        ("user", "{question}" )
+        ("user", "{question}")
     ])
 
-    chain = prompt | LLMProfile.dev_llm() | StrOutputParser()
-    query = chain.invoke({"question":new_question})
+    llm = LLMProfile.dev_llm().with_structured_output(MovePopulationQuery)
+    response = llm.invoke(prompt.format_messages(question=new_question))
+    query = response.sql
+
+    # 3단계: SQL 실행
     connection_url = os.getenv("POSTGRES_URL")
     engine = create_engine(connection_url)
-    
+
     with engine.connect() as conn:
         result = conn.execute(text(query))
         rows = [dict(row._mapping) for row in result.fetchall()]

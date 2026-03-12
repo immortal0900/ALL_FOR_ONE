@@ -303,6 +303,13 @@ class TokenTracker:
         async CM으로 변경하여 async 경계를 올바르게 처리합니다.
         Ref: https://langfuse.com/docs/observability/features/sessions
 
+        [구조 설계: setup → yield → cleanup]
+        - setup(import + __enter__)은 yield 전에 실행. 실패 시 pa=None으로 안전 진행.
+        - yield 후 예외(athrow)는 잡지 않고 그대로 전파 (재yield 금지).
+        - finally에서 cleanup만 수행.
+        이전 구조에서 except ImportError/Exception 블록이 athrow 후 재yield하여
+        "RuntimeError: generator didn't stop after athrow()" 발생했음.
+
         [Graceful Degradation]
         비활성화 시 내부 동작 없이 안전하게 yield 합니다.
         """
@@ -313,29 +320,31 @@ class TokenTracker:
         # ContextVar에 session_id를 저장하여 get_callback_handler() 호출 시
         # 자동으로 주입되도록 합니다.
         token = _active_session_id.set(session_id)
+
+        # --- Setup: yield 전에 초기화 시도, 실패 시 pa=None ---
+        pa = None
         try:
-            # Langfuse 3.x: langfuse.decorators 모듈 삭제됨 → root에서 import
             from langfuse import propagate_attributes
 
             # propagate_attributes()는 동기 전용 CM(sync-only context manager)이므로
             # async 함수 내에서 with 문으로 사용하면 OpenTelemetry ContextVar 토큰이
             # 다른 async Context에서 생성/해제되어 "Failed to detach context" 발생.
-            # __enter__()로 컨텍스트를 설정하고, __exit__()의 detach 실패는 무시합니다.
+            # __enter__()로 컨텍스트를 설정하고, __exit__()의 detach 실패는 finally에서 무시.
             pa = propagate_attributes(session_id=session_id)
             pa.__enter__()
-            try:
-                yield
-            finally:
+        except Exception as e:
+            logger.debug("Langfuse session_context 초기화 실패 (무시 가능): %s", e)
+
+        # --- Yield: 단일 yield 지점. 예외는 호출부로 그대로 전파됨 ---
+        try:
+            yield
+        finally:
+            # --- Cleanup: propagate_attributes 해제 + ContextVar 리셋 ---
+            if pa is not None:
                 try:
                     pa.__exit__(None, None, None)
                 except Exception:
                     pass  # async 경계의 ContextVar 토큰 불일치 — 무해한 경고
-        except ImportError:
-            yield
-        except Exception as e:
-            logger.debug("Langfuse session_context 실패 (무시 가능): %s", e)
-            yield
-        finally:
             _active_session_id.reset(token)
 
     def get_client(self):

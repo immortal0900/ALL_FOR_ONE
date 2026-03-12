@@ -165,3 +165,29 @@ class HousingRuleItem(BaseModel):
 class HousingRuleList(BaseModel):
     rules: List[HousingRuleItem] = Field(description="주택공급규칙 조문별 요약 결과 목록")
 
+
+# ---------------------------------------------------------------------------
+# 6. MovePopulationQuery (인구이동) – TextToSQL 출력 스키마
+#    파일: kostat_api.py > get_move_population()
+# ---------------------------------------------------------------------------
+
+class MovePopulationQuery(BaseModel):
+    """
+    get_move_population()에서 LLM이 생성하는 SQL 쿼리의 출력 스키마.
+
+    [존재 이유]
+    이 스키마 없이는 LLM이 SELECT *, 한글 alias(AS "전출지") 등
+    예측 불가능한 SQL을 생성하여 하류 move_population_to_drive()에서
+    KeyError("['origin', 'destination', 'total'] not in index")가 발생합니다.
+    StructuredOutput으로 강제하면 LLM이 sql 필드에 순수 SQL만 반환합니다.
+    """
+
+    sql: str = Field(
+        description=(
+            "SELECT year, origin, destination, total FROM age_population WHERE ... "
+            "형태의 PostgreSQL 쿼리. "
+            "반드시 year, origin, destination, total 4개 컬럼만 SELECT하세요. "
+            "id 컬럼과 컬럼 alias(AS)는 사용하지 마세요."
+        )
+    )
+

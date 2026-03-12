@@ -57,9 +57,14 @@ class ProjectEvaluatorLLM(DeepEvalBaseLLM):
         # 프로젝트의 RetryableChatOpenAI를 재사용하여 재시도 로직 공유
         from utils.llm import RetryableChatOpenAI
 
+        # response_format: DeepEval GEval이 JSON으로 score/reason을 요청하므로
+        # API 레벨에서 유효한 JSON 출력을 강제하여 파싱 실패 방지
+        # (이 설정이 없으면 LLM이 한국어 응답 중 Python 문자열 연결 등 비표준 구문을 삽입하여
+        #  trimAndLoadJson()에서 ValueError 발생)
         self.model = RetryableChatOpenAI(
             model=model_name,
             temperature=temperature,
+            model_kwargs={"response_format": {"type": "json_object"}},
         )
         self._model_name = model_name
         super().__init__()
