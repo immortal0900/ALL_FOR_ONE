@@ -24,7 +24,8 @@
       "Bash(done)",
       "Bash(python3 -c \":*)",
       "WebFetch(domain:langfuse.com)",
-      "WebFetch(domain:googleapis.github.io)"
+      "WebFetch(domain:googleapis.github.io)",
+      "WebFetch(domain:docs.railway.com)"
     ]
   }
 }

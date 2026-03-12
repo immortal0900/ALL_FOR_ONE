@@ -18,18 +18,16 @@ RUN apt-get update && apt-get install -y \
 COPY pyproject.toml ./
 COPY README.md ./
 
-# Python 의존성만 설치 (패키지 자체는 설치하지 않음)
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir \
-    docling>=2.57.0 \
-    docx2txt>=0.9 \
+# Python 의존성 설치 (서버 런타임에 필요한 패키지만)
+# pip 캐시 마운트: 2회차 빌드부터 변경되지 않은 패키지는 캐시에서 즉시 로드
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --upgrade pip && \
+    pip install \
     fastapi>=0.121.0 \
-    folium>=0.20.0 \
     geopy>=2.4.1 \
     google-api-python-client>=2.0.0 \
     google-auth-oauthlib>=1.2.3 \
     google-genai>=1.47.0 \
-    jupyter>=1.1.1 \
     langchain>=1.0.3 \
     langchain-anthropic>=1.0.0 \
     langchain-community>=0.4.1 \
@@ -41,44 +39,49 @@ RUN pip install --no-cache-dir --upgrade pip && \
     langchain-tavily>=0.2.12 \
     langchain-teddynote>=0.5.3 \
     langgraph>=1.0.0 \
+    langfuse>=3.0.0 \
     markdown>=3.9 \
     numpy>=2.3.4 \
     pandas>=2.3.3 \
-    pdfminer>=20191125 \
     pdfplumber>=0.11.7 \
     perplexityai>=0.17.1 \
     pgvector>=0.4.1 \
-    pi-heif>=1.1.1 \
     pillow>=11.3.0 \
-    pip>=25.3 \
     psutil>=7.1.2 \
     psycopg2-binary>=2.9.11 \
-    pymupdf>=1.26.5 \
-    pypdf>=4.0.0 \
     pypdf2>=3.0.1 \
     python-dotenv>=1.1.1 \
-    ragas>=0.3.8 \
     rank-bm25>=0.2.2 \
     reportlab>=4.4.4 \
     scikit-learn>=1.7.2 \
-    selenium>=4.37.0 \
-    sentence-transformers>=5.1.1 \
     tavily-python>=0.7.12 \
-    streamlit>=1.39.0 \
     uvicorn>=0.32.0 \
-    transformers>=4.57.1 \
-    unstructured>=0.18.15 \
-    weasyprint>=66.0 \
-    xhtml2pdf>=0.2.17 \
-    deepeval>=3.8.8 \
-    langfuse>=3.0.0
-
-# PyTorch CPU 설치
-RUN pip install --no-cache-dir \
-    --index-url https://download.pytorch.org/whl/cpu \
-    torch==2.4.1+cpu \
-    torchvision==0.19.1+cpu \
-    torchaudio==2.4.1+cpu
+    weasyprint>=66.0
+#
+# [제거된 패키지 19개 — 총 ~2.1GB 절감]
+#
+# 완전 미사용 (src/에서 import 0건):
+#   docling (~200MB)        — 문서 변환 라이브러리, 프로젝트에서 미사용
+#   docx2txt (~1MB)         — Word 파일 변환, 미사용
+#   pdfminer (~5MB)         — PDF 파싱, weasyprint 사용 중
+#   unstructured (~300MB)   — 비정형 데이터 파서, 미사용
+#   pi-heif (~5MB)          — HEIF 이미지 변환, 미사용
+#   xhtml2pdf (~10MB)       — HTML->PDF 변환, weasyprint 사용 중
+#   pypdf (~5MB)            — PyPDF2만 사용 (default_loader.py)
+#   sentence-transformers (~100MB) — Embedding은 OpenAI API 사용
+#
+# 테스트/개발 전용 (src/tests/ 또는 src/lab/에서만 사용):
+#   deepeval (~50MB)        — 테스트 프레임워크, 로컬 실행
+#   ragas (~30MB)           — 실험 노트북 전용
+#   selenium (~20MB)        — 웹 크롤링 테스트 전용
+#   jupyter (~100MB)        — 노트북 실행용, 서버에서 미사용
+#   folium (~5MB)           — 지도 시각화, 노트북 전용
+#   pymupdf (~30MB)         — PDF 파싱, 노트북 전용
+#
+# 별도 앱 / 로컬 모델 추론 불필요:
+#   streamlit (~80MB)       — FastAPI와 별도 앱, Docker는 FastAPI만 실행
+#   torch+torchvision+torchaudio (~880MB) — Embedding은 OpenAI API 사용, 로컬 추론 없음
+#   transformers (~300MB)   — 노트북 전용, 서버에서 로컬 모델 추론 없음
 
 # 실행 스테이지
 FROM python:3.12-slim
