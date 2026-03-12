@@ -42,6 +42,7 @@ HOUSING_FAQ_HUMAN:
 
   input_variables:
     - target_area
-    - main_type    
+    - main_type
+    - total_units
     - hosuing_faq_context
     - hosuing_rule_context

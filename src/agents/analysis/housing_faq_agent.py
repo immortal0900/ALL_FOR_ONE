@@ -71,9 +71,11 @@ def analysis_setting(state: HousingFaqState) -> HousingFaqState:
     faq_context = state[housing_faq_context_key]
     rule_context = state[housing_rule_context_key]
     system_prompt = PromptManager(PromptType.HOUSING_FAQ_SYSTEM).get_prompt()
+    total_units = start_input[total_units_key]
     human_prompt = PromptManager(PromptType.HOUSING_FAQ_HUMAN).get_prompt(
         target_area=target_area,
         main_type=main_type,
+        total_units=total_units,
         hosuing_faq_context=faq_context,
         hosuing_rule_context=rule_context,
     )
