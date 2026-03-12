@@ -143,3 +143,27 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand
 src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market 
 
 
+
+
+>>> [분석 에이전트 - nearby_market] 평가 시작 (3건)
+------------------------------------------------------------
+[31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight 
+
+
+
+
+>>> [분석 에이전트 - location_insight] 평가 시작 (3건)
+------------------------------------------------------------
+[31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight 
+
+
+
+
+>>> [분석 에이전트 - population_insight] 평가 시작 (3건)
+------------------------------------------------------------
+[31mFAILED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_unsold_insight 
+
+
