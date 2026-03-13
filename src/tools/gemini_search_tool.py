@@ -68,6 +68,17 @@ def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
 
 @_langfuse_tracker.observe(as_type="generation")
 def gemini_search(prompt: str, response_schema: Optional[dict] = None) -> str:
+    # 방어 검증: response_schema는 반드시 dict여야 합니다.
+    # Pydantic 클래스를 직접 전달하면 Gemini API가 JSON 직렬화에 실패하므로
+    # .model_json_schema()로 dict를 생성한 뒤 전달해야 합니다.
+    if response_schema is not None and not isinstance(response_schema, dict):
+        raise TypeError(
+            f"response_schema는 dict 타입이어야 합니다 "
+            f"(전달된 타입: {type(response_schema).__name__}). "
+            f"Pydantic 모델이라면 .model_json_schema()를 호출하세요. "
+            f"예: MySchema.model_json_schema()"
+        )
+
     # response_schema 가 전달된 경우에만 JSON 강제 모드로 호출
     # 참고: https://ai.google.dev/gemini-api/docs/structured-output
     generation_config = (

@@ -134,9 +134,10 @@ def gemini_search_tool(state: LocationInsightState) -> LocationInsightState:
     """
 
     # Structured Output: LocationInsightGeminiSchema 스키마 강제
+    # .model_json_schema()로 dict를 전달해야 Gemini API가 JSON 직렬화 가능
     raw_dict = gemini_search(
         prompt,
-        response_schema=LocationInsightGeminiSchema,
+        response_schema=LocationInsightGeminiSchema.model_json_schema(),
     )
 
     return {gemini_search_key: raw_dict}

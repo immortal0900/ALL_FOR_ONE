@@ -55,7 +55,16 @@ class RetryableChatOpenAI(ChatOpenAI):
     [존재 이유]
     이 클래스 한 곳에서 Langfuse 콜백을 주입하므로
     28개 LLM 호출 지점을 개별 수정할 필요가 없습니다.
+
+    [OpenAI SDK 내부 retry 비활성화]
+    이 클래스가 자체 재시도 로직(5회, Exponential Backoff)을 관리하므로
+    OpenAI SDK의 내부 retry(ChatOpenAI 기본 max_retries=2)와 중복되지 않도록
+    max_retries=0으로 비활성화합니다.
+    이것이 없을 경우: 5(외부) x 3(내부) = 15회 시도로 timeout이 컴파운딩되어
+    최악 수 시간 대기가 발생할 수 있습니다.
     """
+
+    max_retries: int = 0
 
     def _merge_langfuse_config(self, config=None):
         """기존 config에 Langfuse CallbackHandler를 안전하게 병합합니다.
@@ -73,12 +82,36 @@ class RetryableChatOpenAI(ChatOpenAI):
         """
         return _langfuse_tracker.merge_config(config)
 
+    def _get_total_timeout(self) -> float:
+        """전체 retry 루프의 시간 제한을 계산합니다.
+
+        단일 요청 timeout(request_timeout)의 2배를 전체 제한으로 사용합니다.
+        이것이 없을 경우: 5회 retry x request_timeout = 최대 25분 무응답 대기 가능.
+        2배로 설정하면 최소 1회 완전한 timeout + 1회 빠른 retry가 가능하되
+        무한 대기는 방지됩니다.
+        """
+        raw_timeout = self.request_timeout
+        if isinstance(raw_timeout, (list, tuple)):
+            raw_timeout = max(raw_timeout)
+        return (raw_timeout or 300) * 2
+
     def invoke(self, input, config=None, **kwargs):
         """동기 호출 시 재시도 로직 + Langfuse 자동 추적 적용"""
         config = self._merge_langfuse_config(config)
         max_retries = 5
+        total_timeout = self._get_total_timeout()
+        start_time = time.monotonic()
 
         for i in range(max_retries):
+            # 전체 시간 제한 초과 시 마지막 에러와 함께 즉시 중단
+            elapsed = time.monotonic() - start_time
+            if elapsed > total_timeout:
+                raise TimeoutError(
+                    f"RetryableChatOpenAI 전체 재시도 시간 제한 초과 "
+                    f"({total_timeout:.0f}초 중 {elapsed:.0f}초 경과, "
+                    f"{i}회 시도 후 중단)"
+                )
+
             try:
                 return super().invoke(input, config=config, **kwargs)
             except _NON_RETRYABLE_ERRORS:
@@ -108,8 +141,19 @@ class RetryableChatOpenAI(ChatOpenAI):
         """비동기 호출 시 재시도 로직 + Langfuse 자동 추적 적용"""
         config = self._merge_langfuse_config(config)
         max_retries = 5
+        total_timeout = self._get_total_timeout()
+        start_time = time.monotonic()
 
         for i in range(max_retries):
+            # 전체 시간 제한 초과 시 마지막 에러와 함께 즉시 중단
+            elapsed = time.monotonic() - start_time
+            if elapsed > total_timeout:
+                raise TimeoutError(
+                    f"RetryableChatOpenAI 전체 재시도 시간 제한 초과 "
+                    f"({total_timeout:.0f}초 중 {elapsed:.0f}초 경과, "
+                    f"{i}회 시도 후 중단)"
+                )
+
             try:
                 return await super().ainvoke(input, config=config, **kwargs)
             except _NON_RETRYABLE_ERRORS:
