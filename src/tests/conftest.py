@@ -8,6 +8,11 @@ analysis / final_report / source 등 E2E 연동 테스트에서 공유합니다.
 [중요] autouse=False — judge/extraction/renderer 등 정적 데이터셋만
 사용하는 모듈은 서버 호출 없이 독립 실행 가능합니다.
 
+[실행 모드 — E2E_MODE 환경변수]
+  eval_only (기본): 캐시 파일(e2e_result.json)에서 로드, 서버 호출 없음
+  cache_only:       서버 호출 → 캐시 저장 → 평가 생략 (데이터 수집만)
+  full:             서버 호출 → 캐시 저장 → 평가 실행 (전체 파이프라인)
+
 [타임아웃 설정]
 서버 파이프라인 정상 완주 시간은 38~55분입니다.
 기본값 7200초(2시간)으로 충분한 여유를 확보합니다.
@@ -20,10 +25,25 @@ import pytest
 from tests.e2e_client import E2EClient
 
 
+# ============================================================
+# E2E 실행 모드
+# ============================================================
+# [존재 이유]
+# 서버 호출(40분+)과 평가(수 분)를 분리하여 개발 반복 속도를 높입니다.
+# 이 설정이 없으면 데이터셋/메트릭만 수정해도 매번 40분 서버 호출을 기다려야 합니다.
+E2E_MODE = os.getenv("E2E_MODE", "eval_only")
+CACHE_PATH = "e2e_result.json"
+
+
 @pytest.fixture(scope="session")
 def e2e_result():
     """
-    E2E 서버 파이프라인을 세션당 1회 호출하고 결과를 반환합니다.
+    E2E 서버 파이프라인 결과를 반환합니다.
+
+    실행 모드(E2E_MODE)에 따라 데이터 소스가 달라집니다:
+      eval_only:  캐시 파일 로드 (서버 호출 없음)
+      cache_only: 서버 호출 → 캐시 저장 → pytest.skip (평가 생략)
+      full:       서버 호출 → 캐시 저장 → 결과 반환 (평가 진행)
 
     사용 모듈: analysis_eval, report_eval, source_eval
     미사용 모듈: judge_eval, extraction_eval, renderer_eval (정적 데이터셋)
@@ -38,8 +58,18 @@ def e2e_result():
             "messages": list,
         }
     """
-    # 환경변수로 타임아웃 조정 가능 (기본값 7200초 = 2시간)
-    # 서버 파이프라인 정상 완주 시간 38~55분을 고려한 안전 마진
+    # ---- eval_only: 캐시 파일에서 로드, 서버 호출 없음 ----
+    if E2E_MODE == "eval_only":
+        if not os.path.exists(CACHE_PATH):
+            pytest.fail(
+                f"캐시 파일({CACHE_PATH})이 없습니다.\n"
+                f"  E2E_MODE=full 또는 cache_only로 먼저 실행하세요."
+            )
+        print(f"\n[E2E] eval_only 모드 — 캐시({CACHE_PATH}) 로드")
+        with open(CACHE_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    # ---- cache_only / full: 서버 호출 + 캐시 저장 ----
     timeout = int(os.getenv("PIPELINE_TIMEOUT", "7200"))
 
     client = E2EClient()
@@ -50,13 +80,17 @@ def e2e_result():
         "total_units": "500",
     }
 
-    print(f"\n[E2E] 파이프라인 서버 호출 시작... (최대 대기: {timeout}초 / {timeout//60}분)")
+    print(f"\n[E2E] {E2E_MODE} 모드 — 서버 호출 시작 (최대 대기: {timeout}초 / {timeout//60}분)")
     result_dict = client.run_pipeline(start_input=start_input, timeout=timeout)
-    print("[E2E] 파이프라인 리턴 완료. 결과 객체를 저장합니다.")
+    print("[E2E] 파이프라인 리턴 완료. 캐시 파일을 저장합니다.")
 
-    # 결과 객체를 JSON 파일로 저장 (디버깅/재활용 용도)
-    with open("e2e_result.json", "w", encoding="utf-8") as f:
+    with open(CACHE_PATH, "w", encoding="utf-8") as f:
         json.dump(result_dict, f, ensure_ascii=False, indent=4)
+    print(f"[E2E] 캐시 저장 완료: {CACHE_PATH}")
+
+    # cache_only: 서버 호출 + 캐시 저장까지만, 평가는 생략
+    if E2E_MODE == "cache_only":
+        pytest.skip("cache_only 모드: 캐시 저장 완료, 평가 생략")
 
     return result_dict
 

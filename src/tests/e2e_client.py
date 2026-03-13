@@ -60,7 +60,7 @@ class E2EClient:
                 raise TimeoutError(
                     f"파이프라인 실행 시간 초과 ({timeout}초 경과)\n"
                     f"  타임아웃 연장: conftest.py timeout 값 또는 PIPELINE_TIMEOUT 환경변수 조정\n"
-                    f"  캐시 재활용: e2e_result.json 파일이 존재하면 E2E_USE_CACHE=true(기본값)로 재활용 가능"
+                    f"  캐시 재활용: e2e_result.json이 존재하면 E2E_MODE=eval_only(기본값)로 평가만 실행 가능"
                 )
 
             try:
