@@ -78,6 +78,33 @@ def gmail_authenticate():
     return creds
 
 
+def _ensure_blank_line_before_tables(md: str) -> str:
+    """
+    마크다운 표(| ... | 패턴)가 일반 텍스트 바로 뒤에 오면
+    python-markdown이 표를 인식하지 못하므로, 빈 줄을 강제 삽입한다.
+
+    python-markdown의 tables 확장은 블록 단위로 파싱하는데,
+    빈 줄 없이 텍스트에 이어진 표는 텍스트와 같은 블록으로 묶여
+    <table> 대신 <p> 태그로 변환되어 | 기호가 그대로 노출된다.
+
+    이 함수가 없으면: "표) 제목\n| 헤더 |..." → <p>표) 제목\n| 헤더 |...</p>
+    이 함수가 있으면: "표) 제목\n\n| 헤더 |..." → <p>표) 제목</p><table>...</table>
+    """
+    lines = md.split("\n")
+    result = []
+    for line in lines:
+        if (
+            line.strip().startswith("|")
+            and result # 리스트에 뭔가 있을 때만
+            and result[-1].strip() != "" # 마지막 요소(이전 줄)가 비어있지 않을 때만
+            and not result[-1].strip().startswith("#") # 제목(#) 뒤에는 빈 줄 없어도 표가 정상 인식
+            and not result[-1].strip().startswith("|") # 표 다음에는 빈 줄 없어도 표가 정상 인식
+        ):
+            result.append("") # 빈 문자열(빈 줄) 삽입
+        result.append(line)
+    return "\n".join(result)
+
+
 def _strip_outer_fence(md: str) -> str:
     """
     ```...``` 로 전체가 둘러싸여 있으면 그 껍데기만 벗겨줌.
@@ -123,6 +150,9 @@ def markdown_to_pdf(md_text: str, filename: str) -> str:
     pdf_title = os.path.splitext(filename)[0]
 
     try:
+        # 표 앞에 빈 줄이 없으면 python-markdown이 <table>로 파싱하지 못함
+        md_text = _ensure_blank_line_before_tables(md_text)
+
         # Markdown → HTML
         html = markdown.markdown(md_text, extensions=["tables", "fenced_code"])
 

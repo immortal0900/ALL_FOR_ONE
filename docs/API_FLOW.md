@@ -1,6 +1,6 @@
 # ALL-FOR-ONE API & Data Flow 문서
 
-> 최종 업데이트: 2026-02-03
+> 최종 업데이트: 2026-03-14
 > 프로젝트: 부동산 분양성 검토 보고서 자동 생성 시스템
 
 ---
@@ -13,6 +13,8 @@
 4. [플로우 다이어그램](#4-플로우-다이어그램)
 5. [이메일 발송](#5-이메일-발송)
 6. [부록](#6-부록)
+7. [Langfuse Observability](#7-langfuse-observability)
+8. [DeepEval 테스트 아키텍처](#8-deepeval-테스트-아키텍처)
 
 ---
 
@@ -61,18 +63,26 @@ flowchart TB
     subgraph Delivery["전달"]
         G[Gmail API<br/>+ Google Drive]
     end
-    
+
+    subgraph Observability["Observability"]
+        OBS[Langfuse<br/>토큰/비용 추적]
+    end
+
     A --> B
     B --> C1 & C2 & C3 & C4 & C5 & C6 & C7
     C1 & C2 & C3 & C4 & C5 & C6 & C7 --> D1 & D2 & D3 & D4
     C1 & C2 & C3 & C4 & C5 & C6 & C7 --> E
     E --> F1 & F2 & F3
     F1 & F2 & F3 --> G
-    
+    B -.-> OBS
+    E -.-> OBS
+    D4 -.-> OBS
+
     style A fill:#e3f2fd,color:#000
     style B fill:#fff3e0,color:#000
     style E fill:#fff9c4,color:#000
     style G fill:#c8e6c9,color:#000
+    style OBS fill:#f3e5f5,color:#000
 ```
 
 ### 1.2 기술 스택
@@ -90,6 +100,9 @@ flowchart TB
 | PDF 생성 | WeasyPrint | 66.0+ | Markdown → PDF |
 | 이메일 | Gmail API | - | 보고서 발송 |
 | 파일 저장 | Google Drive API | - | CSV/PDF 업로드 |
+| Observability | Langfuse | 3.x | 토큰/비용 추적 (Observability) |
+| LLM 테스트 | DeepEval | 3.8.8+ | LLM 평가 테스트 프레임워크 |
+| 웹 검색 | Tavily Search | - | 웹 검색 (청약경쟁률) |
 
 ### 1.3 외부 API 서비스
 
@@ -101,8 +114,10 @@ flowchart TB
 | FRED (미국 연준) | 미국 금리 | 공급/수요 |
 | R-ONE (부동산원) | 매매수급지수 | 공급/수요 |
 | 공공데이터포털 | 실거래가 조회 | 주변시장 |
-| Perplexity AI | 실시간 웹 검색 | 정책, 입지, 주변시장 |
+| Perplexity AI | 실시간 웹 검색 | 정책, 입지, 주변시장, 공급/수요 |
 | Google Gemini | AI 기반 검색 | 입지, 주변시장 |
+| Langfuse Cloud | 토큰/비용 추적, 세션 관리 | 전체 (자동 주입) |
+| Tavily Search API | 웹 검색 | 공급/수요 (청약경쟁률) |
 
 ### 1.4 포트 정보
 
@@ -174,14 +189,17 @@ flowchart LR
     end
     
     subgraph Processing["처리"]
-        P1[analysis_setting<br/>프롬프트 구성]
+        P1[analysis_setting<br/>SEGMENT 01: 뉴스<br/>SEGMENT 02: comp.md 비교]
         P2[generate_initial_report<br/>초안 작성]
-        P3[evaluate_completeness<br/>완성도 평가]
+        P3[evaluate_completeness<br/>완성도 평가<br/>6점 검증]
         P4{is_complete?}
         P5[execute_retrieval<br/>추가 검색]
+        P5b{blanks >= 3?}
+        P5c[perplexity_search<br/>부족 정보 보완]
         P6[revise_report<br/>보고서 수정]
+        LIMIT["MAX_ITERATIONS = 3<br/>무한 루프 방지"]
     end
-    
+
     subgraph Output["출력"]
         O1[policy_output.result<br/>분석 보고서]
         O2[national_context<br/>국가 뉴스 원본]
@@ -189,20 +207,33 @@ flowchart LR
         O4[국가적_정책_모음.csv]
         O5[지역별_정책_모음.csv]
     end
-    
+
     I1 & I2 & I3 --> D1 & D2 & D3
     D1 & D2 & D3 --> P1
     P1 --> P2 --> P3 --> P4
-    P4 -->|No| P5 --> P6 --> P3
+    P4 -->|No| P5
+    P5 --> P5b
+    P5b -->|Yes| P5c --> P6
+    P5b -->|No| P6
+    P6 --> P3
     P4 -->|Yes| O1
+    LIMIT -.-> P4
     D1 --> O2 --> O4
     D2 --> O3 --> O5
-    
+
     style I1 fill:#e3f2fd,color:#000
     style O1 fill:#c8e6c9,color:#000
     style O4 fill:#fff9c4,color:#000
     style O5 fill:#fff9c4,color:#000
+    style LIMIT fill:#ffcdd2,color:#000
 ```
+
+**프롬프트 구조:**
+- **SEGMENT 01**: 국가 뉴스(`national_news`) + 지역 뉴스(`region_news`) 기반 정책 동향 분석
+- **SEGMENT 02**: `comp.md` 전체 비교 (기존 정책 vs 신규 정책 차이점 비교표 작성)
+
+**완성도 평가 6점 검증 항목:**
+개요 / 목표 / 비교표 / 차이점 / 평가 / 전망
 
 **데이터 소스:**
 | 함수 | 소스 타입 | 설명 |
@@ -210,7 +241,7 @@ flowchart LR
 | `national_policy_retrieve()` | RAG (pgvector) | 국가 정책 뉴스 벡터 검색 |
 | `collect_articles_result()` | 웹 크롤링 | 지역 정책 기사 수집 |
 | `PolicyPDFRetriever.hybrid_search()` | RAG (pgvector) | 정책 PDF 하이브리드 검색 |
-| `perplexity_search()` | AI 웹 검색 | 부족한 정보 보완 |
+| `perplexity_search()` | AI 웹 검색 | 부족한 정보 보완 (PDF 공백 >= 3건 시) |
 
 **출력 구조:**
 ```python
@@ -389,10 +420,10 @@ flowchart LR
 **데이터 소스:**
 | 함수 | 소스 타입 | 설명 |
 |------|----------|------|
-| `gemini_search()` | Google Gemini AI | 주변 매매 3개 + 분양 3개 아파트 검색 |
+| `gemini_search()` | Google Gemini AI | 주변 매매 3개 + 분양 3개 아파트 검색 (Structured Output: `NearbyMarketGeminiSchema` → [2.4 참조](#24-structured-output-스키마)) |
 | `get_location_profile()` | Kakao Maps API | 각 아파트 입지 정보 |
 | `get_real_estate_price()` | 공공데이터포털 API | 매매아파트 실거래가 |
-| `perplexity_search()` | Perplexity AI | 분양아파트 가격/경쟁률 검증 |
+| `perplexity_search()` | Perplexity AI | 분양아파트 가격/경쟁률 검증 (Structured Output: `NearbyMarketPerplexitySchema` → [2.4 참조](#24-structured-output-스키마)) |
 
 **수집 정보 (아파트당):**
 - 매매아파트: 주소, 세대수, 타입, 평당매매가격, 준공연도, 거리, 주변호재
@@ -402,7 +433,7 @@ flowchart LR
 ```python
 nearby_market_output = {
     "result": str,                              # LLM 분석 보고서
-    "gemini_search": str,                       # Gemini 검색 결과 (JSON)
+    "gemini_search": str,                       # Gemini 검색 결과 (JSON Schema 강제)
     "kakao_api_distance_context": list[dict],   # 6개 아파트 입지 정보
     "real_estate_price_context": list[dict],    # 매매 실거래가
     "perplexity_search": str,                   # 분양가 검증 결과
@@ -556,7 +587,7 @@ flowchart LR
     end
     
     subgraph DataCollection["데이터 수집"]
-        D1[get_unsold_unit<br/>미분양 현황 로컬 CSV]
+        D1[unsold_units<br/>미분양 현황 RAG<br/>pgvector 벡터 검색]
     end
     
     subgraph Processing["처리"]
@@ -585,7 +616,7 @@ flowchart LR
 **데이터 소스:**
 | 함수 | 소스 타입 | 설명 |
 |------|----------|------|
-| `unsold_units()` | 로컬 CSV | 시군구별 미분양 현황 (월별) |
+| `unsold_units()` | RAG (pgvector) | 시군구별 미분양 현황 (월별, `unsold_housing_indexer.py`로 사전 벡터 인덱싱) |
 
 **출력 구조:**
 ```python
@@ -600,7 +631,39 @@ unsold_insight_output = {
 
 ---
 
-### 2.3 데이터 유형 분류
+### 2.3 Structured Output 스키마
+
+`src/agents/state/structured_schemas.py`에서 관리되는 Pydantic 스키마입니다.
+LLM이 자유 텍스트(마크다운+설명)를 반환하면 `json.loads()` 파싱이 실패할 수 있으므로, API 레벨에서 JSON 형식을 강제하여 파싱 실패율을 0%로 만듭니다.
+
+| 스키마 | 사용 에이전트 | 대상 API | 용도 |
+|-------|-------------|---------|------|
+| `NearbyMarketGeminiSchema` | 주변시장 | Gemini | 매매 3 + 분양 3 아파트 (세대수/타입/평당가/준공연도/거리) |
+| `LocationInsightGeminiSchema` | 입지분석 | Gemini | 지역특징 + 주변호재 리스트 |
+| `NearbyMarketPerplexitySchema` | 주변시장 | Perplexity | 분양아파트 검증 (가격/조건/경쟁률) |
+| `CompetitionItem` / `PrePromiseCompetitionResult` | 공급/수요 | Tavily + LLM | 청약경쟁률 파싱 (주소/공고일/경쟁률) |
+| `HousingRuleItem` / `HousingRuleList` | 청약FAQ | LLM (CSV 변환) | 주택공급규칙 요약 (조문명/핵심요약/주요조건) |
+| `MovePopulationQuery` | 인구분석 | LLM (Text-to-SQL) | SQL 컬럼명 강제 (year/origin/destination/total) |
+
+**Structured Output 적용 흐름:**
+
+```mermaid
+flowchart LR
+    A[사용자 질의] --> B[LLM 호출<br/>+ Pydantic Schema]
+    B --> C{JSON 유효?}
+    C -->|Yes| D[json.loads 성공<br/>후속 노드 정상 처리]
+    C -->|No| E[API 레벨에서<br/>재시도/에러 반환]
+
+    style A fill:#e3f2fd,color:#000
+    style D fill:#c8e6c9,color:#000
+    style E fill:#ffcdd2,color:#000
+```
+
+> **스키마가 없을 경우:** Gemini가 `"주변에는 래미안 아파트가 있고..."` 같은 자연어를 반환 → 후속 노드에서 `json.loads()` 실패 → 에이전트 전체 크래시
+
+---
+
+### 2.4 데이터 유형 분류
 
 | 유형 | 설명 | 예시 |
 |-----|------|------|
@@ -727,6 +790,27 @@ flowchart TB
 | Segment 2 | 공급/수요 분석, 미분양 현황 | supply_demand, unsold_insight |
 | Segment 3 | 인구 분석, 주변 시장 비교 | population_insight, nearby_market |
 | Segment 4 | 청약 조건, 종합 평가, 결론 | housing_faq, 전체 |
+
+**조건부 컨텍스트 주입 (토큰 폭발 방지):**
+
+세그먼트가 4번 반복되면서 기초자료(수만 토큰)가 매번 누적되면 `ContextOverflowError`가 발생합니다 (1턴 7만 → 4턴 28만 토큰). 이를 방지하기 위해:
+
+- **seg == 1**: `SystemMessage` + 7개 에이전트 결과 전체를 `HumanMessage`로 주입 (최초 1회만)
+- **seg >= 2**: 이전 메시지 기억(Attention)을 활용하여, 짧은 **세그먼트 작성 지시서**만 `HumanMessage`로 추가
+
+> LLM의 Attention 메커니즘이 이전 대화를 기억하므로, 기초자료를 다시 넣을 필요가 없습니다.
+
+**think_tool 자체 검증 (5점 체크리스트):**
+
+보고서 병합 후 `reflect_agent`가 `think_tool`을 호출하여 아래 5개 항목을 검증합니다:
+
+| # | 검증 항목 |
+|---|----------|
+| 1 | 각 페이지 시작부에 핵심 인사이트의 근거가 명확한가 |
+| 2 | 근거로 사용할 데이터를 명확하게 표기했는가 |
+| 3 | 근거로 사용할 데이터는 정확한 데이터인가 |
+| 4 | 비교분석에 정책/경제지표/공급수요/미분양/인구 등을 종합했는가 |
+| 5 | 최종 보고서 양식을 벗어난 불필요한 말을 하지 않았는가 |
 
 <!-- SECTION:FLOW:END -->
 
@@ -880,7 +964,7 @@ sequenceDiagram
 **미분양 (1개)**
 | 파일명 | 데이터 유형 | 출처 |
 |-------|-----------|------|
-| `{주소}_미분양_temp.csv` | 로컬 원본 | 로컬 CSV 파일 |
+| `{주소}_미분양_temp.csv` | RAG 원본 | pgvector 벡터 검색 |
 
 **인구 분석 (2개)**
 | 파일명 | 데이터 유형 | 출처 |
@@ -1004,6 +1088,25 @@ pie title 이메일 첨부 파일 데이터 유형 분포
 | `LANGSMITH_API_KEY` | LangSmith 추적 API | - |
 | `LANGSMITH_TRACING` | 추적 활성화 | `false` |
 
+#### Langfuse (Observability)
+
+| 변수명 | 설명 | 기본값 |
+|-------|------|-------|
+| `LANGFUSE_SECRET_KEY` | Langfuse Secret Key | - |
+| `LANGFUSE_PUBLIC_KEY` | Langfuse Public Key | - |
+| `LANGFUSE_HOST` | Langfuse 서버 URL | `https://cloud.langfuse.com` |
+| `LANGFUSE_ENABLED` | 추적 활성화 여부 (`true`/`false`) | `false` |
+
+#### DeepEval (Testing)
+
+| 변수명 | 설명 | 기본값 |
+|-------|------|-------|
+| `DEEPEVAL_SERVER_URL` | E2E 테스트 대상 서버 URL | `http://localhost:8080` |
+| `E2E_MODE` | E2E 실행 모드 (`eval_only`/`cache_only`/`full`) | `eval_only` |
+| `PIPELINE_TIMEOUT` | 파이프라인 타임아웃 (초) | `7200` |
+| `EVAL_QUICK_MODE` | 분석 테스트 빠른 모드 (에이전트당 1건만) | `0` |
+| `EVAL_FULL_OUTPUT` | 콘솔에 전체 텍스트 출력 (200자 절단 해제) | `0` |
+
 <!-- APPENDIX:ENV:END -->
 
 ### B. 파일 구조
@@ -1012,36 +1115,53 @@ pie title 이메일 첨부 파일 데이터 유형 분포
 src/
 ├── agents/
 │   ├── main/
-│   │   └── main_agent.py           # 메인 워크플로우
+│   │   └── main_agent.py               # 메인 워크플로우 + Langfuse 세션
 │   ├── analysis/
-│   │   ├── analysis_graph.py       # 7개 에이전트 병렬 실행
-│   │   ├── policy_agent.py         # 정책 분석
-│   │   ├── housing_faq_agent.py    # 청약 FAQ
+│   │   ├── analysis_graph.py           # 7개 에이전트 병렬 실행
+│   │   ├── policy_agent.py             # 정책 분석 (SEGMENT 기반, MAX_ITERATIONS=3)
+│   │   ├── housing_faq_agent.py        # 청약 FAQ
 │   │   ├── location_insight_agent.py   # 입지 분석
-│   │   ├── nearby_market_agent.py  # 주변 시장
+│   │   ├── nearby_market_agent.py      # 주변 시장 (Structured Output)
 │   │   ├── population_insight_agent.py # 인구 분석
-│   │   ├── supply_demand_agent.py  # 공급/수요
-│   │   └── unsold_insight_agent.py # 미분양
+│   │   ├── supply_demand_agent.py      # 공급/수요
+│   │   └── unsold_insight_agent.py     # 미분양
 │   ├── jung_min_jae/
-│   │   └── jung_min_jae_agent.py   # 보고서 작성
+│   │   └── jung_min_jae_agent.py       # 보고서 작성 (조건부 컨텍스트 주입)
 │   └── state/
-│       ├── start_state.py          # 사용자 입력 상태
-│       ├── main_state.py           # 메인 상태
-│       └── analysis_state.py       # 분석 에이전트 상태
+│       ├── start_state.py              # 사용자 입력 상태
+│       ├── main_state.py               # 메인 상태
+│       ├── analysis_state.py           # 분석 에이전트 상태
+│       └── structured_schemas.py       # Structured Output 스키마 (9개 Pydantic)
+├── fastapi/
+│   └── main_api.py                     # FastAPI 서버 + Langfuse 세션 관리
 ├── tools/
-│   ├── send_gmail.py               # 이메일 발송
-│   ├── context_to_csv.py           # CSV 변환/업로드
-│   ├── kakao_api_distance_tool.py  # Kakao API
-│   ├── gemini_search_tool.py       # Gemini 검색
-│   ├── perplexity_search_tool.py   # Perplexity 검색
-│   ├── kostat_api.py               # 통계청 API
-│   ├── kor_usa_rate.py             # 금리 조회
+│   ├── send_gmail.py                   # 이메일 발송
+│   ├── context_to_csv.py               # CSV 변환/업로드
+│   ├── kakao_api_distance_tool.py      # Kakao API
+│   ├── gemini_search_tool.py           # Gemini 검색 + Langfuse 추적
+│   ├── perplexity_search_tool.py       # Perplexity 검색 + Langfuse 추적
+│   ├── kostat_api.py                   # 통계청 API
+│   ├── kor_usa_rate.py                 # 금리 조회
+│   ├── unsold_units.py                 # 미분양 RAG 검색 (pgvector)
 │   └── rag/
-│       ├── retriever/              # RAG 리트리버들
-│       └── vector_store.py         # pgvector 연결
+│       ├── retriever/                  # RAG 리트리버들
+│       ├── indexing/
+│       │   └── unsold_housing_indexer.py # 미분양 데이터 벡터 인덱싱
+│       └── vector_store.py             # pgvector 연결
+├── tests/
+│   ├── conftest.py                     # E2E session fixture (3-mode)
+│   ├── e2e_client.py                   # E2E HTTP 폴링 클라이언트
+│   ├── format_utils.py                 # 통합 출력 포맷터
+│   ├── analysis/analysis_eval/         # 7개 분석 에이전트 평가
+│   ├── final_report/report_eval/       # 최종 보고서 평가
+│   ├── source/source_eval/             # 출처 검증
+│   ├── judge/judge_eval/               # 정적: 판정 평가
+│   ├── extraction/extraction_eval/     # 정적: 추출 평가
+│   └── renderer/renderer_eval/         # 정적: 렌더러 평가
 └── utils/
-    ├── llm.py                      # LLM 프로필 관리
-    └── google_drive_uploader.py    # Drive 업로드
+    ├── llm.py                          # LLM 프로필 + Langfuse 자동 추적
+    ├── langfuse_tracker.py             # Langfuse 싱글톤 추적기 (TokenTracker)
+    └── google_drive_uploader.py        # Drive 업로드
 ```
 
 ### C. 변경 이력
@@ -1050,6 +1170,316 @@ src/
 | 날짜 | 버전 | 변경 내용 | 작성자 |
 |-----|------|----------|-------|
 | 2026-02-03 | 1.0.0 | 최초 작성 - 7개 에이전트 데이터 흐름 문서화 | - |
+| 2026-03-14 | 1.1.0 | Langfuse Observability, DeepEval Testing, Structured Output 스키마, 미분양 RAG 전환, Policy SEGMENT 구조, jung_min_jae 토큰 폭발 방지, Tavily 검색 추가 | - |
 <!-- APPENDIX:HISTORY:END -->
 
 <!-- SECTION:APPENDIX:END -->
+
+---
+
+<!-- SECTION:OBSERVABILITY:START -->
+## 7. Langfuse Observability
+
+### 7.1 아키텍처 개요
+
+`src/utils/langfuse_tracker.py`의 `TokenTracker` 클래스가 Langfuse 추적의 중앙 관리자 역할을 합니다.
+모듈 임포트 시 1회만 생성되는 **싱글톤 패턴**으로, 프로젝트 전체에서 `from utils.langfuse_tracker import tracker`로 동일 인스턴스를 사용합니다.
+
+```mermaid
+flowchart LR
+    subgraph LangChainAuto["LangChain 자동 추적"]
+        L1[RetryableChatOpenAI<br/>OpenAI / Claude]
+        L2[CallbackHandler<br/>자동 주입]
+    end
+
+    subgraph SDKDirect["SDK 직접 호출 추적"]
+        N1["gemini_search_tool.py<br/>@observe 데코레이터"]
+        N2["perplexity_search_tool.py<br/>@observe 데코레이터"]
+    end
+
+    subgraph Session["세션 관리"]
+        S1[main_api.py<br/>session_context]
+        S2[ContextVar<br/>_active_session_id]
+    end
+
+    subgraph LF["Langfuse Cloud"]
+        LFD[대시보드<br/>토큰/비용/세션]
+    end
+
+    L1 --> L2 --> LFD
+    N1 --> LFD
+    N2 --> LFD
+    S1 --> S2
+    S2 -.-> L2
+    S2 -.-> N1
+    S2 -.-> N2
+
+    style L1 fill:#e3f2fd,color:#000
+    style N1 fill:#fff3e0,color:#000
+    style N2 fill:#fff3e0,color:#000
+    style LFD fill:#f3e5f5,color:#000
+    style S1 fill:#fff9c4,color:#000
+```
+
+### 7.2 이중 계층 추적
+
+이 프로젝트의 LLM 호출은 두 경로로 나뉩니다:
+
+| 계층 | 대상 | 설명 | 추적 방식 |
+|------|------|------|----------|
+| **LangChain 자동 추적** | OpenAI/Claude (`RetryableChatOpenAI`) | LangChain 프레임워크를 경유하는 LLM 호출. `CallbackHandler`가 자동으로 토큰/비용을 기록 | `_merge_langfuse_config()` 자동 주입 |
+| **SDK 직접 호출 추적** | Gemini (`google-genai` SDK), Perplexity (`openai` SDK) | LangChain을 거치지 않고 각 SDK를 직접 호출하는 도구. 자동 추적이 불가능하므로 코드에서 직접 기록 | `@observe` 데코레이터 + `update_observation()` |
+
+> **왜 두 계층인가?** Gemini/Perplexity는 LangChain의 ChatModel 인터페이스를 사용하지 않고, 각 SDK의 Client를 직접 호출합니다. LangChain의 CallbackHandler가 이 호출을 감지할 수 없으므로, `@observe` 데코레이터로 수동 기록해야 합니다.
+
+**LangChain 자동 추적 흐름:**
+```
+llm.invoke(prompt)
+  -> RetryableChatOpenAI._merge_langfuse_config()
+    -> tracker.merge_config()  # CallbackHandler 추가
+      -> super().invoke(input, config)
+        -> CallbackHandler가 Langfuse에 trace 전송
+```
+
+**SDK 직접 호출 추적 흐름:**
+```
+@tracker.observe(as_type="generation")
+def gemini_search(prompt):
+    tracker.update_observation(name="gemini-search", input=prompt)
+    response = client.models.generate_content(...)
+    tracker.update_observation(output=result, usage=tokens)
+```
+
+### 7.3 세션 전파 (Session Propagation)
+
+하나의 사용자 요청에서 발생하는 모든 LLM 호출(OpenAI, Gemini, Perplexity)을 Langfuse 대시보드에서 **단일 세션**으로 묶어 추적합니다.
+
+```mermaid
+sequenceDiagram
+    participant API as main_api.py
+    participant CV as ContextVar
+    participant LLM as RetryableChatOpenAI
+    participant GEM as gemini_search
+    participant LF as Langfuse
+
+    API->>CV: session_context(job_id) 진입<br/>ContextVar에 session_id 저장
+    API->>LLM: graph.ainvoke()
+    LLM->>CV: _active_session_id.get()
+    LLM->>LF: trace (session_id=job_id)
+    API->>GEM: gemini_search() 호출
+    GEM->>CV: propagate_attributes 자동 전파
+    GEM->>LF: generation (session_id=job_id)
+    API->>CV: session_context 종료<br/>ContextVar reset
+```
+
+- `main_api.py`의 `run_graph_task()`에서 `async with tracker.session_context(session_id=job_id)`로 진입
+- `ContextVar(_active_session_id)`가 `asyncio.create_task()` 경계를 넘어 자동 전파
+- 28개 노드 함수를 개별 수정하지 않아도 모든 trace에 session_id 자동 주입
+
+### 7.4 Graceful Degradation
+
+Langfuse가 비활성화되거나 설치되지 않은 환경에서도 기존 파이프라인이 정상 작동합니다.
+
+| 조건 | TokenTracker 동작 | 기존 코드 영향 |
+|------|-------------------|--------------|
+| `LANGFUSE_ENABLED=true` + 패키지 설치 | 모든 메서드 정상 동작 | 추적 활성화 |
+| `LANGFUSE_ENABLED=false` | 모든 메서드가 `None` / `{}` 반환 | 추적 비활성화, 코드 변경 불필요 |
+| `langfuse` 패키지 미설치 | `_enabled=False` 자동 설정 | 동일 (ImportError 없음) |
+
+### 7.5 통합 지점 요약
+
+| 파일 | 역할 | 추적 방식 |
+|------|------|----------|
+| `src/utils/llm.py` | LLM 호출 (LangChain 자동 추적) | `CallbackHandler` 자동 병합 |
+| `src/tools/gemini_search_tool.py` | Gemini (SDK 직접 호출 추적) | `@observe` + `update_observation` |
+| `src/tools/perplexity_search_tool.py` | Perplexity (SDK 직접 호출 추적) | `@observe` + `update_observation` |
+| `src/fastapi/main_api.py` | 보고서 파이프라인 세션 관리 | `session_context(job_id)` |
+| `src/chatbot/backend/chat_agent_langgraph.py` | 챗봇 세션 추적 | `session_context(session_id)` |
+
+<!-- SECTION:OBSERVABILITY:END -->
+
+---
+
+<!-- SECTION:TESTING:START -->
+## 8. DeepEval 테스트 아키텍처
+
+### 8.1 Two-Tier 테스트 구조
+
+테스트는 **서버 호출 여부**에 따라 두 계층으로 나뉩니다:
+
+```mermaid
+flowchart TB
+    subgraph Tier1["Tier 1: 정적 데이터셋 (서버 호출 없음, ~3분)"]
+        S1[Judge<br/>검수자 평가]
+        S2[Extraction<br/>추출 정확도]
+        S3[Renderer<br/>슬라이드 변환]
+    end
+
+    subgraph Tier2["Tier 2: E2E 파이프라인 (서버 호출 필요, ~40분)"]
+        E1[Analysis<br/>7개 분석 에이전트]
+        E2[Final Report<br/>최종 보고서]
+        E3[Source<br/>출처 검증]
+    end
+
+    subgraph Fixture["conftest.py - session fixture"]
+        F1{E2E_MODE?}
+        F2[eval_only<br/>캐시 로드]
+        F3[cache_only<br/>서버 호출만]
+        F4[full<br/>서버+평가]
+    end
+
+    subgraph Output["결과"]
+        O1["콘솔 종합 리포트"]
+        O2["test_eval_details.json"]
+    end
+
+    F1 -->|eval_only| F2
+    F1 -->|cache_only| F3
+    F1 -->|full| F4
+    F2 & F4 --> E1 & E2 & E3
+    S1 & S2 & S3 --> O1
+    E1 & E2 & E3 --> O1
+    O1 --> O2
+
+    style Tier1 fill:#e3f2fd,color:#000
+    style Tier2 fill:#fff3e0,color:#000
+    style O1 fill:#c8e6c9,color:#000
+```
+
+- **Tier 1 (정적)**: 미리 준비된 JSON 데이터셋으로 평가. 서버 호출 없이 빠르게 반복 가능
+- **Tier 2 (E2E)**: 실제 서버에 파이프라인 요청을 보내고, 반환된 결과를 평가
+
+### 8.2 E2E Pipeline 실행 모드
+
+`src/tests/conftest.py`의 `e2e_result` fixture는 3가지 모드를 지원합니다:
+
+| 모드 | 환경변수 | 서버 호출 | 캐시 저장 | 평가 실행 | 용도 |
+|------|---------|----------|----------|----------|------|
+| `eval_only` (기본) | `E2E_MODE=eval_only` | X | X | O | 메트릭/데이터셋 수정 시 빠른 반복 |
+| `cache_only` | `E2E_MODE=cache_only` | O | O | X | 서버 결과 수집만 (40분+) |
+| `full` | `E2E_MODE=full` | O | O | O | 전체 파이프라인 검증 |
+
+> **왜 3개 모드인가?** 서버 파이프라인 실행에 40분 이상 소요되므로, 메트릭 로직만 수정했을 때 서버를 다시 호출하지 않고 캐시된 결과로 빠르게 재평가(`eval_only`)할 수 있습니다.
+
+### 8.3 E2EClient
+
+`src/tests/e2e_client.py`는 장시간 실행되는 서버 파이프라인과 통신하는 HTTP 클라이언트입니다.
+
+```mermaid
+sequenceDiagram
+    participant TC as 테스트 코드
+    participant EC as E2EClient
+    participant SV as FastAPI 서버
+
+    TC->>EC: run_pipeline(start_input)
+    EC->>SV: POST /invoke
+    SV-->>EC: job_id 반환
+    loop 30초 간격 폴링
+        EC->>SV: GET /status/{job_id}
+        SV-->>EC: status: running
+    end
+    SV-->>EC: status: completed
+    EC->>SV: GET /result/{job_id}
+    SV-->>EC: 파이프라인 결과
+    EC-->>TC: e2e_result dict
+```
+
+- 타임아웃: `PIPELINE_TIMEOUT` 환경변수 (기본 7200초 = 2시간)
+- 서버 URL: `DEEPEVAL_SERVER_URL` 환경변수 (기본 `http://localhost:8080`)
+
+### 8.4 평가 메트릭 체계
+
+#### 분석 에이전트 메트릭 (7개 에이전트 공통)
+
+| 메트릭 | 기본 가중치 | 임계값 | 평가 항목 |
+|--------|-----------|--------|----------|
+| AnalysisDepth | 60% | 0.7 | 깊이 있는 분석 vs 나열, 시계열 해석, 예측 |
+| DataFidelity | 20% | 0.8 | 수치 일관성, 환각(Hallucination) 감지 |
+| StructuralCompleteness | 20% | 0.7 | 마크다운 구조, 논리적 흐름, 어조 |
+
+**에이전트별 가중치 오버라이드:**
+| 에이전트 | AnalysisDepth | DataFidelity | StructuralCompleteness |
+|---------|---------------|-------------|----------------------|
+| 기본 (대부분) | 60% | 20% | 20% |
+| policy | 20% | 20% | **60%** (표 형식 중요) |
+| nearby_market, location_insight | 30% | 20% | 20% |
+
+#### RAG 에이전트 메트릭 (RAG 사용 에이전트만)
+
+| 메트릭 | 가중치 | 임계값 | 평가 항목 |
+|--------|--------|--------|----------|
+| Faithfulness | 33.4% | 0.7 | 검색 문서에 충실한 답변인가 |
+| Contextual Relevancy | 33.3% | 0.7 | 검색된 문서가 질문과 관련 있는가 |
+| Answer Relevancy | 33.3% | 0.7 | 답변이 질문에 적절한가 |
+
+> **분석 점수와 RAG 점수는 독립 산출됩니다 (합산 X).** 각각 100% 기준으로 평가하여, 분석 품질과 검색 품질을 별도로 추적합니다.
+
+#### 정적 테스트 메트릭
+
+| 모듈 | 메트릭 | 임계값 |
+|------|--------|--------|
+| Judge | CritiqueAccuracy | 0.7 |
+| Extraction | ExtractionAccuracy | 0.7 |
+| Renderer | SlidePlanStructure | 0.7 |
+| Final Report | ReportProfessionalism (60%) + AnalysisCoverage (40%) | 0.7 |
+| Source | SourceCompleteness | 0.7 |
+
+### 8.5 출력 시스템
+
+`src/tests/format_utils.py`가 통합 출력을 관리합니다:
+
+| 함수 | 역할 |
+|------|------|
+| `print_module_header()` | 모듈별 헤더 출력 |
+| `print_case_result()` | 정적 모듈 개별 케이스 출력 |
+| `print_analysis_case_result()` | 분석 모듈 케이스 출력 (분석 + RAG 점수) |
+| `append_detail()` | JSON 상세 결과 수집 (`_JSON_DETAIL_STORE`) |
+| `save_detail_json()` | `test_eval_details.json` 파일 저장 |
+| `print_final_summary()` | 최하단 종합 리포트 출력 |
+
+**종합 리포트 출력 예시:**
+```
+============================================================
+         [ ALL FOR ONE 평가 종합 리포트 ]
+============================================================
+  [정적 데이터셋]
+  Judge               | 평균 80.00% (3건) | PASS
+  Extraction          | 평균 85.00% (5건) | PASS
+  Renderer            | 평균 90.00% (3건) | PASS
+
+  [E2E 분석 에이전트]
+  - housing_faq       | 분석 85.00% | RAG 92.00% (3건)
+  - policy            | 분석 80.50% | RAG 88.50% (3건)
+
+  [E2E 보고서]
+  Final Report        | 가중 88.00% (1건) | PASS
+  Source              | 평균 92.00% (1건) | PASS
+============================================================
+```
+
+### 8.6 실행 명령어
+
+**정적 테스트 (서버 불필요):**
+```bash
+# 개별 모듈
+set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/judge/judge_eval/test_judge.py -v
+
+# 정적 3개 모듈 한번에
+set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/judge/judge_eval/test_judge.py src/tests/extraction/extraction_eval/test_extraction.py src/tests/renderer/renderer_eval/test_renderer.py -v
+```
+
+**E2E 테스트 (서버 필요, 40분+):**
+```bash
+# 서버 결과 수집 + 캐시 저장 (평가 없음)
+set PYTHONIOENCODING=utf-8 && set E2E_MODE=cache_only && set DEEPEVAL_SERVER_URL=https://your-server.up.railway.app && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py -v
+
+# 캐시 기반 재평가 (서버 호출 없음)
+set PYTHONIOENCODING=utf-8 && set E2E_MODE=eval_only && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py -v
+```
+
+**전체 한번에 (서버 1회만 호출):**
+```bash
+set PYTHONIOENCODING=utf-8 && set E2E_MODE=full && set DEEPEVAL_SERVER_URL=https://your-server.up.railway.app && uv run deepeval test run src/tests/judge/judge_eval/test_judge.py src/tests/extraction/extraction_eval/test_extraction.py src/tests/renderer/renderer_eval/test_renderer.py src/tests/analysis/analysis_eval/test_analysis.py src/tests/final_report/report_eval/test_final_report.py src/tests/source/source_eval/test_source.py -v
+```
+
+<!-- SECTION:TESTING:END -->
