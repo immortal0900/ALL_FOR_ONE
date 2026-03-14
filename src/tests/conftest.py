@@ -31,7 +31,7 @@ from tests.e2e_client import E2EClient
 # [존재 이유]
 # 서버 호출(40분+)과 평가(수 분)를 분리하여 개발 반복 속도를 높입니다.
 # 이 설정이 없으면 데이터셋/메트릭만 수정해도 매번 40분 서버 호출을 기다려야 합니다.
-E2E_MODE = os.getenv("E2E_MODE", "eval_only")
+E2E_MODE = os.getenv("E2E_MODE", "eval_only").strip()
 CACHE_PATH = "e2e_result.json"
 
 
