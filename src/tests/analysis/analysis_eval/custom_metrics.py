@@ -29,6 +29,33 @@ RAG_AGENTS = [
     "unsold_insight",
 ]
 
+# 에이전트별 분석 가중치 오버라이드
+# - policy: 구조적 완성도(표 형식, 빈칸 최소화)가 핵심 → StructuralCompleteness 주 메트릭
+# - nearby_market, location_insight: 시계열 데이터가 아니라 AnalysisDepth 비중 축소
+AGENT_ANALYSIS_WEIGHTS: dict[str, dict[str, float]] = {
+    "policy": {
+        "AnalysisDepth": 0.20,
+        "DataFidelity": 0.20,
+        "StructuralCompleteness": 0.60,
+    },
+    "nearby_market": {
+        "AnalysisDepth": 0.30,
+        "DataFidelity": 0.35,
+        "StructuralCompleteness": 0.35,
+    },
+    "location_insight": {
+        "AnalysisDepth": 0.30,
+        "DataFidelity": 0.35,
+        "StructuralCompleteness": 0.35,
+    },
+}
+
+_DEFAULT_ANALYSIS_WEIGHTS: dict[str, float] = {
+    "AnalysisDepth": 0.60,
+    "DataFidelity": 0.20,
+    "StructuralCompleteness": 0.20,
+}
+
 
 # ============================================================
 # 1. 분석 메트릭 팩토리 (모든 에이전트 공통)
@@ -39,9 +66,9 @@ def _create_analysis_metrics() -> list[GEval]:
         name="AnalysisDepth",
         evaluation_steps=[
             "[가점] 데이터의 단순 나열이 아닌, 원인/이유 규명 등 분석 심도가 깊으면 가점",
-            "[감점] 데이터의 단순 나열이나 표면적 사실만 서술하고 원인/이유 규명 등 분석 심도가 얕으면 감점",
-            "[가점] 시계열 변화에 대한 해석과 흐름 설명이 포함되어 있으면 높은 가점",
-            "[감점] 시계열 변화에 대한 해석이나 흐름(과거-현재-미래)에 대한 설명이 빠져 있으면 감점",
+            "[감점] 데이터의 단순 나열이나 표면적 사실만 서술하고 원인/이유 규명 등이 얕으면 감점",
+            "[가점] 시계열 데이터의 경우 시계열 변화에 대한 해석과 흐름 설명이 포함되어 있으면 높은 가점",
+            "[감점] 시계열 데이터의 경우 시계열 변화에 대한 해석이나 흐름(과거-현재-미래)에 대한 설명이 빠져 있으면 감점",
             "[가점] 분석을 바탕으로 한 향후 전망이나 객관적인 결론이 명확히 도출되었으면 가점",
             "[감점] 분석 결과에 따른 향후 전망이나 결론 제시 없이 부실하게 마무리되면 감점",
             "[필수] 판단 이유는 반드시 한국어로 작성할 것",
@@ -146,8 +173,9 @@ def get_metrics_for_type(agent_name: str) -> list:
 
 
 def get_primary_metric(agent_name: str) -> str:
-    """유형별 주요(대표) 메트릭 이름 반환"""
-    return "AnalysisDepth"
+    """유형별 주요(대표) 메트릭 이름 반환 — 가중치가 가장 높은 메트릭"""
+    weights = AGENT_ANALYSIS_WEIGHTS.get(agent_name, _DEFAULT_ANALYSIS_WEIGHTS)
+    return max(weights, key=weights.get)
 
 
 def get_rag_primary_metric(agent_name: str) -> str | None:
@@ -172,12 +200,8 @@ def calculate_separated_scores(agent_name: str, scores: dict[str, float]) -> dic
 
     각 점수는 독립적인 100% 기준이며, 합산하지 않습니다.
     """
-    # 1. 일반 분석 지표 (모든 에이전트 공통 적용)
-    analysis_weights = {
-        "AnalysisDepth": 0.60,          # 주 메트릭 (분석 심도)
-        "DataFidelity": 0.20,           # 보조 (데이터 정확성)
-        "StructuralCompleteness": 0.20, # 보조 (구조 완성도)
-    }
+    # 1. 일반 분석 지표 (에이전트별 가중치 적용)
+    analysis_weights = AGENT_ANALYSIS_WEIGHTS.get(agent_name, _DEFAULT_ANALYSIS_WEIGHTS)
 
     analysis_score = 0.0
     for name, weight in analysis_weights.items():
