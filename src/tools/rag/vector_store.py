@@ -95,6 +95,12 @@ def get_pgvector_store(collection_name: str):
                 connection_string=connection_url,
                 collection_name=collection_name,
                 use_jsonb=True,
+                engine_args={
+                    "pool_pre_ping": True,   # 커넥션 사용 전 "SELECT 1" 헬스체크
+                    "pool_recycle": 300,     # 5분마다 커넥션 재생성 (Supabase idle timeout 전에)
+                    "pool_size": 5,          # 기본 풀 크기
+                    "max_overflow": 3,       # 버스트 시 추가 허용 커넥션
+                },
             )
         else:
             pass
