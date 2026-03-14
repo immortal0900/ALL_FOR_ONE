@@ -1,0 +1,695 @@
+[1m============================= test session starts =============================[0m
+platform win32 -- Python 3.12.9, pytest-9.0.2, pluggy-1.6.0 -- C:\1.Project\ALL_FOR_ONE\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\1.Project\ALL_FOR_ONE
+configfile: pyproject.toml
+plugins: deepeval-3.8.8, anyio-4.11.0, Faker-37.12.0, langsmith-0.4.38, asyncio-1.3.0, repeat-0.9.4, rerunfailures-16.1, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 9 items
+
+src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq 
+
+
+
+
+
+
+
+
+
+
+
+
+[E2E] eval_only 모드 — 캐시(e2e_result.json) 로드
+
+>>> [분석 에이전트 - housing_faq] 평가 시작 (3건)
+------------------------------------------------------------
+
+  [housing_faq] 케이스 1/3 평가 중...
+    AnalysisDepth: 0.70 (18.8s)
+    DataFidelity: 1.00 (35.5s)
+    StructuralCompleteness: 0.90 (10.8s)
+    Faithfulness: 0.98 (168.2s)
+    Contextual Relevancy: 0.91 (77.5s)
+    Answer Relevancy: 0.99 (148.9s)
+
+  * [housing_faq_001] 청약 규제 종합 분석
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 사업지에 적용되는 청약 규제 환경을 종합 분석하세요. - 규제지역(투기과열지구/조정대상지역/비규제) 해당 여부 및 관련 규제 내용 - 1순위 청약 자격 요건 (청약통장 가입기간, 지역 거주요건) - 가점제/추첨제 배분 비율 (전용면적 기준) - 분양가상한제 적용 여부 및 가격 산정 방식 - 전매제한 기간 및 재당첨 제한 - 규제 변화의 시계열...
+    - 출력: 대상지: 서울특별시 강남구 대치동   대표타입: 전용 84㎡ (85㎡ 이하 민영주택 해당)   공급세대수: 500세대  # 1) 청약 FAQ — 대상지(대치동, 서울) 관련 핵심 요약 - 청약가능지역 관련   - 청약가능지역 목록에 서울(수도권 거주자에 한함) 포함(제4조 제3항 관련). 다만 동일 순위에서는 해당 주택건설지역(=대치동·강남구·서울특별시) ...
+    - 분석 점수: 80.00%
+      AnalysisDepth: 70.00% | DataFidelity: 100.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 대상지(서울 강남구 대치동, 전용84㎡·500세대)에 맞춘 규정 요약과 가점제·특별공급 비율(예: 생애최초 19%, 다자녀 10%) 등 관련 법조항을 정리하고, PECR이라는 정량지표를 제시해 계산절차·시계열(사전청약→본청약 등) 적용 방법을 구체적으로 설명한 점은 분석 심도가 높고 시계열 해석 요구를 충족함. 또한 관련 법령 개정일(2021.11.16, 2024/2025 등) 표기는 시계열적 맥락을 제공함. 부족한 점: 사용자가 요구한 핵심 항목들 가운데 규제지역(투기과열지구/조정대상지역/비규제) 해당 여부를 대치동에 대해 명시하지 않았고, 분양가상한제 적용 여부 및 분양가 산정 방식(구체적 산식·절차)에 대한 명확한 결론이 부족하며, 전매제한 기간·재당첨 제한에 대한 구체적 규정(기간 등)이 누락되어 향후 전망이나 정책 변화에 대한 구체적 시나리오(예측)가 미흡함.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업단지, 서울(수도권 거주자에 한함), 행정중심복합도시 예정지역, 도청이전신도시 개발예정지구, 혁신도시개발예정지구, 기업도시개발구역, 평택시 등, 조정대상지역(위축지역)... | [2] ['4. 주택 건축설계안\n\n5. 국토교통부장관이 정하는 기관의 검증을 받은 추정 분양가격에 관한 검증서\n\n② 시장ㆍ군수ㆍ구청장은 사업주체가 공급받은 공공택지의 조성ㆍ공급과 관련된 사업계획 등의 허가ㆍ승인ㆍ인가권자 등에게 해당 사업계획 등의 사본의 제출을 요청할 ...
+    - 출력: 대상지: 서울특별시 강남구 대치동   대표타입: 전용 84㎡ (85㎡ 이하 민영주택 해당)   공급세대수: 500세대  # 1) 청약 FAQ — 대상지(대치동, 서울) 관련 핵심 요약 - 청약가능지역 관련   - 청약가능지역 목록에 서울(수도권 거주자에 한함) 포함(제4조 제3항 관련). 다만 동일 순위에서는 해당 주택건설지역(=대치동·강남구·서울특별시) ...
+    - RAG 점수: 96.02%
+      Faithfulness: 98.08% | Contextual Relevancy: 91.18% | Answer Relevancy: 98.81%
+    - 판단 이유: The score is 0.98 because the actual output appears to have (incorrectly) included '구청장' as a decision-maker for administrative district changes, whereas the retrieval excerpt specifies the decision-makers as '특별시장·광역시장·특별자치시장·시장 또는 군수' and does not list 구청장, so that one erroneous inclusion accounts for the slight deduction.
+
+  [housing_faq] 케이스 2/3 평가 중...
+    AnalysisDepth: 0.70 (16.4s)
+    DataFidelity: 1.00 (23.2s)
+    StructuralCompleteness: 0.90 (16.0s)
+    Faithfulness: 1.00 (186.7s)
+    Contextual Relevancy: 0.87 (73.4s)
+    Answer Relevancy: 1.00 (162.5s)
+
+  * [housing_faq_002] 청약 데이터 수치 정확성 검증
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 제공된 청약 FAQ 데이터와 주택공급규칙 데이터를 기반으로 정확한 수치와 규정을 인용하여 분석하세요. - 청약가능지역 범위 및 거주자 우선공급 규정 (가능하면 원문 페이지 참조 포함) - 사전청약 관련 규정 (자격 판정 기준일, 추정분양가 등) - 특별공급 유형별 조건 (신혼부부, 다자녀, 생애최초, 노부모 등) - 각 수치와 규정은 반드시 ...
+    - 출력: 대상지: 서울특별시 강남구 대치동   대표타입: 전용 84㎡ (85㎡ 이하 민영주택 해당)   공급세대수: 500세대  # 1) 청약 FAQ — 대상지(대치동, 서울) 관련 핵심 요약 - 청약가능지역 관련   - 청약가능지역 목록에 서울(수도권 거주자에 한함) 포함(제4조 제3항 관련). 다만 동일 순위에서는 해당 주택건설지역(=대치동·강남구·서울특별시) ...
+    - 분석 점수: 80.00%
+      AnalysisDepth: 70.00% | DataFidelity: 100.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 제공된 Q&A·규정 문서에 근거해 주요 조항(예: 85㎡ 이하 생애최초 19%, 다자녀 기본 10%·최대 15%, 사전당첨자모집공고 제24조의4 신설일자 2021.11.16 등)과 개정일(2024.03.25 등)을 인용하고 규정과 PECR 지표를 규정별 파라미터에 매핑한 점은 분석 깊이와 시계열(사전청약→본청약) 적용 논리를 잘 설명함. 부족한 점: 테스트 입력(대치동 84㎡·500세대)에 대해 특별공급별 할당수나 PreallocatedUnits를 실제로 계산·적용하지 않아 정량적 결론(PECR 산출, 경쟁률 예측)이 빠졌고, 요청된 특별공급 유형 중 '노부모' 등 일부 항목의 세부 자격·비율 설명이 누락됨. 또한 일부 항목에 대해 원문 페이지 캡션·구체 조문 번호 표기가 일관되게 제시되지 않음.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업단지, 서울(수도권 거주자에 한함), 행정중심복합도시 예정지역, 도청이전신도시 개발예정지구, 혁신도시개발예정지구, 기업도시개발구역, 평택시 등, 조정대상지역(위축지역)... | [2] ['4. 주택 건축설계안\n\n5. 국토교통부장관이 정하는 기관의 검증을 받은 추정 분양가격에 관한 검증서\n\n② 시장ㆍ군수ㆍ구청장은 사업주체가 공급받은 공공택지의 조성ㆍ공급과 관련된 사업계획 등의 허가ㆍ승인ㆍ인가권자 등에게 해당 사업계획 등의 사본의 제출을 요청할 ...
+    - 출력: 대상지: 서울특별시 강남구 대치동   대표타입: 전용 84㎡ (85㎡ 이하 민영주택 해당)   공급세대수: 500세대  # 1) 청약 FAQ — 대상지(대치동, 서울) 관련 핵심 요약 - 청약가능지역 관련   - 청약가능지역 목록에 서울(수도권 거주자에 한함) 포함(제4조 제3항 관련). 다만 동일 순위에서는 해당 주택건설지역(=대치동·강남구·서울특별시) ...
+    - RAG 점수: 95.75%
+
+
+
+
+
+
+      Faithfulness: 100.00% | Contextual Relevancy: 87.23% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating the actual output aligns fully with the retrieval context; no inconsistencies were identified—well done!
+
+  [housing_faq] 케이스 3/3 평가 중...
+    AnalysisDepth: 0.50 (9.3s)
+    DataFidelity: 0.90 (16.2s)
+    StructuralCompleteness: 0.90 (7.5s)
+    Faithfulness: 1.00 (145.0s)
+    Contextual Relevancy: 0.85 (72.1s)
+    Answer Relevancy: 1.00 (158.3s)
+
+  * [housing_faq_003] 청약 전략 및 분양성 시사점
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 청약 규제 분석을 바탕으로 실무적 시사점을 도출하세요. - 현행 배분 방식(가점제/추첨제) 하에서의 수요층 특성 분석 - 사업지 규모에 따른 청약 경쟁 전망 - 분양가 규제 적용 시 주변 시세 대비 가격 메리트 분석 - 전매제한/재당첨 제한이 실수요 및 투자 수요에 미치는 영향 - 종합적인 분양성 판단 및 청약 전략 제언
+    - 출력: 대상지: 서울특별시 강남구 대치동   대표타입: 전용 84㎡ (85㎡ 이하 민영주택 해당)   공급세대수: 500세대  # 1) 청약 FAQ — 대상지(대치동, 서울) 관련 핵심 요약 - 청약가능지역 관련   - 청약가능지역 목록에 서울(수도권 거주자에 한함) 포함(제4조 제3항 관련). 다만 동일 순위에서는 해당 주택건설지역(=대치동·강남구·서울특별시) ...
+    - 분석 점수: 66.00%
+      AnalysisDepth: 50.00% | DataFidelity: 90.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 대상지(대치동, 전용 84㎡, 500세대)를 명시하고 청약 관련 규정(가점제·추첨제, 특별공급 비율 등)을 정리했으며, PECR이라는 정량지표 설계와 계산 절차·시계열 적용 방안을 제시해 분석 틀을 제공한 점은 심층분석 점수를 줄 만함. 단점: 요청 항목(수요층 특성 분석, 사업지 규모별 경쟁 전망, 분양가 규제에 따른 시세 대비 가격 메리트, 전매·재당첨 제한의 수요 영향, 종합 분양성 판단 및 청약 전략 제언)에 대해 구체적 해석·예측·결론을 제시하지 못함. 즉 규정의 나열과 지표 설계는 있으나 실제 수치·수요행태 분석, 사업규모별 경쟁 전망, 분양가 비교 분석과 전매제한 영향 분석 및 명확한 실무적 전략 제언이 빠져 있어 요구한 깊이와 결론 도출 기준을 충족하지 못함.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업단지, 서울(수도권 거주자에 한함), 행정중심복합도시 예정지역, 도청이전신도시 개발예정지구, 혁신도시개발예정지구, 기업도시개발구역, 평택시 등, 조정대상지역(위축지역)... | [2] ['4. 주택 건축설계안\n\n5. 국토교통부장관이 정하는 기관의 검증을 받은 추정 분양가격에 관한 검증서\n\n② 시장ㆍ군수ㆍ구청장은 사업주체가 공급받은 공공택지의 조성ㆍ공급과 관련된 사업계획 등의 허가ㆍ승인ㆍ인가권자 등에게 해당 사업계획 등의 사본의 제출을 요청할 ...
+    - 출력: 대상지: 서울특별시 강남구 대치동   대표타입: 전용 84㎡ (85㎡ 이하 민영주택 해당)   공급세대수: 500세대  # 1) 청약 FAQ — 대상지(대치동, 서울) 관련 핵심 요약 - 청약가능지역 관련   - 청약가능지역 목록에 서울(수도권 거주자에 한함) 포함(제4조 제3항 관련). 다만 동일 순위에서는 해당 주택건설지역(=대치동·강남구·서울특별시) ...
+    - RAG 점수: 95.13%
+      Faithfulness: 100.00% | Contextual Relevancy: 85.37% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty ([]) — there are no listed contradictions, so the actual output fully aligns with the retrieval context. Nice work!
+[32mPASSED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_policy 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>> [분석 에이전트 - policy] 평가 시작 (3건)
+------------------------------------------------------------
+
+  [policy] 케이스 1/3 평가 중...
+    AnalysisDepth: 0.90 (14.4s)
+    DataFidelity: 0.90 (15.6s)
+    StructuralCompleteness: 1.00 (10.8s)
+    Faithfulness: 1.00 (123.1s)
+    Contextual Relevancy: 0.95 (52.4s)
+    Answer Relevancy: 1.00 (84.3s)
+
+  * [policy_001] 부동산 정책 종합 분석
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 사업지에 영향을 미치는 국가 및 지역 부동산 정책을 종합 분석하세요. - 최근 주요 국가 정책(주택시장 안정화 대책, 공급 확대 방안 등)의 핵심 내용 - 규제지역 지정(투기과열지구, 조정대상지역, 토지거래허가구역 등) 현황 및 영향 - DSR/LTV 등 금융 규제 현황 - 지역 단위 정책(정비사업, 도시개발, 교통 인프라 등) - 정책 변화...
+    - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 주택시장 안정화 대책 (부동산 관계장관회의 자료)   - **배경**: 최근 주택가격 급등 및 거래 과열 우려에 따른 시장 안정 필요(시장지표 기반 지정)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구 확대, 토지거래허가구역 지정,...
+    - 분석 점수: 96.00%
+      AnalysisDepth: 90.00% | DataFidelity: 90.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 문서가 헤더(개요, 정책 목표, 주요 정책 비교 등), 목록, 다수의 표를 일관되게 사용하여 가독성이 우수함(가점 항목1). 서론(개요)과 본론(정책 비교·세부 항목 1~10), 결론(주요 차이점 요약·전망 및 과제)이 논리적으로 배열되어 있어 체계적 흐름을 갖춤(가점 항목3). 전반적으로 문어체의 전문적 보고서 어조를 일관되게 유지하고 있으며(가점 항목5), 각 표와 항목에서 주택담보대출·다주택자 규제·실거주 의무·규제지역 지정·DSR 등 핵심 내용을 상세히 비교·분석(강남구 대치동 영향 분석 포함)하고 출처 표기도 충실함. Markdown 구조가 깨지거나 비전문적 어투 혼용 등 감점 사유는 발견되지 않음(감점 항목2·4·6 해당 없음).
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] ['날짜: 2025-10-30\n연도: 2025\n제목: 서울 3곳 도심 공공주택 복합지구 지정서울 3곳 도심 공공주택 복합지구 지정 관련 보도자료 내용입니다. 자세한 내용은 첨부파일을 참고하시기 바랍니다.2025-10-30국토교통부\n링크: https://www.ko... | [2] [{'title': '낡은 용산 전자상가, AI 혁신거점 된다…28층 혁신업무시설 추진', 'date': '2026.03.12 08:13', 'content': '서울시는 용산 나진전자상가 특별계획구역에 지하 8층~지상 28층 규모의 업무시설 건축계획안이 건축위원회 심...
+    - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 주택시장 안정화 대책 (부동산 관계장관회의 자료)   - **배경**: 최근 주택가격 급등 및 거래 과열 우려에 따른 시장 안정 필요(시장지표 기반 지정)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구 확대, 토지거래허가구역 지정,...
+    - RAG 점수: 98.22%
+      Faithfulness: 100.00% | Contextual Relevancy: 94.64% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty ([]) — no mismatches were reported, so the actual output fully aligns with the retrieval context. Great job!
+
+  [policy] 케이스 2/3 평가 중...
+    AnalysisDepth: 0.90 (16.9s)
+    DataFidelity: 0.60 (20.5s)
+    StructuralCompleteness: 1.00 (8.5s)
+    [경고] Faithfulness 평가 실패 (179.8s): Request timed out.
+    Contextual Relevancy: 0.80 (105.3s)
+    Answer Relevancy: 1.00 (121.8s)
+
+  * [policy_002] 정책 데이터 수치 정확성 검증
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 제공된 국가 정책 컨텍스트와 지역 정책 컨텍스트를 기반으로 정확한 정책 정보를 인용하여 분석하세요. - 정책 정식 명칭, 시행일, 시행기관을 정확히 표기할 것 - 규제지역 지정 효력 발생일, 지정기간 등 구체적 일자를 명시할 것 - 금리, LTV/DSR 비율 등 정량적 수치를 컨텍스트 원문에 근거하여 인용할 것 - 컨텍스트에 없는 정책 내용이...
+    - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 주택시장 안정화 대책 (부동산 관계장관회의 자료)   - **배경**: 최근 주택가격 급등 및 거래 과열 우려에 따른 시장 안정 필요(시장지표 기반 지정)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구 확대, 토지거래허가구역 지정,...
+    - 분석 점수: 90.00%
+      AnalysisDepth: 90.00% | DataFidelity: 60.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 문서는 Markdown 구조(##, ### 헤더, 목록, 표)를 일관되게 사용해 시각적 가독성이 우수하며(예: '개요', '정책 목표', '주요 정책 비교'의 표들), 서론(개요)·본론(정책 비교·평가)·결론(전망 및 과제·사업지 영향 분석)의 논리적 흐름이 체계적으로 갖춰져 있습니다. 문어체의 전문적 보고서 어조를 일관되게 유지했고 각 항목에 출처 표기도 명시되어 있어 평가 기준을 충족합니다. Markdown 구조 파손이나 비정상적 서식 혼용 등 감점 사유는 발견되지 않습니다.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] ['날짜: 2025-10-30\n연도: 2025\n제목: 서울 3곳 도심 공공주택 복합지구 지정서울 3곳 도심 공공주택 복합지구 지정 관련 보도자료 내용입니다. 자세한 내용은 첨부파일을 참고하시기 바랍니다.2025-10-30국토교통부\n링크: https://www.ko... | [2] [{'title': '낡은 용산 전자상가, AI 혁신거점 된다…28층 혁신업무시설 추진', 'date': '2026.03.12 08:13', 'content': '서울시는 용산 나진전자상가 특별계획구역에 지하 8층~지상 28층 규모의 업무시설 건축계획안이 건축위원회 심...
+    - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 주택시장 안정화 대책 (부동산 관계장관회의 자료)   - **배경**: 최근 주택가격 급등 및 거래 과열 우려에 따른 시장 안정 필요(시장지표 기반 지정)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구 확대, 토지거래허가구역 지정,...
+    - RAG 점수: 59.94%
+      Faithfulness: 0.00% | Contextual Relevancy: 80.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty ([]) — no mismatches were reported, so the actual output fully aligns with the retrieval context. Great job!
+
+  [policy] 케이스 3/3 평가 중...
+    AnalysisDepth: 0.80 (8.3s)
+    DataFidelity: 0.70 (14.9s)
+    StructuralCompleteness: 1.00 (8.0s)
+    Faithfulness: 1.00 (176.4s)
+    Contextual Relevancy: 0.98 (66.9s)
+    Answer Relevancy: 0.97 (140.9s)
+
+  * [policy_003] 정책 환경 기반 분양 전략 시사점
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 정책 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 현행 규제 환경(규제지역 지정, 금융 규제)이 분양 수요에 미치는 영향 - 공급 확대 정책(신도시, 정비사업 등)이 경쟁 환경에 미치는 영향 - 정책 리스크 요인(추가 규제 강화 가능성, 금리 변동 등) - 정책 기회 요인(규제 완화, 세제 혜택 등) - 종합적인 분양 ...
+    - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 주택시장 안정화 대책 (부동산 관계장관회의 자료)   - **배경**: 최근 주택가격 급등 및 거래 과열 우려에 따른 시장 안정 필요(시장지표 기반 지정)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구 확대, 토지거래허가구역 지정,...
+    - 분석 점수: 90.00%
+      AnalysisDepth: 80.00% | DataFidelity: 70.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 문서는 헤더(##, ###), 목록, 표 등을 일관되게 사용해 Markdown 구조가 가독성 있게 구현되어 있으며(예: ‘개요’, ‘정책 목표’, ‘주요 정책 비교’ 및 각 항목별 표—주택담보대출 한도, 다주택자 규제, 실거주 의무 등), 서론(개요)·본론(정책 비교·세부항목)·결론(평가·전망·사업지 영향 분석)의 논리적 흐름이 체계적으로 갖춰져 있습니다. 어조도 전문적인 보고서 문어체로 유지되었고 각 주장에 출처 표기가 있어 근거 제시가 명확합니다. Markdown 구조가 깨져 있거나 비전문적 표현은 보이지 않아 평가 기준을 잘 충족합니다.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] ['날짜: 2025-10-30\n연도: 2025\n제목: 서울 3곳 도심 공공주택 복합지구 지정서울 3곳 도심 공공주택 복합지구 지정 관련 보도자료 내용입니다. 자세한 내용은 첨부파일을 참고하시기 바랍니다.2025-10-30국토교통부\n링크: https://www.ko... | [2] [{'title': '낡은 용산 전자상가, AI 혁신거점 된다…28층 혁신업무시설 추진', 'date': '2026.03.12 08:13', 'content': '서울시는 용산 나진전자상가 특별계획구역에 지하 8층~지상 28층 규모의 업무시설 건축계획안이 건축위원회 심...
+    - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 주택시장 안정화 대책 (부동산 관계장관회의 자료)   - **배경**: 최근 주택가격 급등 및 거래 과열 우려에 따른 시장 안정 필요(시장지표 기반 지정)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구 확대, 토지거래허가구역 지정,...
+    - RAG 점수: 98.50%
+      Faithfulness: 100.00% | Contextual Relevancy: 98.04% | Answer Relevancy: 97.46%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty (Contradictions: []), indicating no mismatches and that the actual output fully aligns with the retrieval context—great job.
+[32mPASSED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>> [분석 에이전트 - supply_demand] 평가 시작 (3건)
+------------------------------------------------------------
+
+  [supply_demand] 케이스 1/3 평가 중...
+    AnalysisDepth: 0.60 (12.4s)
+    DataFidelity: 1.00 (17.2s)
+    StructuralCompleteness: 1.00 (12.9s)
+    Faithfulness: 1.00 (202.5s)
+    Contextual Relevancy: 0.86 (48.1s)
+    [경고] Answer Relevancy 평가 실패 (213.7s): Request timed out.
+
+  * [supply_demand_001] 수급 지표 종합 분석
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 사업지 지역의 부동산 수급 지표를 종합 분석하세요. - 매매가 및 전세가 시계열 추이 (월별/연별 변화율 포함) - 전세가율 변화 및 의미 해석 - 매매 거래량 동향 (전년 대비 증감) - 청약 경쟁률 현황 - 금리(기준금리, 주담대금리) 및 거시경제 지표(GDP, GRDP) - 입주 예정 물량 및 수급 균형 판단 - 각 지표의 시계열적 흐름...
+    - 출력: 서울특별시 강남구(대치동 기준 데이터 포함) — 공급·수요 시계열 데이터 정리 (대상지: 대치동 / 현재 시점: 2026-03-14)  요약(핵심 한눈판) - 10년 이상 노후 주택 수: 4,166채. - 주요 정량 지표(권장, 분양성 측정 1차 지표): 최근 12개월(2024-10 ~ 2025-09) 평균 매매가/전세가 비율 = 2.48 (산식: 월별 매...
+    - 분석 점수: 76.00%
+      AnalysisDepth: 60.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 강점: 요청한 원자료를 충실히 나열하고(매매·전세 월별 시계열 2020-01~2025-09, 주담대·기준금리 시계열, 입주예정(디에이치 282세대·비취타운 95세대), 청약경쟁률(디에이치 1025.6:1) 등) 매매/전세 비율(최근 12개월 평균 2.48) 계산·제시 및 데이터 주의사항(강남구 평균 vs 대치동 차이, 2025-03 거래량 이상치 등)을 포함해 실무 활용 지침을 준 점은 분석서로서 유용합니다. 단점: 평가 기준에서 요구한 분석 심도(원인·이유 규명)가 부족하고 시계열 흐름(과거→현재→향후)의 정량적 해석이 거의 없음(예: 월별·연별 변화율 미제공, 2021 급등→2022~23 조정→2024~25 회복 같은 요약 부재). 또한 향후 전망이나 명확한 결론(정량적 시나리오·예측)이 약해 감점됩니다.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] 4166 | [2] 26 자치구: 강남구 2020년 1월: 769973.0 2020년 2월: 772140.0 2020년 3월: 774435.0 2020년 4월: 776656.0 2020년 5월: 777645.0 2020년 6월: 779565.0 2020년 7월: 785301.0 2020년... | [3] 26 자치구: 강남구 2020년 1월: 1758527.0 2020년 2월: 1755204.0 2020년 3월: 1749409.0 2020년 4월: 1732086.0 2020년 5월: 1714102.0 2020년 6월: 1714914.0 2020년 7월: 1731527.... | ... 외 8건
+    - 출력: 서울특별시 강남구(대치동 기준 데이터 포함) — 공급·수요 시계열 데이터 정리 (대상지: 대치동 / 현재 시점: 2026-03-14)  요약(핵심 한눈판) - 10년 이상 노후 주택 수: 4,166채. - 주요 정량 지표(권장, 분양성 측정 1차 지표): 최근 12개월(2024-10 ~ 2025-09) 평균 매매가/전세가 비율 = 2.48 (산식: 월별 매...
+    - RAG 점수: 62.20%
+      Faithfulness: 100.00% | Contextual Relevancy: 86.49% | Answer Relevancy: 0.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty (Contradictions: []), indicating no contradictions were found between the actual output and the retrieval context, so the output appears fully faithful.
+
+  [supply_demand] 케이스 2/3 평가 중...
+    AnalysisDepth: 0.70 (26.5s)
+    DataFidelity: 1.00 (21.2s)
+    StructuralCompleteness: 1.00 (16.1s)
+    [경고] Faithfulness 평가 실패 (120.1s): Request timed out.
+    Contextual Relevancy: 0.98 (90.5s)
+    Answer Relevancy: 1.00 (142.2s)
+
+  * [supply_demand_002] 수급 데이터 수치 정확성 검증
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 제공된 수급 관련 컨텍스트 데이터를 기반으로 정확한 수치를 인용하여 분석하세요. - 매매가/전세가 절대값 및 변동률을 컨텍스트 원문에 근거하여 표기할 것 - 전세가율, 매매수급지수, 거래량 등 핵심 지표 수치를 정확히 인용할 것 - 금리, GDP/GRDP 등 거시지표 수치를 원문 그대로 인용할 것 - 청약 경쟁률, 입주 예정 물량 등 수급 지...
+    - 출력: 서울특별시 강남구(대치동 기준 데이터 포함) — 공급·수요 시계열 데이터 정리 (대상지: 대치동 / 현재 시점: 2026-03-14)  요약(핵심 한눈판) - 10년 이상 노후 주택 수: 4,166채. - 주요 정량 지표(권장, 분양성 측정 1차 지표): 최근 12개월(2024-10 ~ 2025-09) 평균 매매가/전세가 비율 = 2.48 (산식: 월별 매...
+    - 분석 점수: 82.00%
+      AnalysisDepth: 70.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 원자료에서 제시된 월별 매매가·전세가 수치, 매매/전세 비율(최근 12개월 평균 2.48), 매매수급지수(2024-10: 101.118475559238), 거래량(동·호 수 시계열), 주담대 금리 및 한국·미국 기준금리, 1인당 GDP·강남구 GRDP, 입주예정(디에이치 282세대·비취타운 95세대)과 청약 경쟁률 등을 정확히 인용한 점은 강점입니다. 다만 '전세가율'을 명시적으로 제시하지 않았고(매매/전세 비율 제시는 있으나 전세가율 요구와 다름), 매매가/전세가의 변동률(증감률)이 표기되지 않아 요구사항 일부 미충족입니다. 또한 시간축상의 원인·전달경로(과거→현재→미래)에 대한 심층적 인과분석·전망은 제한적이고 데이터 나열 위주여서 분석 심도 측면에서 감점 요인입니다.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] 4166 | [2] 26 자치구: 강남구 2020년 1월: 769973.0 2020년 2월: 772140.0 2020년 3월: 774435.0 2020년 4월: 776656.0 2020년 5월: 777645.0 2020년 6월: 779565.0 2020년 7월: 785301.0 2020년... | [3] 26 자치구: 강남구 2020년 1월: 1758527.0 2020년 2월: 1755204.0 2020년 3월: 1749409.0 2020년 4월: 1732086.0 2020년 5월: 1714102.0 2020년 6월: 1714914.0 2020년 7월: 1731527.... | ... 외 8건
+    - 출력: 서울특별시 강남구(대치동 기준 데이터 포함) — 공급·수요 시계열 데이터 정리 (대상지: 대치동 / 현재 시점: 2026-03-14)  요약(핵심 한눈판) - 10년 이상 노후 주택 수: 4,166채. - 주요 정량 지표(권장, 분양성 측정 1차 지표): 최근 12개월(2024-10 ~ 2025-09) 평균 매매가/전세가 비율 = 2.48 (산식: 월별 매...
+    - RAG 점수: 66.06%
+      Faithfulness: 0.00% | Contextual Relevancy: 98.39% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty (Contradictions: []), indicating no contradictions were found between the actual output and the retrieval context, so the output appears fully faithful.
+
+  [supply_demand] 케이스 3/3 평가 중...
+    AnalysisDepth: 0.40 (17.4s)
+    DataFidelity: 1.00 (17.1s)
+    StructuralCompleteness: 1.00 (12.6s)
+    [경고] Faithfulness 평가 실패 (220.5s): Request timed out.
+    Contextual Relevancy: 0.94 (47.5s)
+    Answer Relevancy: 1.00 (211.5s)
+
+  * [supply_demand_003] 수급 동향 기반 분양 전략 시사점
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 수급 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 현재 수급 환경(수요 우위/공급 우위)에 따른 분양 타이밍 판단 - 가격 동향(상승/하락/보합)에 따른 분양가 전략 - 금리 환경이 분양 수요에 미치는 영향 - 입주 예정 물량에 따른 경쟁 리스크 - 종합적인 수급 전망 기반 분양성 판단
+    - 출력: 서울특별시 강남구(대치동 기준 데이터 포함) — 공급·수요 시계열 데이터 정리 (대상지: 대치동 / 현재 시점: 2026-03-14)  요약(핵심 한눈판) - 10년 이상 노후 주택 수: 4,166채. - 주요 정량 지표(권장, 분양성 측정 1차 지표): 최근 12개월(2024-10 ~ 2025-09) 평균 매매가/전세가 비율 = 2.48 (산식: 월별 매...
+    - 분석 점수: 64.00%
+      AnalysisDepth: 40.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 강점: 방대한 원자료와 월별 매매·전세 시계열(2020-01~2025-09), 최근 12개월 평균 매매/전세 비율(2.48) 산출, 입주예정(디에이치 282세대·비취타운 95세대)과 높은 청약 경쟁률(디에이치 1025.6:1)·주담대·기준금리 시계열 등 핵심 데이터 제공 및 활용 지침 제시는 잘 되어 있음. 단점: 요청된 실무적 시사점(분양 타이밍 판단, 분양가 전략, 금리 영향 분석, 입주물량에 따른 경쟁리스크, 종합 분양성 판단)에 대해 구체적 결론·정책 권고가 부족함(대부분 데이터 나열·활용 방법 제시 수준에 머무름). 시계열 변화의 흐름(과거→현재→미래) 해석과 원인 분석(예: 가격 상승 구간의 원인·금리 변동과 수요 연쇄 반응 정량화)이 거의 없고, 최종적인 분양 판단 또는 실행 권고(즉시/지연·프라이싱 범위 등)가 제시되지 않아 평가 기준의 분석·전망 요건을 충족하지 못함.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] 4166 | [2] 26 자치구: 강남구 2020년 1월: 769973.0 2020년 2월: 772140.0 2020년 3월: 774435.0 2020년 4월: 776656.0 2020년 5월: 777645.0 2020년 6월: 779565.0 2020년 7월: 785301.0 2020년... | [3] 26 자치구: 강남구 2020년 1월: 1758527.0 2020년 2월: 1755204.0 2020년 3월: 1749409.0 2020년 4월: 1732086.0 2020년 5월: 1714102.0 2020년 6월: 1714914.0 2020년 7월: 1731527.... | ... 외 8건
+    - 출력: 서울특별시 강남구(대치동 기준 데이터 포함) — 공급·수요 시계열 데이터 정리 (대상지: 대치동 / 현재 시점: 2026-03-14)  요약(핵심 한눈판) - 10년 이상 노후 주택 수: 4,166채. - 주요 정량 지표(권장, 분양성 측정 1차 지표): 최근 12개월(2024-10 ~ 2025-09) 평균 매매가/전세가 비율 = 2.48 (산식: 월별 매...
+    - RAG 점수: 64.75%
+      Faithfulness: 0.00% | Contextual Relevancy: 94.44% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty (Contradictions: []), indicating no contradictions were found between the actual output and the retrieval context, so the output appears fully faithful.
+[32mPASSED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>> [분석 에이전트 - nearby_market] 평가 시작 (3건)
+------------------------------------------------------------
+
+  [nearby_market] 케이스 1/3 평가 중...
+    AnalysisDepth: 0.60 (14.1s)
+    DataFidelity: 1.00 (19.8s)
+    StructuralCompleteness: 0.70 (14.5s)
+    Faithfulness: 1.00 (142.3s)
+    Contextual Relevancy: 1.00 (44.7s)
+    Answer Relevancy: 1.00 (116.9s)
+
+  * [nearby_001] 주변 시세 종합 분석
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 사업지 주변의 매매 아파트 및 분양 아파트 시세를 종합 비교 분석하세요. - 주변 매매 아파트의 단지명, 세대수, 평당가격, 준공연도, 사업지와의 거리 - 주변 분양 아파트의 분양가, 청약 경쟁률, 계약 조건 - 매매 시세와 분양가의 비교 분석 (평당가 기준) - 주변 단지의 입지 특성(역세권, 학군 등) 비교 - 시세 동향의 시계열적 해석을...
+    - 출력: think_tool(reflection: "발견: 입력 데이터에서 매매(대치팰리스, 대치 아이파크, 도곡렉슬)와 분양(디에이치 퍼스티어 아이파크, 래미안 원베일리, 래미안 레벤투스)의 입지정보(kakao_api_distance_context)와 매매/분양 가격 원시값(gemini_search, perplexity_search)을 확보함. 공백: 공공데이터 ...
+    - 분석 점수: 77.50%
+      AnalysisDepth: 60.00% | DataFidelity: 100.00% | StructuralCompleteness: 70.00%
+    - 판단 이유: 제공된 Retrieval Context의 핵심 수치(예: 대치팰리스 평당매매가격 '1억 2,500만원', 대치 아이파크 '1억 800만원', 도곡렉슬 '9,900만원', 디에이치 퍼스티어 아이파크 분양가 '4,750만원' 등)와 Actual Output의 값이 일치함. 또한 공공 실거래 데이터가 모두 'no_data'임을 명시하고(gemini 사용 및 perplexity로 검증 시도), 입지정보는 kakao_api_distance_context 원본을 그대로 포함했다고 밝히는 등 출처 표시와 검색결과 기반 서술을 충실히 따름. 임의 생성된 통계나 숫자(할루시네이션)도 발견되지 않음.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] {   "매매아파트": [     {       "주소와단지명": "서울특별시 강남구 삼성로51길 35, 대치팰리스",       "세대수": "1608세대",       "타입": "84m²",       "평당매매가격": "1억 2,500만원",       "준공연... | [2] [{'주소': '서울특별시 강남구 삼성로51길 35, 대치팰리스', '좌표': {'longitude': 127.060178698551, 'latitude': 37.4949042259959}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '... | [3] [{'status': 'no_data', 'message': "'서울특별시 강남구 삼성로51길 35, 대치팰리스'에 대한 최근 실거래가 데이터를 찾을 수 없습니다.", 'tip': '최근 5년간 거래 내역이 없거나, 다른 지역명이나 아파트명으로 시도해보세요.', '타입... | ... 외 1건
+    - 출력: think_tool(reflection: "발견: 입력 데이터에서 매매(대치팰리스, 대치 아이파크, 도곡렉슬)와 분양(디에이치 퍼스티어 아이파크, 래미안 원베일리, 래미안 레벤투스)의 입지정보(kakao_api_distance_context)와 매매/분양 가격 원시값(gemini_search, perplexity_search)을 확보함. 공백: 공공데이터 ...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the provided 'Contradictions' list is empty, indicating no discrepancies between the actual output and the retrieval context — everything aligns correctly. Great job keeping the output faithful!
+
+  [nearby_market] 케이스 2/3 평가 중...
+    AnalysisDepth: 0.80 (16.0s)
+    DataFidelity: 1.00 (11.1s)
+    StructuralCompleteness: 0.70 (11.7s)
+    Faithfulness: 1.00 (133.4s)
+    Contextual Relevancy: 0.94 (52.3s)
+    Answer Relevancy: 1.00 (130.4s)
+
+  * [nearby_002] 시세 데이터 수치 정확성 검증
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 제공된 시세 관련 컨텍스트 데이터(Gemini 검색, Perplexity 검증, 실거래가, 카카오 API 거리)를 기반으로 정확한 수치를 인용하여 분석하세요. - 각 단지의 평당가격, 세대수, 거리 등 수치를 컨텍스트 원문에 근거하여 표기할 것 - Gemini 검색 결과와 Perplexity 검증 결과의 일치/불일치를 명시할 것 - 실거래가 ...
+    - 출력: think_tool(reflection: "발견: 입력 데이터에서 매매(대치팰리스, 대치 아이파크, 도곡렉슬)와 분양(디에이치 퍼스티어 아이파크, 래미안 원베일리, 래미안 레벤투스)의 입지정보(kakao_api_distance_context)와 매매/분양 가격 원시값(gemini_search, perplexity_search)을 확보함. 공백: 공공데이터 ...
+    - 분석 점수: 83.50%
+      AnalysisDepth: 80.00% | DataFidelity: 100.00% | StructuralCompleteness: 70.00%
+    - 판단 이유: Actual Output의 수치·팩트가 Retrieval Context와 정확히 일치함(예: 대치팰리스 평당매매가격 1억 2,500만원, 대치 아이파크 1억 800만원, 도곡렉슬 9,900만원 및 좌표/거리/세대수 등 kakao_api_distance_context의 값 일치). 또한 출력문에 gemini_search·perplexity_search·kakao_api_distance_context·real_estate_price_context('no_data') 출처를 명시하고 그 범위 내에서 서술했으며, 검색 결과에 없는 임의 수치를 새로 생성한 흔적(할루시네이션)이 없음. 따라서 평가 기준(가점/감점 항목)을 충족하여 높은 점수가 타당함.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] {   "매매아파트": [     {       "주소와단지명": "서울특별시 강남구 삼성로51길 35, 대치팰리스",       "세대수": "1608세대",       "타입": "84m²",       "평당매매가격": "1억 2,500만원",       "준공연... | [2] [{'주소': '서울특별시 강남구 삼성로51길 35, 대치팰리스', '좌표': {'longitude': 127.060178698551, 'latitude': 37.4949042259959}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '... | [3] [{'status': 'no_data', 'message': "'서울특별시 강남구 삼성로51길 35, 대치팰리스'에 대한 최근 실거래가 데이터를 찾을 수 없습니다.", 'tip': '최근 5년간 거래 내역이 없거나, 다른 지역명이나 아파트명으로 시도해보세요.', '타입... | ... 외 1건
+    - 출력: think_tool(reflection: "발견: 입력 데이터에서 매매(대치팰리스, 대치 아이파크, 도곡렉슬)와 분양(디에이치 퍼스티어 아이파크, 래미안 원베일리, 래미안 레벤투스)의 입지정보(kakao_api_distance_context)와 매매/분양 가격 원시값(gemini_search, perplexity_search)을 확보함. 공백: 공공데이터 ...
+    - RAG 점수: 98.10%
+      Faithfulness: 100.00% | Contextual Relevancy: 94.29% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because there are no contradictions (contradictions: []) between the actual output and the retrieval context, indicating full faithfulness—great job!
+
+  [nearby_market] 케이스 3/3 평가 중...
+    AnalysisDepth: 0.20 (10.5s)
+    DataFidelity: 1.00 (17.3s)
+    StructuralCompleteness: 0.40 (16.8s)
+    Faithfulness: 1.00 (188.8s)
+    Contextual Relevancy: 1.00 (43.8s)
+    Answer Relevancy: 1.00 (159.9s)
+
+  * [nearby_003] 주변 시세 기반 분양 전략 시사점
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 주변 시세 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 주변 매매 시세 대비 적정 분양가 포지셔닝 (프리미엄/디스카운트 전략) - 경쟁 분양 단지 대비 차별화 요소 - 주변 시세 추이에 따른 분양 타이밍 판단 - 가격 경쟁력 확보를 위한 전략 제언 - 종합적인 분양가 전략 및 분양성 판단
+    - 출력: think_tool(reflection: "발견: 입력 데이터에서 매매(대치팰리스, 대치 아이파크, 도곡렉슬)와 분양(디에이치 퍼스티어 아이파크, 래미안 원베일리, 래미안 레벤투스)의 입지정보(kakao_api_distance_context)와 매매/분양 가격 원시값(gemini_search, perplexity_search)을 확보함. 공백: 공공데이터 ...
+    - 분석 점수: 55.00%
+      AnalysisDepth: 20.00% | DataFidelity: 100.00% | StructuralCompleteness: 40.00%
+    - 판단 이유: 응답은 제공된 retrieval_context의 수치와 사실을 충실히 반영함: 매매 평당가격(대치팰리스 1억 2,500만원, 대치 아이파크 1억 800만원, 도곡렉슬 9,900만원), 세대수(1608·467·3002), 사업지와의 거리(약 550m·700m·1.2km) 등 주요 숫자가 원문과 일치함. 또한 공공 실거래 데이터가 'no_data'로 누락된 점을 명확히 언급하고(gemini_search·perplexity_search로 검증 시도했다고 기술), 입지 출처(kakao_api_distance_context)를 명시하며 소스간 분양가 불일치(레벤투스 등)를 보고서에 반영해 임의 수치(할루시네이션)를 생성하지 않음. 전반적으로 평가 기준(출처 표기, 숫자 일치, 허위 수치 없음)을 충족함.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] {   "매매아파트": [     {       "주소와단지명": "서울특별시 강남구 삼성로51길 35, 대치팰리스",       "세대수": "1608세대",       "타입": "84m²",       "평당매매가격": "1억 2,500만원",       "준공연... | [2] [{'주소': '서울특별시 강남구 삼성로51길 35, 대치팰리스', '좌표': {'longitude': 127.060178698551, 'latitude': 37.4949042259959}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '... | [3] [{'status': 'no_data', 'message': "'서울특별시 강남구 삼성로51길 35, 대치팰리스'에 대한 최근 실거래가 데이터를 찾을 수 없습니다.", 'tip': '최근 5년간 거래 내역이 없거나, 다른 지역명이나 아파트명으로 시도해보세요.', '타입... | ... 외 1건
+    - 출력: think_tool(reflection: "발견: 입력 데이터에서 매매(대치팰리스, 대치 아이파크, 도곡렉슬)와 분양(디에이치 퍼스티어 아이파크, 래미안 원베일리, 래미안 레벤투스)의 입지정보(kakao_api_distance_context)와 매매/분양 가격 원시값(gemini_search, perplexity_search)을 확보함. 공백: 공공데이터 ...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty (Contradictions: []), indicating no identified contradictions between the actual output and the retrieval context, so the output appears fully faithful — great job!
+[32mPASSED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>> [분석 에이전트 - location_insight] 평가 시작 (3건)
+------------------------------------------------------------
+
+  [location_insight] 케이스 1/3 평가 중...
+    AnalysisDepth: 0.40 (16.5s)
+    DataFidelity: 0.90 (26.0s)
+    StructuralCompleteness: 0.80 (14.7s)
+    Faithfulness: 1.00 (179.2s)
+    Contextual Relevancy: 1.00 (35.2s)
+    Answer Relevancy: 1.00 (81.1s)
+
+  * [location_001] 입지 종합 분석
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 사업지의 입지 환경을 종합 분석하세요. - 교통 인프라 (지하철, 버스, 광역교통 등 접근성) - 교육 환경 (초/중/고 학군, 학원가 등) - 생활 인프라 (병원, 마트, 공원 등) - 개발 호재 (GTX, 재개발, 도시개발, 산업단지 등) - 자연환경 및 혐오시설 유무 - 각 입지 요소에 대한 등급 판정(우수/양호/보통/미흡)을 포함할 것
+    - 출력: {"입지정보":{"주소":"서울특별시 강남구 대치동","좌표":{"longitude":127.056693501258,"latitude":37.4932421505465},"교육환경":{"학교":[{"이름":"단국대학교사범대학부속고등학교","주소":"서울 강남구 도곡로64길 21","거리_m":252},{"이름":"서울대도초등학교","주소":"서울 강남구 선릉...
+    - 분석 점수: 71.50%
+      AnalysisDepth: 40.00% | DataFidelity: 90.00% | StructuralCompleteness: 80.00%
+    - 판단 이유: 대부분 항목이 제공된 Retrieval Context와 수치·팩트(예: 단국대학교사범대학부속고등학교 거리 252m, 도곡역 거리 227m/272m, 한티역 475m, 편의시설 거리 등) 및 주변호재 일정(예: GTX 토목 2028·완전개통 2029 전망, GBC 준공 목표 2031 등)을 정확히 반영하고 출처(CONTEXT 및 Perplexity)를 명시한 점은 우수합니다. 다만 도보_분_실측_추정(예: 3·4·6분)은 Retrieval Context에 명시적 수치가 없어 생성된 추정치로 판단되어 소폭 감점했습니다.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] {   "해당지역특징": [     "대한민국 대표 학군지(대치동 학원가)로서, 자녀 교육을 위한 30~40대 고소득 학부모의 매매 및 전세 수요가 시장을 주도함",     "높은 소득 수준을 기반으로 한 강력한 구매력으로 고가 아파트 거래가 활발하며, 부동산 시장 하... | [2] {'주소': '서울특별시 강남구 대치동', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소': '서울 강남구 도...
+    - 출력: {"입지정보":{"주소":"서울특별시 강남구 대치동","좌표":{"longitude":127.056693501258,"latitude":37.4932421505465},"교육환경":{"학교":[{"이름":"단국대학교사범대학부속고등학교","주소":"서울 강남구 도곡로64길 21","거리_m":252},{"이름":"서울대도초등학교","주소":"서울 강남구 선릉...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the 'Contradictions' list is empty, indicating no discrepancies between the actual output and the retrieval context — the output appears fully faithful. Great job!
+
+  [location_insight] 케이스 2/3 평가 중...
+    AnalysisDepth: 0.60 (21.7s)
+    DataFidelity: 0.80 (23.7s)
+    StructuralCompleteness: 0.80 (17.8s)
+    Faithfulness: 1.00 (149.6s)
+    Contextual Relevancy: 1.00 (33.1s)
+    Answer Relevancy: 1.00 (101.7s)
+
+  * [location_002] 입지 데이터 수치 정확성 검증
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 제공된 입지 관련 컨텍스트 데이터(Gemini 검색, 카카오 API 거리)를 기반으로 정확한 정보를 인용하여 분석하세요. - 주변 시설(학교, 역, 병원, 마트 등)의 이름과 거리(m)를 컨텍스트 원문에 근거하여 표기할 것 - 도보 시간 산정은 카카오 API 데이터에 근거할 것 - 개발 호재의 명칭, 예정 시기, 위치를 정확히 인용할 것 - ...
+    - 출력: {"입지정보":{"주소":"서울특별시 강남구 대치동","좌표":{"longitude":127.056693501258,"latitude":37.4932421505465},"교육환경":{"학교":[{"이름":"단국대학교사범대학부속고등학교","주소":"서울 강남구 도곡로64길 21","거리_m":252},{"이름":"서울대도초등학교","주소":"서울 강남구 선릉...
+    - 분석 점수: 74.00%
+      AnalysisDepth: 60.00% | DataFidelity: 80.00% | StructuralCompleteness: 80.00%
+    - 판단 이유: 대부분의 수치·팩트(예: 좌표 127.056693501258/37.4932421505465, 도곡역 거리 227m, 단국대사범부속고 교사 거리 252m, 학원 거리 107m 등 POI 주소·거리)는 제공된 CONTEXT와 일치하고, 출처(컨텍스트·Perplexity)를 명시해 안전하게 서술한 점이 강점임. 다만 출력물에 '도보_분_실측_추정'(3/4/6분) 등 컨텍스트에 명시되지 않은 추정 수치와 일부 호재의 ETA(예: GTX 토목 2028/완전개통 2029, 위례신사선 2026 타당성 통과 등)에서 원래 Retrieval Context의 단순 상태표기보다 구체화된 정보가 추가되어 엄밀한 완전일치 기준에서는 일치하지 않음(추가검증 필요). 이러한 추가·추정 정보 때문에 만점은 아님.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] {   "해당지역특징": [     "대한민국 대표 학군지(대치동 학원가)로서, 자녀 교육을 위한 30~40대 고소득 학부모의 매매 및 전세 수요가 시장을 주도함",     "높은 소득 수준을 기반으로 한 강력한 구매력으로 고가 아파트 거래가 활발하며, 부동산 시장 하... | [2] {'주소': '서울특별시 강남구 대치동', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소': '서울 강남구 도...
+    - 출력: {"입지정보":{"주소":"서울특별시 강남구 대치동","좌표":{"longitude":127.056693501258,"latitude":37.4932421505465},"교육환경":{"학교":[{"이름":"단국대학교사범대학부속고등학교","주소":"서울 강남구 도곡로64길 21","거리_m":252},{"이름":"서울대도초등학교","주소":"서울 강남구 선릉...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty (Contradictions: []), indicating no discrepancies were found and the actual output fully aligns with the retrieval context — well done!
+
+  [location_insight] 케이스 3/3 평가 중...
+    AnalysisDepth: 0.30 (11.0s)
+    DataFidelity: 0.90 (18.8s)
+    StructuralCompleteness: 0.80 (12.4s)
+    Faithfulness: 1.00 (141.2s)
+    Contextual Relevancy: 1.00 (38.1s)
+    Answer Relevancy: 1.00 (122.3s)
+
+  * [location_003] 입지 경쟁력 기반 분양성 시사점
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 입지 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 입지 강점(역세권, 학군, 공원 등)이 분양 수요에 미치는 영향 - 입지 약점(소음, 혐오시설, 교통 불편 등)의 리스크 - 개발 호재의 실현 가능성 및 분양성 기여도 - 주변 경쟁 단지 대비 입지 차별화 요소 - 종합적인 입지 경쟁력 평가 및 분양성 판단
+    - 출력: {"입지정보":{"주소":"서울특별시 강남구 대치동","좌표":{"longitude":127.056693501258,"latitude":37.4932421505465},"교육환경":{"학교":[{"이름":"단국대학교사범대학부속고등학교","주소":"서울 강남구 도곡로64길 21","거리_m":252},{"이름":"서울대도초등학교","주소":"서울 강남구 선릉...
+    - 분석 점수: 68.50%
+      AnalysisDepth: 30.00% | DataFidelity: 90.00% | StructuralCompleteness: 80.00%
+    - 판단 이유: 대부분 수치(좌표 127.056693501258/37.4932421505465, 학교·학원·지하철·마트·병원·공원·미래POI의 거리값 등)가 제공된 Retrieval Context와 정확히 일치하며, 출처로 CONTEXT와 Perplexity 검증을 명시해 안전하게 기술한 점이 강점임. 허위 숫자나 임의 생성 통계는 보이지 않음. 다만 위례신사선의 착공 관련 서술(리트리벌은 '착공 예상 2027'으로 표기한 반면 실제 출력은 '2026.03 예비타당성 통과·착공 불확실' 등 일부 일정·상태 표현이 달라진 점과, GBC의 예정 완료연도 등 Retrieval Context에 명확히 없던 ETA 성격의 일정이 추가된 점은 맥락 불일치로 소폭 감점 사유임.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] {   "해당지역특징": [     "대한민국 대표 학군지(대치동 학원가)로서, 자녀 교육을 위한 30~40대 고소득 학부모의 매매 및 전세 수요가 시장을 주도함",     "높은 소득 수준을 기반으로 한 강력한 구매력으로 고가 아파트 거래가 활발하며, 부동산 시장 하... | [2] {'주소': '서울특별시 강남구 대치동', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소': '서울 강남구 도...
+    - 출력: {"입지정보":{"주소":"서울특별시 강남구 대치동","좌표":{"longitude":127.056693501258,"latitude":37.4932421505465},"교육환경":{"학교":[{"이름":"단국대학교사범대학부속고등학교","주소":"서울 강남구 도곡로64길 21","거리_m":252},{"이름":"서울대도초등학교","주소":"서울 강남구 선릉...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because there are no contradictions (Contradictions: []), so the actual output fully aligns with the retrieval context — great job!
+[32mPASSED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>> [분석 에이전트 - population_insight] 평가 시작 (3건)
+------------------------------------------------------------
+
+  [population_insight] 케이스 1/3 평가 중...
+    AnalysisDepth: 0.70 (18.0s)
+    DataFidelity: 1.00 (22.4s)
+    StructuralCompleteness: 1.00 (12.2s)
+    Faithfulness: 1.00 (118.9s)
+    Contextual Relevancy: 1.00 (37.7s)
+    [경고] Answer Relevancy 평가 실패 (223.6s): Request timed out.
+
+  * [population_001] 인구 동향 종합 분석
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 사업지 지역의 인구 동향을 종합 분석하세요. - 연령별 인구 구성 (특히 30~40대 주택 구매 핵심층 비율) - 인구 이동 동향 (전입/전출 추이, 순유입/순유출) - 주요 전입/전출 지역 및 이동 요인 - 총인구 변화 추이 (증가/감소/안정) - 각 지표의 시계열적 흐름(월별/연도별 변화)과 향후 전망을 포함할 것
+    - 출력: 대상지역: 서울특별시 강남구 (입력 데이터는 강남구 단위입니다 — 요청하신 대치동 단위 자료는 제공되지 않았습니다. 보고서 작성자에게 대치동 단위 자료 필요 여부를 알리십시오.)  요약(핵심) - 데이터 범위: 연령구간별 인구(0~9 → 100+) 월별 시계열(2025-04 ~ 2025-09) 전 항목 제공. 인구이동(전입/전출)은 연간 집계(2024·20...
+    - 분석 점수: 82.00%
+      AnalysisDepth: 70.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 강점: 월별 연령별(2025-04~09) 인구수·구성비와 월간 증감(누적 -498명), 20~29세 큰 감소(-1,181)·70~79·80~89·10~19세 증가 등 시계열 흐름을 구체적으로 제시했고, 2024년·2025년 전입·전출 합계(2024 순유입 +5,762 / 2025 순유출 -477)와 서울권 내부 이동 변화(+3,064 → -1,263), 연간 순유입률 산출(+10.35‰ / -0.86‰) 및 데이터 제약(강남구 단위·월 vs 연 단위 불일치)을 명확히 기술함. 약점: 이동 원인(주거비·일자리·공급요인 등)에 대한 인과 분석이 부족하고 '30~40대 주택구매 핵심층 비율'을 명시적으로 계산·해석하지 않았음. 또한 향후 전망(정량적 예측·시나리오 제시)이 약해 평가 기준의 원인 규명 및 전망 요구를 충분히 충족하지 못함.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] 행정구역: 강남구 2025년04월_계_총인구수: 556,822 2025년04월_계_연령구간인구수: 556,822 2025년04월_계_0~9세: 32,770 2025년04월_계_10~19세: 63,574 2025년04월_계_20~29세: 65,177 2025년04월_계_... | [2] [{'year': 2024, 'origin': '전국', 'destination': '서울 강남구', 'total': 59730}, {'year': 2024, 'origin': '서울', 'destination': '서울 강남구', 'total': 36694}, {'y...
+    - 출력: 대상지역: 서울특별시 강남구 (입력 데이터는 강남구 단위입니다 — 요청하신 대치동 단위 자료는 제공되지 않았습니다. 보고서 작성자에게 대치동 단위 자료 필요 여부를 알리십시오.)  요약(핵심) - 데이터 범위: 연령구간별 인구(0~9 → 100+) 월별 시계열(2025-04 ~ 2025-09) 전 항목 제공. 인구이동(전입/전출)은 연간 집계(2024·20...
+    - RAG 점수: 66.70%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 0.00%
+    - 판단 이유: The score is 1.00 because there are no contradictions (Contradictions: []). The actual output fully aligns with the retrieval context — great job keeping it faithful!
+
+  [population_insight] 케이스 2/3 평가 중...
+    AnalysisDepth: 0.90 (20.2s)
+    DataFidelity: 0.90 (23.9s)
+    StructuralCompleteness: 1.00 (11.3s)
+    Faithfulness: 1.00 (133.4s)
+    Contextual Relevancy: 0.95 (57.2s)
+    Answer Relevancy: 1.00 (205.4s)
+
+  * [population_002] 인구 데이터 수치 정확성 검증
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 제공된 인구 관련 컨텍스트 데이터(연령별 인구, 인구 이동 통계)를 기반으로 정확한 수치를 인용하여 분석하세요. - 연령구간별 인구수 및 비율을 컨텍스트 원문에 근거하여 표기할 것 - 총인구 및 월별 변화량을 정확히 인용할 것 - 전입/전출 수치(연도별, 지역별)를 누락 없이 포함할 것 - 비율 계산(인구 비중, 변화율 등)이 원자료와 일치하...
+    - 출력: 대상지역: 서울특별시 강남구 (입력 데이터는 강남구 단위입니다 — 요청하신 대치동 단위 자료는 제공되지 않았습니다. 보고서 작성자에게 대치동 단위 자료 필요 여부를 알리십시오.)  요약(핵심) - 데이터 범위: 연령구간별 인구(0~9 → 100+) 월별 시계열(2025-04 ~ 2025-09) 전 항목 제공. 인구이동(전입/전출)은 연간 집계(2024·20...
+    - 분석 점수: 92.00%
+      AnalysisDepth: 90.00% | DataFidelity: 90.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 대체로 평가 지침을 충실히 따름: 연령구간별 월별 인구수(2025.04~09)와 각 월 총인구(556,822 → 556,324, 누적 -498명)를 원자료 수치로 정확히 기재했고, 연령별 구성비(소수점 1자리)와 월간 증감(예: 05월 vs 04월 -316 등), 연령별 절대증감(20~29세 -1,181, 70~79세 +737 등)까지 제시하며 시계열 변화 해석도 포함함으로써 시계열 해석 요구(항목 3)를 만족함. 전입·전출 수치도 연도별·지역별(2024 전입 59,730/전출 53,968, 순유입 +5,762; 2025 전입 36,873/전출 37,350, 순유출 -477 등)과 서울권 내부 이동(서울→강남 36,694→21,721 등)을 제시하고 연간 순유입률 계산(기준인구 평균 556,573 사용, 2024:+10.35‰, 2025:-0.86‰)을 검증해 비율계산 일치 요구를 충족함. 추가로 데이터 제약(강남구 단위, 이주 데이터는 연간 집계)과 해석상 주의사항을 명시한 점도 강점임. 단점은 ‘전입/전출 수치(연도별, 지역별)를 누락 없이 포함’하라는 엄격한 요청에 대해는 상위 항목 샘플과 전체 데이터 제공 가능 안내로 처리해 일부 상세 행(수백 건)을 본문에 모두 나열하지 않았고, 원인 규명(왜 20~29세가 감소했는지 등)의 인과 분석이나 향후 전망이 상대적으로 약하여 분석 심도 보강 여지가 있음.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] 행정구역: 강남구 2025년04월_계_총인구수: 556,822 2025년04월_계_연령구간인구수: 556,822 2025년04월_계_0~9세: 32,770 2025년04월_계_10~19세: 63,574 2025년04월_계_20~29세: 65,177 2025년04월_계_... | [2] [{'year': 2024, 'origin': '전국', 'destination': '서울 강남구', 'total': 59730}, {'year': 2024, 'origin': '서울', 'destination': '서울 강남구', 'total': 36694}, {'y...
+    - 출력: 대상지역: 서울특별시 강남구 (입력 데이터는 강남구 단위입니다 — 요청하신 대치동 단위 자료는 제공되지 않았습니다. 보고서 작성자에게 대치동 단위 자료 필요 여부를 알리십시오.)  요약(핵심) - 데이터 범위: 연령구간별 인구(0~9 → 100+) 월별 시계열(2025-04 ~ 2025-09) 전 항목 제공. 인구이동(전입/전출)은 연간 집계(2024·20...
+    - RAG 점수: 98.25%
+      Faithfulness: 100.00% | Contextual Relevancy: 94.74% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating no discrepancies were found between the actual output and the retrieval context; the output appears fully faithful—well done!
+
+  [population_insight] 케이스 3/3 평가 중...
+    AnalysisDepth: 0.60 (11.7s)
+    DataFidelity: 1.00 (24.7s)
+    StructuralCompleteness: 0.90 (12.9s)
+    Faithfulness: 1.00 (162.8s)
+    Contextual Relevancy: 1.00 (56.4s)
+    Answer Relevancy: 0.99 (174.6s)
+
+  * [population_003] 인구 동향 기반 수요 전망 시사점
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 인구 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 연령 구성에 따른 타겟 수요층 분석 (30~40대 비율, 1인 가구 등) - 인구 유입/유출 동향이 주택 수요에 미치는 영향 - 인구 변화 추이에 따른 중장기 수요 전망 - 인구 구조적 리스크 (고령화, 인구 감소 등) - 종합적인 인구 기반 분양성 판단
+    - 출력: 대상지역: 서울특별시 강남구 (입력 데이터는 강남구 단위입니다 — 요청하신 대치동 단위 자료는 제공되지 않았습니다. 보고서 작성자에게 대치동 단위 자료 필요 여부를 알리십시오.)  요약(핵심) - 데이터 범위: 연령구간별 인구(0~9 → 100+) 월별 시계열(2025-04 ~ 2025-09) 전 항목 제공. 인구이동(전입/전출)은 연간 집계(2024·20...
+    - 분석 점수: 74.00%
+      AnalysisDepth: 60.00% | DataFidelity: 100.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 응답은 월별 연령시계열(2025.04~09)과 연간 전입·전출(2024·2025)을 상세히 제시하고(예: 총인구 누적감소 -498명, 20~29세 -1,181명, 70~79·80~89세 증가, 2024년 순유입 +5,762명 → 2025년 소폭 순유출 -477명 등) 시계열 변화와 이동 흐름을 해석한 점은 평가기준의 가점을 충족합니다. 또한 연간 순유입률 지표 제안과 데이터 제약(강남구 단위, 시계열 단위 불일치) 명시로 실무적 유의점을 제공한 것도 강점입니다. 다만 의뢰문의 핵심인 ‘분양 실무적 시사점(타겟 수요층 구체화, 1인 가구·주택유형별 수요, 중장기 수요전망 및 분양성 결론)’에 대한 구체적 권고와 중장기 전망·결론 도출이 부족합니다(예: 30~40대·1인 가구 비중 분석이나 주택상품 제안 부재). 또한 입력요청 단위(대치동) 미반영은 적절히 고지했으나, 실무 적용 가능한 명확한 분양성 판단·권고가 결여되어 감점 요인이 있어 중간 수준의 점수를 부여합니다.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] 행정구역: 강남구 2025년04월_계_총인구수: 556,822 2025년04월_계_연령구간인구수: 556,822 2025년04월_계_0~9세: 32,770 2025년04월_계_10~19세: 63,574 2025년04월_계_20~29세: 65,177 2025년04월_계_... | [2] [{'year': 2024, 'origin': '전국', 'destination': '서울 강남구', 'total': 59730}, {'year': 2024, 'origin': '서울', 'destination': '서울 강남구', 'total': 36694}, {'y...
+    - 출력: 대상지역: 서울특별시 강남구 (입력 데이터는 강남구 단위입니다 — 요청하신 대치동 단위 자료는 제공되지 않았습니다. 보고서 작성자에게 대치동 단위 자료 필요 여부를 알리십시오.)  요약(핵심) - 데이터 범위: 연령구간별 인구(0~9 → 100+) 월별 시계열(2025-04 ~ 2025-09) 전 항목 제공. 인구이동(전입/전출)은 연간 집계(2024·20...
+    - RAG 점수: 99.79%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 99.38%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty, indicating no inconsistencies between the actual output and the retrieval context; the output fully aligns with the provided information — nice work!
+[32mPASSED[0m
+src/tests/analysis/analysis_eval/test_analysis.py::test_unsold_insight 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>> [분석 에이전트 - unsold_insight] 평가 시작 (3건)
+------------------------------------------------------------
+
+  [unsold_insight] 케이스 1/3 평가 중...
+    AnalysisDepth: 0.80 (19.0s)
+    DataFidelity: 1.00 (13.4s)
+    StructuralCompleteness: 1.00 (11.8s)
+    Faithfulness: 1.00 (126.6s)
+    Contextual Relevancy: 1.00 (36.2s)
+    Answer Relevancy: 1.00 (120.7s)
+
+  * [unsold_001] 미분양 현황 종합 분석
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 사업지 지역의 미분양 현황을 종합 분석하세요. - 총 미분양 호수 및 변동 추이 (증가/감소/보합) - 준공 전/후 미분양 구분 및 비중 분석 - 규모별(소형/중형/대형) 미분양 분포 - 주변 지역(시도/시군구) 대비 미분양 수준 비교 - 미분양 추이의 시계열적 흐름과 향후 전망을 포함할 것
+    - 출력: # 요약(데이터 핵심 요건) - 대상지 표기: 서울특별시 강남구 (원자료는 시군구 단위). 요청 대상지는 대치동이나 제공 데이터에는 동(대치동) 단위 없음. - 관측기간(입력 데이터): 2017-08 ~ 2025-08 (관측 레코드 총 50건). - 단위: 세대(호). 모든 레코드의 미분양 값 = 0 (무미분양). - 최신 관측일: 2025-08. (현일:...
+    - 분석 점수: 88.00%
+      AnalysisDepth: 80.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 강점: 관측기간(2017-08~2025-08), 관측건수(50), 결측월수(47), 통계(최소/최대/평균/표준편차=0) 등 시계열 커버리지와 데이터 품질을 구체적으로 분석하고, 모든 관측치가 0이라 변동·증감률·해소속도 산출 불가라는 명확한 결론을 제시함. 또한 준공 전/후·평형·총공급 등 추가로 필요한 필드를 구체적 쿼리로 제시해 후속조치 방향을 제시한 점은 평가 기준의 심층 분석 가점에 부합함. 단점: 요청항목 중 '주변 지역(시도/시군구) 대비 미분양 수준 비교'는 실제 비교를 제공하지 못했고(단지 대상지·단위 부재만 언급), 향후 전망·시계열 흐름(과거-현재-미래)에 대한 예측·시나리오 제시는 데이터 부족을 이유로 대부분 생략되어 있어 전망 제시 항목에서는 다소 약함.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] [{'시도': '서울', '시군구': '강남구', '연도': 2018, '월': 12, '미분양': 0, '내용': '[서울 강남구] 지역의 2018년 12월 미분양 아파트 세대수는 총 0세대입니다.'}, {'시도': '서울', '시군구': '강남구', '연도': 20...
+    - 출력: # 요약(데이터 핵심 요건) - 대상지 표기: 서울특별시 강남구 (원자료는 시군구 단위). 요청 대상지는 대치동이나 제공 데이터에는 동(대치동) 단위 없음. - 관측기간(입력 데이터): 2017-08 ~ 2025-08 (관측 레코드 총 50건). - 단위: 세대(호). 모든 레코드의 미분양 값 = 0 (무미분양). - 최신 관측일: 2025-08. (현일:...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty, indicating no contradictions were found and the actual output aligns with the retrieval context. Nice work—faithful and consistent.
+
+  [unsold_insight] 케이스 2/3 평가 중...
+    AnalysisDepth: 0.90 (15.8s)
+    DataFidelity: 1.00 (18.1s)
+    StructuralCompleteness: 1.00 (12.7s)
+    Faithfulness: 1.00 (109.7s)
+    Contextual Relevancy: 1.00 (37.9s)
+    Answer Relevancy: 1.00 (86.3s)
+
+  * [unsold_002] 미분양 데이터 수치 정확성 검증
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 제공된 미분양 관련 컨텍스트 데이터(unsold_unit)를 기반으로 정확한 수치를 인용하여 분석하세요. - 미분양 호수, 기간(연월), 지역명을 컨텍스트 원문에 근거하여 표기할 것 - 시계열 데이터의 레코드 수, 기간 범위를 정확히 파악하고 명시할 것 - 데이터 품질 이슈(결측값, 집계 수준 등)가 있으면 명시할 것 - 컨텍스트에 없는 미분...
+    - 출력: # 요약(데이터 핵심 요건) - 대상지 표기: 서울특별시 강남구 (원자료는 시군구 단위). 요청 대상지는 대치동이나 제공 데이터에는 동(대치동) 단위 없음. - 관측기간(입력 데이터): 2017-08 ~ 2025-08 (관측 레코드 총 50건). - 단위: 세대(호). 모든 레코드의 미분양 값 = 0 (무미분양). - 최신 관측일: 2025-08. (현일:...
+    - 분석 점수: 94.00%
+      AnalysisDepth: 90.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 출력은 제공 컨텍스트를 근거로 '강남구' 50개 관측레코드(2017-08~2025-08)를 정확히 집계하고(최신 2025-08 포함), 모든 미분양 값이 0임을 수치로 제시했으며 전체 월수(97), 결측월수(47) 및 연도별 관측 개수까지 계산해 시계열 커버리지 문제를 명확히 짚었습니다. 또한 집계단위(시군구 vs 동), 준공·평형·총공급 부재 등 데이터 품질 이슈와 그에 따른 미분양률·해소속도 산출 불가를 논리적으로 제시하고, 원자료 쿼리 예시와 후속데이터 요청을 제안한 점도 평가기준의 가점요건을 충족합니다. 다만 모든 관측치가 0인 원인(실제 무미분양 vs 보고·추출 문제)에 대한 인과분석이나 추가 검증(예: 소스별 교차검증) 언급이 부족해 완전한 원인 규명 단계는 미흡합니다.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] [{'시도': '서울', '시군구': '강남구', '연도': 2018, '월': 12, '미분양': 0, '내용': '[서울 강남구] 지역의 2018년 12월 미분양 아파트 세대수는 총 0세대입니다.'}, {'시도': '서울', '시군구': '강남구', '연도': 20...
+    - 출력: # 요약(데이터 핵심 요건) - 대상지 표기: 서울특별시 강남구 (원자료는 시군구 단위). 요청 대상지는 대치동이나 제공 데이터에는 동(대치동) 단위 없음. - 관측기간(입력 데이터): 2017-08 ~ 2025-08 (관측 레코드 총 50건). - 단위: 세대(호). 모든 레코드의 미분양 값 = 0 (무미분양). - 최신 관측일: 2025-08. (현일:...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the 'Contradictions' list is empty, indicating no inconsistencies between the actual output and the retrieval context — great job.
+
+  [unsold_insight] 케이스 3/3 평가 중...
+    AnalysisDepth: 0.40 (11.3s)
+    DataFidelity: 1.00 (17.7s)
+    StructuralCompleteness: 1.00 (12.1s)
+    Faithfulness: 1.00 (125.9s)
+    Contextual Relevancy: 1.00 (22.7s)
+    Answer Relevancy: 1.00 (118.8s)
+
+  * [unsold_003] 미분양 리스크 평가 및 분양 전략 시사점
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 미분양 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 현재 미분양 수준의 리스크 등급 판정 (안전/주의/경고/위험) - 미분양 추이 변화가 신규 분양에 미치는 영향 - 준공후 미분양 비중에 따른 사업 리스크 평가 - 미분양 해소 속도 및 시장 회복 가능성 - 종합적인 미분양 리스크 기반 분양 시점 및 가격 전략
+    - 출력: # 요약(데이터 핵심 요건) - 대상지 표기: 서울특별시 강남구 (원자료는 시군구 단위). 요청 대상지는 대치동이나 제공 데이터에는 동(대치동) 단위 없음. - 관측기간(입력 데이터): 2017-08 ~ 2025-08 (관측 레코드 총 50건). - 단위: 세대(호). 모든 레코드의 미분양 값 = 0 (무미분양). - 최신 관측일: 2025-08. (현일:...
+    - 분석 점수: 64.00%
+      AnalysisDepth: 40.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 강점: 제공 데이터(강남구, 2017-08~2025-08, 관측월수 50, 결측월수 47)에서 모든 관측치가 0세대임을 정확히 집계하고(최소/최대/평균/표준편차 모두 0), 시계열 완전성 문제와 동(대치동) 단위·총공급 모수 부재를 명확히 지적했으며(준공전/후·평형 구분 없음), 향후 확보할 구체적 쿼리와 권장 데이터 필드(CSV/Parquet 포함)를 제시한 점은 실무적으로 유용함. 단점: 요청한 핵심 산출물(리스크 등급 판정: 안전/주의/경고/위험, 신규 분양에 대한 영향 분석, 준공후 미분양 비중에 따른 리스크 평가, 해소 속도·시장 회복 가능성, 분양 시점·가격 전략 등)에 대한 판단·전망·실무적 시사점 도출이 전혀 없음. 또한 시계열 변화 해석·과거-현재-미래 흐름과 결론 기반 권고가 빠져 있어 평가 기준(심층분석 및 전망 제시)에 부합하지 않음.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] [{'시도': '서울', '시군구': '강남구', '연도': 2018, '월': 12, '미분양': 0, '내용': '[서울 강남구] 지역의 2018년 12월 미분양 아파트 세대수는 총 0세대입니다.'}, {'시도': '서울', '시군구': '강남구', '연도': 20...
+    - 출력: # 요약(데이터 핵심 요건) - 대상지 표기: 서울특별시 강남구 (원자료는 시군구 단위). 요청 대상지는 대치동이나 제공 데이터에는 동(대치동) 단위 없음. - 관측기간(입력 데이터): 2017-08 ~ 2025-08 (관측 레코드 총 50건). - 단위: 세대(호). 모든 레코드의 미분양 값 = 0 (무미분양). - 최신 관측일: 2025-08. (현일:...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because there are no contradictions (Contradictions: []), indicating the actual output fully aligns with the retrieval context — well done!
+[32mPASSED[0m
+src/tests/final_report/report_eval/test_final_report.py::test_final_report 
+
+
+>>> [최종 보고서(Final Report)] 평가 시작 (1건)
+------------------------------------------------------------
+
+  * [e2e_final_report] E2E 서버 생산 최종 분양성 검토 보고서
+    - 입력: [사업지] 서울특별시 강남구 대치동 [주력 타입] 84㎡ [세대수] 500세대 [요청] 위 사업지에 대한 분양성 검토 최종 보고서를 작성하시오.
+    - 출력: # 1. 사업환경 분석  **[핵심 판단]** - 입지 종합 평가: ★★★★★(근거: 도곡역 3·수인분당선·3호선 도보 3~4분, 대치 학원가·초·중·고 100~400m 밀집, 공원 200~400m, 삼성역 복합환승센터·GBC·대치권 재건축 파이프라인 인접; 출처: 입지 분석 및 개발호재 에이전트) - 분양성 기여도: 매우 높음(근거: 학원·학교 100~4...
+    - 점수: 90.00%
+    - 판단 이유: 보고서는 분양가·매매가·전세가율·LTV·DSR 등 부동산 전문 용어를 적절히 사용했고 문어체·보고서 형식을 유지하며(장점), 입지·정책·수요·비교·적정 분양가(58,000,000~62,000,000원/평, 84㎡ 환산 14.73억~15.75억)를 정량 데이터와 출처(국토교통부 실거래가, 청약홈 등)를 근거로 종합해 명확히 '분양 가능(상)'으로 결론을 도출한 점이 우수함. 다만 일부 출처가 '입지 분석 에이전트'처럼 모호하고(감점), 강남구 평균 지표를 대치동에 대체 적용한 점 및 1km 내 버스·은행 POI 미확보를 명시한 한계가 있어 완전한 정합성 검증을 위해 보정이 필요함.
+[32mPASSED[0m
+src/tests/source/source_eval/test_source.py::test_source 
+
+>>> [출처 추출(Source)] 평가 시작 (1건)
+------------------------------------------------------------
+
+  * [e2e_source] E2E 서버 생산 출처 추출 결과
+    - 입력: # 1. 사업환경 분석  **[핵심 판단]** - 입지 종합 평가: ★★★★★(근거: 도곡역 3·수인분당선·3호선 도보 3~4분, 대치 학원가·초·중·고 100~400m 밀집, 공원 200~400m, 삼성역 복합환승센터·GBC·대치권 재건축 파이프라인 인접; 출처: 입지 분석 및 개발호재 에이전트) - 분양성 기여도: 매우 높음(근거: 학원·학교 100~4...
+    - 출력: 아래는 보고서 각 지표별(총 7개)에 대해 해당 지표 전문가들이 사용한 원본 데이터 출처(원문 URL 및 제공된 다운로드 링크)와 간단한 데이터 요약입니다. 요청하신 대로 제공된 원본 URL과 다운로드 링크를 그대로 사용하였으며, 각 출처에 대해 기준일(데이터 수집/확인일)을 YYYY-MM-DD 형식으로 표기했습니다.  1) 주택청약 - 출처 1     -...
+    - 점수: 80.00%
+    - 판단 이유: 장점: 보고서의 7개 지표(주택청약·입지·주변매매·정책·미분양·인구·공급·수요)를 항목별로 번호화해 기관명과 기준일(대부분 2026-03-14)을 명시했고, 각 항목에 원문 URL과 다운로드 링크 및 간단 요약을 체계적으로 제공해 구조화 요건(평가항목 1·4)을 충족함. 단점: 원문 출처 일부가 테스트 입력의 특정 출처명(예: '입지 분석 및 개발호재 에이전트')과 일치하지 않으며, Kakao 콘솔 페이지 및 다수의 Google Drive 다운로드 링크처럼 실데이터 원문으로 바로 접근 가능한 정식 출처로 보기 어려운 URL들이 있어 출처 신뢰성 및 일부 출처의 ‘존재 여부/직접성’에 대한 의문이 남음(평가항목 2·3 해당). 전반적으로 출처 표기는 충실하나 몇몇 링크·출처의 적합성 검증이 필요함.
+[32mPASSED[0m
+============================================================
+         [ ALL FOR ONE 평가 종합 리포트 ]
+============================================================
+
+  [정적 데이터셋]
+  Judge               | (결과 없음)
+  Extraction          | (결과 없음)
+  Renderer            | (결과 없음)
+
+  [E2E 분석 에이전트]
+  - housing_faq       | 분석 75.33% | RAG 95.63% (3건)
+  - policy            | 분석 92.00% | RAG 85.55% (3건)
+  - supply_demand     | 분석 74.00% | RAG 64.34% (3건)
+  - nearby_market     | 분석 72.00% | RAG 99.37% (3건)
+  - location_insight  | 분석 71.33% | RAG 100.00% (3건)
+  - population_insight| 분석 82.67% | RAG 88.25% (3건)
+  - unsold_insight    | 분석 82.00% | RAG 100.00% (3건)
+
+  [E2E 보고서]
+  Final Report        | 가중 90.00% (1건) | PASS
+  Source              | 평균 80.00% (1건) | PASS
+
+============================================================
+  최종 결과: 총 23건 평가 완료 / 전체 평균 점수 79.04%
+============================================================
+
+  [JSON 상세 결과 저장 완료] test_eval_details.json
+Running teardown with pytest sessionfinish...
+Warning: Could not load test run from disk: [Errno 2] No such file or 
+directory: '.deepeval/.temp_test_run_data.json'
+
+
+============================ slowest 10 durations =============================
+1449.88s call     src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand
+1346.32s call     src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
+1327.39s call     src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight
+1168.78s call     src/tests/analysis/analysis_eval/test_analysis.py::test_policy
+1143.98s call     src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market
+1044.07s call     src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight
+916.56s call     src/tests/analysis/analysis_eval/test_analysis.py::test_unsold_insight
+35.04s call     src/tests/final_report/report_eval/test_final_report.py::test_final_report
+14.14s call     src/tests/source/source_eval/test_source.py::test_source
+0.13s setup    src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
+[33m================= [32m9 passed[0m, [33m[1m4 warnings[0m[33m in 8456.20s (2:20:56)[0m[33m ==================[0m
+No test cases found, please try again.
