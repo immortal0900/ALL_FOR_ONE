@@ -133,9 +133,9 @@ class RetryableChatOpenAI(ChatOpenAI):
                 raise
             except _RETRYABLE_ERRORS as e:
                 # 일시적 에러 → exponential backoff 후 재시도
-                if i == max_retries - 1:
+                if i == max_retries - 1: # 마지막 시도였으면 ex.max_retries = 5이고, for i in range(5)이면: i=4
                     raise
-                wait_time = (2 ** i) + 1
+                wait_time = (2 ** i) + 1 # 대기시간 계산 수식: 2^i + 1
                 print(
                     f"[Retry {i+1}/{max_retries}] "
                     f"{type(e).__name__}: {e} -> {wait_time}s 후 재시도"

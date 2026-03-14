@@ -3,6 +3,7 @@ import json
 import base64
 import markdown
 import weasyprint
+from bs4 import BeautifulSoup
 from pathlib import Path
 from email.mime.text import MIMEText
 from google.auth.transport.requests import Request
@@ -128,6 +129,35 @@ def _strip_outer_fence(md: str) -> str:
 
 
 # -------------------------------------------------
+# 넓은 표 감지 및 CSS 클래스 부여
+# -------------------------------------------------
+WIDE_TABLE_THRESHOLD = 8  # 이 개수 이상의 컬럼 → wide-table 클래스 부여
+
+
+def _classify_wide_tables(html: str) -> str:
+    """
+    HTML 내 <table> 중 컬럼 수가 WIDE_TABLE_THRESHOLD 이상인 표에
+    class="wide-table"을 추가한다.
+
+    python-markdown의 tables 확장은 항상 <thead><tr><th>...</th></tr></thead>
+    구조를 생성하므로, 첫 번째 <tr>의 <th>/<td> 개수 = 컬럼 수이다.
+
+    이 함수가 없으면: 11~12컬럼 표(매매/분양 비교표)가 A4 170mm 유효 폭을
+    초과하여 오른쪽 컬럼(교육 이후)이 잘린 채 PDF에 렌더링된다.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    for table in soup.find_all("table"):
+        first_row = table.find("tr")
+        if not first_row:
+            continue
+        col_count = len(first_row.find_all(["th", "td"]))
+        if col_count >= WIDE_TABLE_THRESHOLD:
+            existing_classes = table.get("class", [])
+            table["class"] = existing_classes + ["wide-table"]
+    return str(soup)
+
+
+# -------------------------------------------------
 # Markdown → PDF 변환 (WeasyPrint 버전)
 # -------------------------------------------------
 def markdown_to_pdf(md_text: str, filename: str) -> str:
@@ -155,6 +185,9 @@ def markdown_to_pdf(md_text: str, filename: str) -> str:
 
         # Markdown → HTML
         html = markdown.markdown(md_text, extensions=["tables", "fenced_code"])
+
+        # 8개 이상 컬럼 표에 wide-table 클래스 부여 (축소 렌더링 대상 지정)
+        html = _classify_wide_tables(html)
 
         # HTML 템플릿: 문서 <title> 을 반드시 넣어주면 'Unnamed' 메타데이터 방지
         html_template = f"""
@@ -192,6 +225,19 @@ def markdown_to_pdf(md_text: str, filename: str) -> str:
                 background-color: #f5f5f5;
                 padding: 2px 4px;
                 border-radius: 3px;
+              }}
+              /* 8+ 컬럼 넓은 표: 축소 렌더링으로 A4 폭(170mm)에 수용 */
+              table.wide-table {{
+                table-layout: fixed;
+                font-size: 7.5pt;
+                word-break: break-all;
+                overflow-wrap: break-word;
+              }}
+              table.wide-table th,
+              table.wide-table td {{
+                padding: 3px 4px;
+                font-size: 7.5pt;
+                line-height: 1.3;
               }}
             </style>
           </head>
