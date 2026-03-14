@@ -106,7 +106,16 @@ def _create_rag_metrics() -> list:
     calculate_separated_scores()의 가중치 키와 일치시키기 위해
     수동으로 .name을 설정합니다.
     """
-    faithfulness = FaithfulnessMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False)
+    # truths_extraction_limit: actual_output에서 추출할 claims 최대 개수
+    # supply_demand 등 15K+자 보고서에서 수백 개 claims 추출 시도 시
+    # gpt-5-mini가 timeout되므로 10개로 제한하여 안정성 확보
+    # Ref: https://docs.confident-ai.com/docs/metrics-faithfulness
+    faithfulness = FaithfulnessMetric(
+        threshold=0.7,
+        model=evaluator_llm,
+        verbose_mode=False,
+        truths_extraction_limit=10,
+    )
     faithfulness.name = "Faithfulness"
 
     contextual_relevancy = ContextualRelevancyMetric(threshold=0.7, model=evaluator_llm, verbose_mode=False)

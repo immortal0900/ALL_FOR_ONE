@@ -134,9 +134,13 @@ def run_evaluation_for_agent(agent_name: str, e2e_result: dict):
         pytest.skip(f"E2E 결과에 '{e2e_key}' 데이터가 없습니다.")
 
     # actual_output 추출 ("result" 키에 분석 보고서 문자열이 담김)
+    # 평가 LLM 입력 토큰 제한을 위해 retrieval_context와 동일하게 절단
+    # supply_demand 등 15K+자 보고서를 그대로 전달하면
+    # FaithfulnessMetric claims 추출 시 gpt-5-mini가 timeout됨
     actual_output = agent_data.get("result", "")
     if not actual_output:
         pytest.skip(f"'{e2e_key}'의 result가 비어 있습니다.")
+    actual_output = _truncate_context(actual_output)
 
     # retrieval_context 추출
     retrieval_contexts = _extract_retrieval_contexts(agent_name, agent_data)

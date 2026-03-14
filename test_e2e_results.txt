@@ -20,89 +20,84 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
 
 
 
-
-
 [E2E] eval_only 모드 — 캐시(e2e_result.json) 로드
 
 >>> [분석 에이전트 - housing_faq] 평가 시작 (3건)
 ------------------------------------------------------------
 
   [housing_faq] 케이스 1/3 평가 중...
-    AnalysisDepth: 0.60 (18.5s)
-    DataFidelity: 1.00 (20.0s)
-    StructuralCompleteness: 1.00 (8.8s)
-    Faithfulness: 1.00 (399.5s)
-    Contextual Relevancy: 0.86 (89.8s)
-    Answer Relevancy: 1.00 (185.0s)
+    AnalysisDepth: 0.50 (20.0s)
+    DataFidelity: 1.00 (8.3s)
+    StructuralCompleteness: 1.00 (11.2s)
+    Faithfulness: 1.00 (127.8s)
+    Contextual Relevancy: 0.83 (75.9s)
+    Answer Relevancy: 1.00 (155.7s)
 
   * [housing_faq_001] 청약 규제 종합 분석
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 사업지에 적용되는 청약 규제 환경을 종합 분석하세요. - 규제지역(투기과열지구/조정대상지역/비규제) 해당 여부 및 관련 규제 내용 - 1순위 청약 자격 요건 (청약통장 가입기간, 지역 거주요건) - 가점제/추첨제 배분 비율 (전용면적 기준) - 분양가상한제 적용 여부 및 가격 산정 방식 - 전매제한 기간 및 재당첨 제한 - 규제 변화의 시계열...
     - 출력: # 대상지 요약 - 위치: 서울특별시 강남구 대치동   - 대표 타입: 84㎡ (85㎡ 이하 해당)   - 총 세대수: 500세대    ---  # 1) 청약 FAQ — 대상지(서울, 84㎡·민영주택)와 직접 관련 있는 핵심 항목 정리 각 항목은 제공된 원문(페이지 참조)에 근거한 규정·사례를 그대로 재구성한 것입니다.  - 청약 가능 지역 및 거주자 우선...
-    - 분석 점수: 76.00%
-      AnalysisDepth: 60.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
-    - 판단 이유: 강점: 서울 대치동(84㎡·500세대) 사례를 전제로 관련 법조문과 실무사례를 폭넓게 인용하고(청약자격·예치금 보충 사례·특별공급 비율 등), GAR/GAS 정량지표를 제시해 분석적 깊이를 더한 점과 사전청약→본청약 시점(시계열) 고려를 권고한 점은 평가 기준의 가점을 충족함. 단점: 대상지의 '투기과열지구/조정대상지역/비규제' 해당 여부를 명확히 판단하지 않았고(요청항목 누락), 분양가상한제의 적용 여부 및 구체적 가격 산정 방식(분양가상한제 관련 규정·계산 절차)은 제시되지 않았으며, 전매제한 기간·재당첨 제한에 대한 명확한 정리도 빠짐. 또한 전반적인 규제 변화의 시계열적 해석과 향후 전망(정책추세·영향 예측)이 부족하여 결론·전망 제시 기준에서 감점 요인이 있음.
+    - 분석 점수: 70.00%
+      AnalysisDepth: 50.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 강점: 대상지(서울 강남구 대치동, 84㎡·500세대)에 대해 관련 규정과 세부 비율(예: 생애최초 19%/9%, 다자녀 10% 등), 청약예금 전환·예치금 보충 사례, GAR/GAS라는 정량지표 제시 및 3개 시나리오(500세대 기준) 등 실무적이고 수치화된 분석 도구를 제공한 점은 분석 깊이를 더함. 또한 사전청약→본청약의 시계열적 고려(추정분양가 변동, 모집공고일 기준 등)를 언급해 일정 수준의 흐름 인식이 보임. 단점: 요청사항 중 필수인 ‘규제지역(투기과열지구/조정대상지역/비규제) 해당 여부’와 그에 따른 1순위 요건·예치금·가점/추첨 비율의 대상지 적용 여부를 명확히 밝히지 않았고, 분양가상한제 적용 여부 및 분양가 산정 방식, 전매제한 기간·재당첨 제한에 대한 구체적 판단을 제시하지 않음. 또한 전반적으로 원문 나열 비중이 높아 원인·배경에 대한 심층적 해석과 과거→현재→향후 규제 변화의 시계열적 전망(명확한 예측·결론)이 부족함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업단지, 서울(수도권 거주자에 한함), 행정중심복합도시 예정지역, 도청이전신도시 개발예정지구, 혁신도시개발예정지구, 기업도시개발구역, 평택시 등, 조정대상지역(위축지역)... | [2] ['4. 주택 건축설계안\n\n5. 국토교통부장관이 정하는 기관의 검증을 받은 추정 분양가격에 관한 검증서\n\n② 시장ㆍ군수ㆍ구청장은 사업주체가 공급받은 공공택지의 조성ㆍ공급과 관련된 사업계획 등의 허가ㆍ승인ㆍ인가권자 등에게 해당 사업계획 등의 사본의 제출을 요청할 ...
     - 출력: # 대상지 요약 - 위치: 서울특별시 강남구 대치동   - 대표 타입: 84㎡ (85㎡ 이하 해당)   - 총 세대수: 500세대    ---  # 1) 청약 FAQ — 대상지(서울, 84㎡·민영주택)와 직접 관련 있는 핵심 항목 정리 각 항목은 제공된 원문(페이지 참조)에 근거한 규정·사례를 그대로 재구성한 것입니다.  - 청약 가능 지역 및 거주자 우선...
-    - RAG 점수: 95.35%
-      Faithfulness: 100.00% | Contextual Relevancy: 86.05% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty — no contradictions were found, so the actual output fully aligns with the retrieval context. Well done!
+    - RAG 점수: 94.45%
+      Faithfulness: 100.00% | Contextual Relevancy: 83.33% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty (Contradictions: []), indicating there are no discrepancies and the actual output fully aligns with the retrieval context—well done!
 
   [housing_faq] 케이스 2/3 평가 중...
-    AnalysisDepth: 0.80 (24.8s)
-    DataFidelity: 1.00 (20.7s)
-    StructuralCompleteness: 0.90 (10.5s)
-    Faithfulness: 1.00 (149.8s)
-    Contextual Relevancy: 0.85 (90.5s)
-    Answer Relevancy: 1.00 (146.9s)
+    AnalysisDepth: 0.90 (12.5s)
+    DataFidelity: 0.80 (17.9s)
+    StructuralCompleteness: 1.00 (8.7s)
+    Faithfulness: 1.00 (136.3s)
+    Contextual Relevancy: 0.71 (90.4s)
+    Answer Relevancy: 1.00 (136.1s)
 
   * [housing_faq_002] 청약 데이터 수치 정확성 검증
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 제공된 청약 FAQ 데이터와 주택공급규칙 데이터를 기반으로 정확한 수치와 규정을 인용하여 분석하세요. - 청약가능지역 범위 및 거주자 우선공급 규정 (가능하면 원문 페이지 참조 포함) - 사전청약 관련 규정 (자격 판정 기준일, 추정분양가 등) - 특별공급 유형별 조건 (신혼부부, 다자녀, 생애최초, 노부모 등) - 각 수치와 규정은 반드시 ...
     - 출력: # 대상지 요약 - 위치: 서울특별시 강남구 대치동   - 대표 타입: 84㎡ (85㎡ 이하 해당)   - 총 세대수: 500세대    ---  # 1) 청약 FAQ — 대상지(서울, 84㎡·민영주택)와 직접 관련 있는 핵심 항목 정리 각 항목은 제공된 원문(페이지 참조)에 근거한 규정·사례를 그대로 재구성한 것입니다.  - 청약 가능 지역 및 거주자 우선...
-    - 분석 점수: 86.00%
-      AnalysisDepth: 80.00% | DataFidelity: 100.00% | StructuralCompleteness: 90.00%
-    - 판단 이유: 응답은 제공된 컨텍스트를 바탕으로 핵심 규정·수치(예: 생애최초 19%/공공택지 외 9%, 다자녀 10%, 총세대수 500 등)를 인용하고 페이지 참조를 병기하며(GAR/GAS 산출식과 500세대 예시 계산 포함) 사전청약→본청약의 시계열적 판단기준(사전당첨자모집공고일을 자격판정일로 명시)과 활용방안을 제시해 시계열 해석과 실무적 체크리스트까지 제공한 점에서 평가기준의 가점을 충족합니다. 다만 일부 항목에 'page_??' 등 자리표시자가 남아 있어 원문 근거의 명확한 인용이 일부 불완전하고(원문 조문 번호·세부 비율이 일부 일반화됨), 인과·정책적 원인 분석은 유의미한 지표 제안 수준에 머물러 깊이 있는 원인 규명은 부족합니다.
+    - 분석 점수: 90.00%
+      AnalysisDepth: 90.00% | DataFidelity: 80.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 응답은 제공된 컨텍스트(예: 생애최초 비율 19%/공공택지 외 9%, 다자녀 10%·최대 15% 가능, 사전청약 자격 판정 기준일=사전당첨자 모집공고일, 사전당첨자모집공고 게시기한 ‘최초 접수일의 10일 전까지’ 등)를 구체적 수치·조문(페이지 참조 표기 포함)로 인용했고, 대상지(서울 대치동·84㎡·500세대)에 대한 예시 계산(GAR/GAS)과 시계열(사전청약→본청약 시점의 자격·분양가 변동 고려) 해석을 제시하여 분석심도와 시계열 설명 요건을 대부분 충족함. 다만 일부 섹션은 규정의 단순 재구성·나열이 많은 편이라 원인·영향에 대한 심층적 인과분석이나 구체적 향후 전망(수치 기반 시나리오 예측)은 제한적이어서 완전한 해석·결론 제시에서는 소폭 감점 요인이 있음.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업단지, 서울(수도권 거주자에 한함), 행정중심복합도시 예정지역, 도청이전신도시 개발예정지구, 혁신도시개발예정지구, 기업도시개발구역, 평택시 등, 조정대상지역(위축지역)... | [2] ['4. 주택 건축설계안\n\n5. 국토교통부장관이 정하는 기관의 검증을 받은 추정 분양가격에 관한 검증서\n\n② 시장ㆍ군수ㆍ구청장은 사업주체가 공급받은 공공택지의 조성ㆍ공급과 관련된 사업계획 등의 허가ㆍ승인ㆍ인가권자 등에게 해당 사업계획 등의 사본의 제출을 요청할 ...
     - 출력: # 대상지 요약 - 위치: 서울특별시 강남구 대치동   - 대표 타입: 84㎡ (85㎡ 이하 해당)   - 총 세대수: 500세대    ---  # 1) 청약 FAQ — 대상지(서울, 84㎡·민영주택)와 직접 관련 있는 핵심 항목 정리 각 항목은 제공된 원문(페이지 참조)에 근거한 규정·사례를 그대로 재구성한 것입니다.  - 청약 가능 지역 및 거주자 우선...
-    - RAG 점수: 94.93%
-      Faithfulness: 100.00% | Contextual Relevancy: 84.78% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the 'contradictions' list is empty, indicating no contradictions were found and the actual output fully aligns with the retrieval context — great job keeping it faithful.
+    - RAG 점수: 90.36%
+      Faithfulness: 100.00% | Contextual Relevancy: 71.05% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the 'Contradictions' list is empty, indicating no discrepancies were identified and the actual output aligns fully with the retrieval context — well done!
+
+
+
+
+
+
 
   [housing_faq] 케이스 3/3 평가 중...
-    AnalysisDepth: 0.30 (18.4s)
-    DataFidelity: 0.90 (25.6s)
-
-
-
-
-    StructuralCompleteness: 0.90 (15.5s)
-    Faithfulness: 1.00 (151.0s)
-    Contextual Relevancy: 0.85 (84.3s)
-    Answer Relevancy: 0.95 (4017.5s)
+    AnalysisDepth: 0.30 (13.8s)
+    DataFidelity: 1.00 (12.1s)
+    StructuralCompleteness: 0.90 (10.0s)
+    Faithfulness: 1.00 (128.1s)
+    Contextual Relevancy: 0.85 (64.6s)
+    Answer Relevancy: 0.98 (152.4s)
 
   * [housing_faq_003] 청약 전략 및 분양성 시사점
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 청약 규제 분석을 바탕으로 실무적 시사점을 도출하세요. - 현행 배분 방식(가점제/추첨제) 하에서의 수요층 특성 분석 - 사업지 규모에 따른 청약 경쟁 전망 - 분양가 규제 적용 시 주변 시세 대비 가격 메리트 분석 - 전매제한/재당첨 제한이 실수요 및 투자 수요에 미치는 영향 - 종합적인 분양성 판단 및 청약 전략 제언
     - 출력: # 대상지 요약 - 위치: 서울특별시 강남구 대치동   - 대표 타입: 84㎡ (85㎡ 이하 해당)   - 총 세대수: 500세대    ---  # 1) 청약 FAQ — 대상지(서울, 84㎡·민영주택)와 직접 관련 있는 핵심 항목 정리 각 항목은 제공된 원문(페이지 참조)에 근거한 규정·사례를 그대로 재구성한 것입니다.  - 청약 가능 지역 및 거주자 우선...
-    - 분석 점수: 54.00%
-      AnalysisDepth: 30.00% | DataFidelity: 90.00% | StructuralCompleteness: 90.00%
-    - 판단 이유: 응답문은 대치동(84㎡·500세대) 요약, 청약 규정·사례, 특별공급 비율, 입주자모집공고 항목 등 원문 근거 중심의 상세 나열(예: 생애최초 19%/9%, 다자녀 10% 등)과 실무용 체크리스트·GAR/GAS 지표 제안 등 유용한 사실·도구를 제공한 점은 강점입니다. 다만 평가요구서의 핵심 항목들(현행 배분방식 하 수요층 특성 분석, 사업지 규모별 청약경쟁 전망, 분양가 규제 시 주변 시세 대비 가격 메리트 분석, 전매제한·재당첨 제한이 실수요·투자수요에 미치는 영향, 종합 분양성 판단 및 구체적 청약전략 제언)에 대해 실질적 분석·인과 규명이나 결론·전망이 거의 없고 대부분 규정의 단순 재구성 수준에 그쳤습니다. 시계열(사전청약→본청약) 관련 언급과 가격변동 고려 모델 제안은 일부 포함되어 있어 가점이 가능하나, 요구된 실무적 시사점·전략 제시가 부족해 감점 사유입니다.
+    - 분석 점수: 56.00%
+      AnalysisDepth: 30.00% | DataFidelity: 100.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 대상지(서울 대치동, 84㎡·500세대)에 대해 관련 규정·FAQ를 상세히 재구성하고(청약자격·특별공급 비율·사전청약 절차 등), GAR/GAS라는 정량지표 제안과 체크리스트를 제시해 실무보고서 작성에 유용한 입력값을 제공한 점은 평가할 만함. 단점: 요청사항 핵심인 ‘수요층 특성(가점제/추첨제에 따른 실수요·투자수요 분석)’, ‘사업지 규모별 청약 경쟁 전망’, ‘분양가 규제시 주변 시세 대비 가격 메리트 분석’, ‘전매제한·재당첨 제한이 수요에 미치는 영향’ 및 ‘종합적 분양성 판단·청약 전략’에 대한 원인·효과 규명·정성적·정량적 해석이 거의 없고 단순 규정 나열에 그침. 시계열(사전청약→본청약)의 언급은 있으나 수요·가격 흐름에 대한 실제 해석·전망이 빠져 있어 실무적 시사점 도출 요구를 충족하지 못함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업단지, 서울(수도권 거주자에 한함), 행정중심복합도시 예정지역, 도청이전신도시 개발예정지구, 혁신도시개발예정지구, 기업도시개발구역, 평택시 등, 조정대상지역(위축지역)... | [2] ['4. 주택 건축설계안\n\n5. 국토교통부장관이 정하는 기관의 검증을 받은 추정 분양가격에 관한 검증서\n\n② 시장ㆍ군수ㆍ구청장은 사업주체가 공급받은 공공택지의 조성ㆍ공급과 관련된 사업계획 등의 허가ㆍ승인ㆍ인가권자 등에게 해당 사업계획 등의 사본의 제출을 요청할 ...
     - 출력: # 대상지 요약 - 위치: 서울특별시 강남구 대치동   - 대표 타입: 84㎡ (85㎡ 이하 해당)   - 총 세대수: 500세대    ---  # 1) 청약 FAQ — 대상지(서울, 84㎡·민영주택)와 직접 관련 있는 핵심 항목 정리 각 항목은 제공된 원문(페이지 참조)에 근거한 규정·사례를 그대로 재구성한 것입니다.  - 청약 가능 지역 및 거주자 우선...
-    - RAG 점수: 93.35%
-      Faithfulness: 100.00% | Contextual Relevancy: 85.29% | Answer Relevancy: 94.74%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating no inconsistencies between the actual output and the retrieval context; the output appears fully aligned—great job!
+    - RAG 점수: 94.48%
+      Faithfulness: 100.00% | Contextual Relevancy: 85.00% | Answer Relevancy: 98.41%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty (Contradictions: []), indicating no mismatches — the actual output fully aligns with the retrieval context. Nice work!
 [32mPASSED[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_policy 
-
-
-
-
-
 
 
 
@@ -120,72 +115,78 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_policy
 ------------------------------------------------------------
 
   [policy] 케이스 1/3 평가 중...
-    AnalysisDepth: 0.50 (11.2s)
-    DataFidelity: 0.60 (33.0s)
-    StructuralCompleteness: 1.00 (24.7s)
-    Faithfulness: 1.00 (142.9s)
-    Contextual Relevancy: 0.72 (91.0s)
-    Answer Relevancy: 1.00 (136.5s)
+    AnalysisDepth: 0.60 (8.4s)
+    DataFidelity: 0.80 (17.0s)
+    StructuralCompleteness: 0.90 (13.1s)
+    Faithfulness: 1.00 (114.6s)
+    Contextual Relevancy: 0.80 (83.8s)
+    Answer Relevancy: 1.00 (120.1s)
 
   * [policy_001] 부동산 정책 종합 분석
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 사업지에 영향을 미치는 국가 및 지역 부동산 정책을 종합 분석하세요. - 최근 주요 국가 정책(주택시장 안정화 대책, 공급 확대 방안 등)의 핵심 내용 - 규제지역 지정(투기과열지구, 조정대상지역, 토지거래허가구역 등) 현황 및 영향 - DSR/LTV 등 금융 규제 현황 - 지역 단위 정책(정비사업, 도시개발, 교통 인프라 등) - 정책 변화...
     - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 「주택시장 안정화 대책」   - **배경**: 주택가격 급등세 및 거래 과열 우려(주택가격 상승률·거래량 등 지표 근거)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구·토지거래허가구역 지정 등)   - **시행 시점**: 조정대상지...
-    - 분석 점수: 62.00%
-      AnalysisDepth: 50.00% | DataFidelity: 60.00% | StructuralCompleteness: 100.00%
-    - 판단 이유: 강점: 산발적이지만 핵심 정책명(예: 주택시장 안정화 대책·주택공급 확대방안)과 시행일(2025.10.15~16 등), 규제지역(서울 25개 구·경기 12개 지역)·토지거래허가구역 지정기간 등을 구체적으로 기재하고 단기·장기 전망(단기 규제 효과·중장기 공급확대 기대)을 제시한 점은 요청사항 일부(정책 핵심·시계열·향후 전망)에 부합함. 단점: DSR/LTV·중도금·신용대출 등 금융규제 항목과 다수 표의 세부 수치가 '-'로 비어 있어 분석이 불완전하고, 대체로 사실 나열 중심으로 원인·영향에 대한 인과분석과 사업지별(지역 단위) 영향평가가 부족함. 또한 시계열 흐름은 일부 포함되나 과거→현재→미래로의 연속적 해석과 사업지 관점의 구체적 결론·권고가 미흡하여 종합분석 요구를 충분히 충족하지 못함.
+    - 분석 점수: 70.00%
+      AnalysisDepth: 60.00% | DataFidelity: 80.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 원문(예: 2025.10.15 주택시장 안정화 대책, 2025.09.07 새정부 주택공급 확대방안)과 시행시점, 서울 25개 자치구·경기 12개 지역 지정 등 구체적 지역·날짜·출처를 제시하고 정책별(주담대 한도, 다주택자 규제, 토지거래허가구역 등) 비교·요약과 단기·장기 전망을 포함함으로써 종합 정리 성격은 충실함. 단점: 많은 표 항목에 ‘-’로 미기재된 항목(예: DSR/LTV 상세 수치·스트레스 금리 등 금융 규제 핵심값 부재)이 있어 핵심 규제의 정량적 해석이 부족하고, 원인·영향의 심층적 분석(왜 해당 규제가 도입되었는지, 지역별 시장 반응의 메커니즘 등)이 얕음. 시계열 측면에서는 정책 발표일·시행일과 일부 중장기 목표(예: 복합사업 착공 ’30년 등)를 제시했으나 과거→현재→미래의 흐름이나 정책 효과 누적에 대한 정교한 추세분석·수치적 근거가 부족함. 결과적으로 자료 수집·정리 수준은 높으나 원인 규명·심층 해석·정량적 시계열 전망은 보완 필요.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] ['날짜: 2025-10-30\n연도: 2025\n제목: 서울 3곳 도심 공공주택 복합지구 지정서울 3곳 도심 공공주택 복합지구 지정 관련 보도자료 내용입니다. 자세한 내용은 첨부파일을 참고하시기 바랍니다.2025-10-30국토교통부\n링크: https://www.ko... | [2] [{'title': '낡은 용산 전자상가, AI 혁신거점 된다…28층 혁신업무시설 추진', 'date': '2026.03.12 08:13', 'content': '서울시는 용산 나진전자상가 일대(특별계획구역)에 지하 8층~지상 28층, 연면적 약 97,857㎡ 규모의 ...
     - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 「주택시장 안정화 대책」   - **배경**: 주택가격 급등세 및 거래 과열 우려(주택가격 상승률·거래량 등 지표 근거)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구·토지거래허가구역 지정 등)   - **시행 시점**: 조정대상지...
-    - RAG 점수: 90.84%
-      Faithfulness: 100.00% | Contextual Relevancy: 72.50% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating no discrepancies between the actual output and the retrieval context — well aligned and faithful.
+    - RAG 점수: 93.34%
+      Faithfulness: 100.00% | Contextual Relevancy: 80.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty, indicating no contradictions and that the actual output fully aligns with the retrieval context — great work!
 
   [policy] 케이스 2/3 평가 중...
-    AnalysisDepth: 0.60 (21.3s)
-    DataFidelity: 0.80 (30.0s)
-    StructuralCompleteness: 0.90 (11.9s)
-    Faithfulness: 1.00 (437.8s)
-    Contextual Relevancy: 0.84 (68.2s)
-    Answer Relevancy: 1.00 (129.3s)
+    AnalysisDepth: 0.60 (21.1s)
+    DataFidelity: 0.60 (22.5s)
+    StructuralCompleteness: 0.90 (8.4s)
+    Faithfulness: 1.00 (150.3s)
+    Contextual Relevancy: 0.91 (78.9s)
+    Answer Relevancy: 1.00 (103.6s)
 
   * [policy_002] 정책 데이터 수치 정확성 검증
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 제공된 국가 정책 컨텍스트와 지역 정책 컨텍스트를 기반으로 정확한 정책 정보를 인용하여 분석하세요. - 정책 정식 명칭, 시행일, 시행기관을 정확히 표기할 것 - 규제지역 지정 효력 발생일, 지정기간 등 구체적 일자를 명시할 것 - 금리, LTV/DSR 비율 등 정량적 수치를 컨텍스트 원문에 근거하여 인용할 것 - 컨텍스트에 없는 정책 내용이...
     - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 「주택시장 안정화 대책」   - **배경**: 주택가격 급등세 및 거래 과열 우려(주택가격 상승률·거래량 등 지표 근거)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구·토지거래허가구역 지정 등)   - **시행 시점**: 조정대상지...
-    - 분석 점수: 70.00%
-      AnalysisDepth: 60.00% | DataFidelity: 80.00% | StructuralCompleteness: 90.00%
-    - 판단 이유: 강점: 정책 정식 명칭과 시행일(예: 「주택시장 안정화 대책」 2025.10.15, 「새정부 주택공급 확대방안」 2025.09.07), 규제지역 효력 발생일(조정대상지역·투기과열지구 효력 2025.10.16, 토지거래허가구역 공고 2025.10.15·효력 5일 후·지정기간 ’25.10.20～’26.12.31)과 일부 정량수치(주담대 한도 시가 구간별 6억/4억/2억, 토허구역 비주택담보대출 LTV 40%)를 컨텍스트 출처를 표시하며 제시함. 약점: 시행기관(예: 국토교통부 등)을 각 항목별로 명확히 표기하지 않았고, 금리·DSR 등 일부 핵심 정량지표는 공백(-)으로 남겨져 있어 완전한 정량 인용 요건을 충족하지 못함. 분석 깊이는 일부 전망(단기·장기 과제)이 있으나 대체로 항목 나열 위주로 인과·추이 분석(시계열 흐름·과거→현재→미래 해석)이 충분히 심화되지 않아 평가 기준의 분석 심도 및 시계열 해석 요구를 완벽히 만족시키지 못함.
+    - 분석 점수: 66.00%
+      AnalysisDepth: 60.00% | DataFidelity: 60.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 정책 정식 명칭(예: 「주택시장 안정화 대책」, 「주택공급 확대방안(9.7)」)과 시행일(2025.10.15·2025.09.07), 규제지역 효력 발생일(조정대상지역·투기과열지구 적용시기 2025.10.16), 토지거래허가구역 공고·효력(공고 2025.10.15, 공고일로부터 5일 후 효력, 지정기간 ’25.10.20～’26.12.31) 및 일부 정량값(토허구역 내 비주택담보대출 LTV 40%, 주담대 시가구간별 한도 6억/4억/2억)을 컨텍스트 출처와 함께 제시한 점은 적절함. 단점: 시행기관(예: 국토교통부 등)을 각 정책별로 명확히 표기하지 않았고(본문에는 출처 파일명이 있으나 '시행기관' 명시 누락), 금리·DSR 구체 수치 등 일부 정량 정보는 대부분 '-'로 남겨져 있어 핵심 수치 제시가 불충분함. 분석 측면에서는 정책 효과에 대한 단기·장기 전망을 제시하나 인과관계나 시계열 흐름(과거→현재→미래)에 대한 심층적 해석이 부족하고 데이터 나열 위주인 점이 아쉬움.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] ['날짜: 2025-10-30\n연도: 2025\n제목: 서울 3곳 도심 공공주택 복합지구 지정서울 3곳 도심 공공주택 복합지구 지정 관련 보도자료 내용입니다. 자세한 내용은 첨부파일을 참고하시기 바랍니다.2025-10-30국토교통부\n링크: https://www.ko... | [2] [{'title': '낡은 용산 전자상가, AI 혁신거점 된다…28층 혁신업무시설 추진', 'date': '2026.03.12 08:13', 'content': '서울시는 용산 나진전자상가 일대(특별계획구역)에 지하 8층~지상 28층, 연면적 약 97,857㎡ 규모의 ...
     - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 「주택시장 안정화 대책」   - **배경**: 주택가격 급등세 및 거래 과열 우려(주택가격 상승률·거래량 등 지표 근거)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구·토지거래허가구역 지정 등)   - **시행 시점**: 조정대상지...
-    - RAG 점수: 94.58%
-      Faithfulness: 100.00% | Contextual Relevancy: 83.72% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the 'Contradictions' list is empty, indicating no contradictions were found and the actual output fully aligns with the retrieval context.
+    - RAG 점수: 96.92%
+      Faithfulness: 100.00% | Contextual Relevancy: 90.74% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty, indicating no conflicts between the actual output and the retrieval context, so the output fully aligns with the provided information — great job!
 
   [policy] 케이스 3/3 평가 중...
-    AnalysisDepth: 0.30 (10.9s)
-    DataFidelity: 0.90 (23.9s)
+    AnalysisDepth: 0.40 (8.9s)
+
+
+
+
+
+    DataFidelity: 0.80 (19.1s)
     StructuralCompleteness: 0.90 (9.0s)
-    Faithfulness: 1.00 (152.9s)
-    Contextual Relevancy: 0.74 (100.2s)
-    Answer Relevancy: 1.00 (103.6s)
+    Faithfulness: 1.00 (106.9s)
+    Contextual Relevancy: 0.90 (61.2s)
+    Answer Relevancy: 1.00 (95.2s)
 
   * [policy_003] 정책 환경 기반 분양 전략 시사점
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 정책 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 현행 규제 환경(규제지역 지정, 금융 규제)이 분양 수요에 미치는 영향 - 공급 확대 정책(신도시, 정비사업 등)이 경쟁 환경에 미치는 영향 - 정책 리스크 요인(추가 규제 강화 가능성, 금리 변동 등) - 정책 기회 요인(규제 완화, 세제 혜택 등) - 종합적인 분양 ...
     - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 「주택시장 안정화 대책」   - **배경**: 주택가격 급등세 및 거래 과열 우려(주택가격 상승률·거래량 등 지표 근거)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구·토지거래허가구역 지정 등)   - **시행 시점**: 조정대상지...
-    - 분석 점수: 54.00%
-      AnalysisDepth: 30.00% | DataFidelity: 90.00% | StructuralCompleteness: 90.00%
-    - 판단 이유: 응답문서는 정책 문건(예: 주택시장 안정화 대책·주택공급 확대방안)의 세부 규정(주담대 한도, 규제지역·토지거래허가구역 지정 등)을 풍부하게 나열하고 시행일(2025.10.16 등)과 단기·중기·장기 전망을 제시한 점은 긍정적이다. 다만 평가 기준에서 요구한 분석 심도와 실무적 시사점 도출은 부족하다. 특히 규제 환경이 '분양 수요'에 미치는 인과(수요 축소 메커니즘·수요층별 영향), 공급 확대가 '경쟁 환경'에 미치는 구체적 경쟁구도(공급시점별·지역별 경쟁·가격·분양률 영향), 정책 리스크·기회 요인의 정량적·우선순위별 영향 분석 및 이를 바탕으로 한 구체적 분양 전략(타깃 고객, 가격·마케팅·분양시기 조정, 리스크 완화 방안 등)이 거의 제시되지 않았다. 시간적 흐름에 대한 일부 언급(즉시 적용되는 규제 vs 중장기 공급)은 있으나 과거-현재-미래의 흐름·전개 시나리오 분석과 실무 적용 가능한 결론·권고가 미흡하여 감점이 크다.
+    - 분석 점수: 58.00%
+      AnalysisDepth: 40.00% | DataFidelity: 80.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 정책 문서(예: 251015 주택시장 안정화 대책, 250907 주택공급 확대방안)를 광범위하게 수집·정리하고 규제지역 지정(서울 25개 구·경기 12개 지역), 주담대 한도, 실거주 의무 등 주요 조항과 시행시점(2025.10.16 등)을 표로 정리한 점은 충실함. 또한 단기·중장기 전망과 과제(실거주 의무 관리, 용적률 특례·교통·재원 등)를 제시한 점은 긍정적임. 단점: 요청한 '사업지 분양에 대한 실무적 시사점'과 항목별(수요 영향, 경쟁 환경, 정책 리스크·기회, 종합 분양전략)에 대한 원인·영향 분석과 구체적 실행계획이 부족함. 시계열 흐름(과거→현재→미래)에 대한 해석은 일부 단기/장기 전망으로만 제한되어 있고, 분양 전략·현장 대응(가격·타깃·마케팅·자금조달 시나리오 등)과 정량적 근거가 거의 제시되지 않아 실무 적용성이 낮음.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] ['날짜: 2025-10-30\n연도: 2025\n제목: 서울 3곳 도심 공공주택 복합지구 지정서울 3곳 도심 공공주택 복합지구 지정 관련 보도자료 내용입니다. 자세한 내용은 첨부파일을 참고하시기 바랍니다.2025-10-30국토교통부\n링크: https://www.ko... | [2] [{'title': '낡은 용산 전자상가, AI 혁신거점 된다…28층 혁신업무시설 추진', 'date': '2026.03.12 08:13', 'content': '서울시는 용산 나진전자상가 일대(특별계획구역)에 지하 8층~지상 28층, 연면적 약 97,857㎡ 규모의 ...
     - 출력: ## **개요**  ### **주택시장 안정화 대책** (2025.10.15) - **정식 명칭**: 「주택시장 안정화 대책」   - **배경**: 주택가격 급등세 및 거래 과열 우려(주택가격 상승률·거래량 등 지표 근거)   - **성격**: 수요관리 중심 규제 강화(조정대상지역·투기과열지구·토지거래허가구역 지정 등)   - **시행 시점**: 조정대상지...
-    - RAG 점수: 91.50%
-      Faithfulness: 100.00% | Contextual Relevancy: 74.47% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating there are no discrepancies between the actual output and the retrieval context — great job, the output appears fully faithful.
+    - RAG 점수: 96.60%
+      Faithfulness: 100.00% | Contextual Relevancy: 89.80% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating no inconsistencies between the actual output and the retrieval context—great fidelity.
 [31mFAILED[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand 
+
 
 
 
@@ -207,12 +208,12 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand
 ------------------------------------------------------------
 
   [supply_demand] 케이스 1/3 평가 중...
-    AnalysisDepth: 0.60 (15.8s)
-    DataFidelity: 1.00 (15.8s)
-    StructuralCompleteness: 1.00 (12.6s)
-    Faithfulness: 0.98 (474.6s)
-    Contextual Relevancy: 0.92 (59.4s)
-    Answer Relevancy: 1.00 (283.4s)
+    AnalysisDepth: 0.60 (14.9s)
+    DataFidelity: 1.00 (15.4s)
+    StructuralCompleteness: 1.00 (16.2s)
+    [경고] Faithfulness 평가 실패 (120.4s): Request timed out.
+    Contextual Relevancy: 0.98 (58.5s)
+    Answer Relevancy: 1.00 (198.7s)
 
   * [supply_demand_001] 수급 지표 종합 분석
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
@@ -220,58 +221,55 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand
     - 출력: 지역: 서울특별시 강남구(대치동 관련 데이터: 강남구 단위) 데이터 정리 기준일: 2026-03-12  요청에 따라 제공된 모든 원자료(매월 시계열, 거래량 세부, 금리, 주담대, GRDP, 입주예정, 경쟁률 등)를 누락 없이 정리하고, 최종 보고서 작성자가 바로 분석·시각화에 쓸 수 있도록 시계열 체계로 정리했습니다. 핵심 정량지표(보고서 작성자에게 제공...
     - 분석 점수: 76.00%
       AnalysisDepth: 60.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
-    - 판단 이유: 응답은 요청한 모든 원자료를 시계열 형태로 충실히 정리하고(월별 매매가·전세가, 매매/전세 비율, 금리·주담대, 거래량 블록, 입주예정·청약 경쟁률 등) 핵심지표(매매/전세 비율)와 요약 통계(매매 +56.5%, 전세 +34.1%, 비율 2.28→2.67)를 제시한 점이 강점입니다. 또한 2021년 7~12월 매매 급등, 2023년 초 하락, 2024~2025년 재상승(특히 2025-03 이후) 등 시계열 흐름을 요약하고 금리·주담대·입주물량과의 교차검증을 권장한 점도 평가 기준(시계열 해석 가점)에 부합합니다. 다만 응답은 주로 데이터 정리와 관찰 중심으로 머물러 있어 원인 규명(금리·정책·수급이 특정 시점에 미친 정량적 영향)이나 명확한 향후 전망·결론(공급-수요 균형 판단, 시나리오별 가격 전망 등)을 제시하지 않았습니다. 청약 경쟁률(예: 487:1, 631.6:1 등)과 입주예정물량(2025.08~2027.05 주요 사업, 최대 1,261세대) 등을 활용한 구체적 해석·예측이 부족해 감점요인입니다.
+    - 판단 이유: 장점: 요청한 원자료를 누락 없이 월별 시계열(매매가·전세가 2020-01~2025-09)과 매매/전세 비율(월별)로 체계적으로 정리하고 요약 통계(매매 +56.5%, 전세 +34.1%, 비율 +17.1%)와 시계열 흐름(예: 2021-07 급등, 2023 초기 하락, 2024~2025 재가속)을 제시한 점은 평가항목(3)[시계열 변화 해석]에 부합합니다. 금리(기준·주담대)·입주예정물량(2025-08 등)·청약경쟁률(역삼 487:1, 잠실 631.6:1) 등 관련 지표도 포함해 교차분석 권장과 시각화 제안을 한 것은 실무적 유용성이 큽니다. 단점: 대부분 기술적·정량적 정리에 머물러 원인·인과관계(예: 금리·주담대 하락이 2025 매매가 급등에 미친 영향, 입주물량이 수급균형에 주는 압력 등)에 대한 심층 분석과 명확한 수급 균형 판단·향후 전망 도출이 부족합니다(평가항목1,5 요구사항 미충족). 또한 매매 거래량의 전년 대비 증감·전세가율 의미 해석 등 일부 요청 항목에 대한 분석적 해석이나 예측이 충분히 제공되지 않았습니다(평가항목2,4,6에 따른 감점 요인).
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] 4166 | [2] 26 자치구: 강남구 2020년 1월: 769973.0 2020년 2월: 772140.0 2020년 3월: 774435.0 2020년 4월: 776656.0 2020년 5월: 777645.0 2020년 6월: 779565.0 2020년 7월: 785301.0 2020년... | [3] 26 자치구: 강남구 2020년 1월: 1758527.0 2020년 2월: 1755204.0 2020년 3월: 1749409.0 2020년 4월: 1732086.0 2020년 5월: 1714102.0 2020년 6월: 1714914.0 2020년 7월: 1731527.... | ... 외 8건
     - 출력: 지역: 서울특별시 강남구(대치동 관련 데이터: 강남구 단위) 데이터 정리 기준일: 2026-03-12  요청에 따라 제공된 모든 원자료(매월 시계열, 거래량 세부, 금리, 주담대, GRDP, 입주예정, 경쟁률 등)를 누락 없이 정리하고, 최종 보고서 작성자가 바로 분석·시각화에 쓸 수 있도록 시계열 체계로 정리했습니다. 핵심 정량지표(보고서 작성자에게 제공...
-    - RAG 점수: 96.88%
-      Faithfulness: 98.47% | Contextual Relevancy: 92.17% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 0.98 because the actual output largely aligned with the retrieval context but incorrectly claimed that "all original items were included without omission"; the retrieval context explicitly notes that 자치구 1인당 GRDP for 2023–2024 are missing and that some transaction-volume blocks begin at 2020-10, so the claim of no omissions is inaccurate.
+    - RAG 점수: 66.04%
+      Faithfulness: 0.00% | Contextual Relevancy: 98.31% | Answer Relevancy: 100.00%
 
   [supply_demand] 케이스 2/3 평가 중...
-    AnalysisDepth: 0.80 (12.9s)
-    DataFidelity: 0.90 (19.2s)
+    AnalysisDepth: 0.80 (11.2s)
+    DataFidelity: 1.00 (17.3s)
     StructuralCompleteness: 1.00 (8.7s)
-    Faithfulness: 1.00 (428.7s)
-    Contextual Relevancy: 0.96 (121.4s)
-    Answer Relevancy: 1.00 (142.1s)
+    [경고] Faithfulness 평가 실패 (120.1s): Request timed out.
+    [경고] Contextual Relevancy 평가 실패 (120.2s): Request timed out.
+    Answer Relevancy: 1.00 (106.2s)
 
   * [supply_demand_002] 수급 데이터 수치 정확성 검증
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 제공된 수급 관련 컨텍스트 데이터를 기반으로 정확한 수치를 인용하여 분석하세요. - 매매가/전세가 절대값 및 변동률을 컨텍스트 원문에 근거하여 표기할 것 - 전세가율, 매매수급지수, 거래량 등 핵심 지표 수치를 정확히 인용할 것 - 금리, GDP/GRDP 등 거시지표 수치를 원문 그대로 인용할 것 - 청약 경쟁률, 입주 예정 물량 등 수급 지...
     - 출력: 지역: 서울특별시 강남구(대치동 관련 데이터: 강남구 단위) 데이터 정리 기준일: 2026-03-12  요청에 따라 제공된 모든 원자료(매월 시계열, 거래량 세부, 금리, 주담대, GRDP, 입주예정, 경쟁률 등)를 누락 없이 정리하고, 최종 보고서 작성자가 바로 분석·시각화에 쓸 수 있도록 시계열 체계로 정리했습니다. 핵심 정량지표(보고서 작성자에게 제공...
-    - 분석 점수: 86.00%
-      AnalysisDepth: 80.00% | DataFidelity: 90.00% | StructuralCompleteness: 100.00%
-    - 판단 이유: 출력물은 요청한 핵심지표들을 누락 없이 정확한 수치로 인용(월별 매매가/전세가 표, 매매/전세 비율 시계열, 매매수급지수 101.118475559238, 한국·미국 기준금리 표, 주담대 월별값, 강남구 1인당 GRDP·국가 1인당 GDP, 입주예정물량(예: 202508 디에이치 대치 282세대 등), 청약 경쟁률(예: 487:1, 631.6:1), 노후주택수 4,166 등)을 제공하여 데이터 정합성과 원문 근거 요구를 충족합니다. 시계열 흐름(예: 2021년 7~12월 매매 급등, 2023년 초 하락 후 2024~2025 재상승 가속 등)도 제시되어 시계열 해석 항목에 부합합니다. 다만 분석은 주로 정량 관찰·권장분석 제안에 그쳐 원인/인과 규명과 향후 전망·결론 도출이 부족(심층 인과분석·명확한 예측 부재)하므로 최고점은 아님.
+    - 분석 점수: 88.00%
+      AnalysisDepth: 80.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 출력물은 요청된 핵심 수치(월별 매매가·전세가 표, 월별 매매/전세 비율, 매매수급지수 101.118475559238, 금리·주담대 시계열, 1인당 GRDP/GDP, 입주예정 물량·청약 경쟁률(예: 487:1, 631.6:1), 거래량 블록 등)를 원자료 그대로 정확히 인용해 충실히 정리함(예: 매매가 2020-01 1,758,527→2025-09 2,750,424, 증가 약 +56.5%; 전세가 769,973→1,032,035, +34.1%). 시계열 흐름(2020~2021 완만 → 2021.07~12 급등 → 2022 안정 → 2023 하락 → 2024~2025 재상승(특히 2025-03 이후))을 명시해 시계열 해석 점수를 반영함. 또한 교차검증 항목과 권장 시각화·분석 시나리오를 제시한 점도 긍정적임. 다만 원인·기구적 설명과 인과분석(예: 금리·입주·정책이 구체적으로 어떻게 매매·전세에 영향을 미쳤는지의 정량적 인과추정)은 부족하고, 명시적 향후 전망(수치 기반 예측)은 제시하지 않아 분석 심도의 고급 가점 요건에는 다소 미치지 못함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] 4166 | [2] 26 자치구: 강남구 2020년 1월: 769973.0 2020년 2월: 772140.0 2020년 3월: 774435.0 2020년 4월: 776656.0 2020년 5월: 777645.0 2020년 6월: 779565.0 2020년 7월: 785301.0 2020년... | [3] 26 자치구: 강남구 2020년 1월: 1758527.0 2020년 2월: 1755204.0 2020년 3월: 1749409.0 2020년 4월: 1732086.0 2020년 5월: 1714102.0 2020년 6월: 1714914.0 2020년 7월: 1731527.... | ... 외 8건
     - 출력: 지역: 서울특별시 강남구(대치동 관련 데이터: 강남구 단위) 데이터 정리 기준일: 2026-03-12  요청에 따라 제공된 모든 원자료(매월 시계열, 거래량 세부, 금리, 주담대, GRDP, 입주예정, 경쟁률 등)를 누락 없이 정리하고, 최종 보고서 작성자가 바로 분석·시각화에 쓸 수 있도록 시계열 체계로 정리했습니다. 핵심 정량지표(보고서 작성자에게 제공...
-    - RAG 점수: 98.77%
-      Faithfulness: 100.00% | Contextual Relevancy: 96.32% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating there are no contradictions and the actual output fully aligns with the retrieval context — nice and faithful work.
+    - RAG 점수: 33.30%
+      Faithfulness: 0.00% | Contextual Relevancy: 0.00% | Answer Relevancy: 100.00%
 
   [supply_demand] 케이스 3/3 평가 중...
-    AnalysisDepth: 0.50 (13.4s)
-    DataFidelity: 1.00 (45.9s)
-    StructuralCompleteness: 1.00 (14.5s)
-    [경고] Faithfulness 평가 실패 (361.6s): Request timed out.
-    Contextual Relevancy: 0.91 (53.2s)
-
-    Answer Relevancy: 1.00 (128.3s)
+    AnalysisDepth: 0.40 (18.8s)
+    DataFidelity: 1.00 (16.7s)
+    StructuralCompleteness: 0.90 (12.1s)
+    Faithfulness: 0.97 (150.8s)
+    Contextual Relevancy: 0.96 (42.6s)
+    Answer Relevancy: 0.96 (150.8s)
 
   * [supply_demand_003] 수급 동향 기반 분양 전략 시사점
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 수급 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 현재 수급 환경(수요 우위/공급 우위)에 따른 분양 타이밍 판단 - 가격 동향(상승/하락/보합)에 따른 분양가 전략 - 금리 환경이 분양 수요에 미치는 영향 - 입주 예정 물량에 따른 경쟁 리스크 - 종합적인 수급 전망 기반 분양성 판단
     - 출력: 지역: 서울특별시 강남구(대치동 관련 데이터: 강남구 단위) 데이터 정리 기준일: 2026-03-12  요청에 따라 제공된 모든 원자료(매월 시계열, 거래량 세부, 금리, 주담대, GRDP, 입주예정, 경쟁률 등)를 누락 없이 정리하고, 최종 보고서 작성자가 바로 분석·시각화에 쓸 수 있도록 시계열 체계로 정리했습니다. 핵심 정량지표(보고서 작성자에게 제공...
-    - 분석 점수: 70.00%
-      AnalysisDepth: 50.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
-    - 판단 이유: 강점: 월별 매매·전세 시계열과 매매/전세 비율을 완전하게 정리하고(예: 매매 +56.5%, 전세 +34.1%, 비율 2.28→2.67), 2021년 7~12월 급등·2023년 하락·2024~2025 재상승 흐름을 명시하는 등 시계열 해석을 포함하고 금리·주담대·입주예정·청약경쟁률 자료도 제공해 교차분석 근거를 갖췄습니다. 단점: 요청된 '실무적 시사점'(분양 타이밍 판단, 분양가 전략, 금리 영향의 구체적 해석, 입주물량에 따른 경쟁리스크 평가, 종합 분양성 결론)을 직접 도출하지 않고 보고서 작성자에게 판단을 위임하는 형태로 마무리되어 결론·전망과 실무적 권고가 부족합니다. 시계열 해석은 있으나 실무적 결론·향후 전망 제시가 미흡해 평가기준의 분석심도와 결론 제시 요건을 완전히 충족하지 못합니다.
+    - 분석 점수: 62.00%
+      AnalysisDepth: 40.00% | DataFidelity: 100.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 장점: 강남구(대치동·강남구 단위) 2020-01~2025-09의 월별 매매·전세 시계열과 핵심지표(매매/전세 비율)를 완전하게 정리하고(예: 매매가 +56.5%, 전세가 +34.1%, 비율 2.28→2.67, 절대+0.39), 2021년 7~12월 급등·2023년 초 하락·2024~2025년 재상승 같은 시계열 변화 포인트를 명시한 점과 금리·주담대·입주예정(예: 청담 르엘 1,261세대 등)·청약경쟁률(예: 487:1, 631.6:1) 자료를 함께 제시한 점은 평가요건(시계열 해석, 데이터 교차검증 권고)을 충족함. 단점: 사용자가 요청한 '실무적 시사점 도출'—분양 타이밍 판단, 분양가 전략, 금리 영향의 구체적 해석, 입주물량에 따른 경쟁리스크 평가, 종합 분양성 판단—을 최종적으로 제시하지 않고 보고서 작성자에게 판단을 위임(결론 미제시)한 점은 평가요건(향후 전망/객관적 결론 요구)에 부합하지 않음. 또한 데이터 정리는 충실하나 원인·메커니즘 기반의 심층적 분석(예: 왜 2025-03 이후 매매가가 급등했는지, 금리·주담대·수요심리 연계된 인과 분석)과 분양 실무에서 곧바로 쓸 수 있는 권고안(타이밍·가격대·리스크 완화 전략)이 부족함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] 4166 | [2] 26 자치구: 강남구 2020년 1월: 769973.0 2020년 2월: 772140.0 2020년 3월: 774435.0 2020년 4월: 776656.0 2020년 5월: 777645.0 2020년 6월: 779565.0 2020년 7월: 785301.0 2020년... | [3] 26 자치구: 강남구 2020년 1월: 1758527.0 2020년 2월: 1755204.0 2020년 3월: 1749409.0 2020년 4월: 1732086.0 2020년 5월: 1714102.0 2020년 6월: 1714914.0 2020년 7월: 1731527.... | ... 외 8건
     - 출력: 지역: 서울특별시 강남구(대치동 관련 데이터: 강남구 단위) 데이터 정리 기준일: 2026-03-12  요청에 따라 제공된 모든 원자료(매월 시계열, 거래량 세부, 금리, 주담대, GRDP, 입주예정, 경쟁률 등)를 누락 없이 정리하고, 최종 보고서 작성자가 바로 분석·시각화에 쓸 수 있도록 시계열 체계로 정리했습니다. 핵심 정량지표(보고서 작성자에게 제공...
-    - RAG 점수: 63.52%
-      Faithfulness: 0.00% | Contextual Relevancy: 90.74% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating there are no contradictions and the actual output fully aligns with the retrieval context — nice and faithful work.
+    - RAG 점수: 96.62%
+      Faithfulness: 97.50% | Contextual Relevancy: 95.87% | Answer Relevancy: 96.49%
+    - 판단 이유: The score is 0.97 because the actual output's claim that the AI "compiled all raw data without omission" contradicts the retrieval context: Gangnam‑gu per‑capita GRDP is only provided for 2018–2022 (2023–2024 missing), some transaction‑volume blocks start at 2020‑10, and the 매매수급지수 (price‑supply‑demand index) is available only for a single timepoint (2024‑10) in the Southeast region. In short, most items were compiled but specific fields are omitted or time‑restricted, so the absolute "no omissions" claim is incorrect.
 [32mPASSED[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market 
 
@@ -290,76 +288,76 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market
 ------------------------------------------------------------
 
   [nearby_market] 케이스 1/3 평가 중...
-    AnalysisDepth: 0.30 (16.4s)
-    DataFidelity: 0.90 (18.2s)
-    StructuralCompleteness: 0.80 (12.4s)
-    Faithfulness: 1.00 (144.8s)
-    Contextual Relevancy: 1.00 (42.4s)
-    Answer Relevancy: 1.00 (183.7s)
+    AnalysisDepth: 0.40 (10.9s)
+    DataFidelity: 0.70 (18.4s)
+    StructuralCompleteness: 0.70 (16.0s)
+    Faithfulness: 0.92 (125.8s)
+    Contextual Relevancy: 1.00 (37.3s)
+    Answer Relevancy: 1.00 (128.5s)
 
   * [nearby_001] 주변 시세 종합 분석
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 사업지 주변의 매매 아파트 및 분양 아파트 시세를 종합 비교 분석하세요. - 주변 매매 아파트의 단지명, 세대수, 평당가격, 준공연도, 사업지와의 거리 - 주변 분양 아파트의 분양가, 청약 경쟁률, 계약 조건 - 매매 시세와 분양가의 비교 분석 (평당가 기준) - 주변 단지의 입지 특성(역세권, 학군 등) 비교 - 시세 동향의 시계열적 해석을...
     - 출력: think_tool(reflection: "발견: 입력 데이터(gemini_search, kakao_api_distance_context, real_estate_price_context, perplexity_search)가 대치동 주요 비교 단지(래미안 대치팰리스, 대치 아이파크, 은마아파트, 대치 푸르지오 써밋 등)의 세부 입지정보와 기본 가격 표기를 제...
     - 분석 점수: 52.00%
-      AnalysisDepth: 30.00% | DataFidelity: 90.00% | StructuralCompleteness: 80.00%
-    - 판단 이유: 강점: 요청된 항목(매매 단지별 단지명·세대수·평당가격·준공연도·거리, 분양단지의 분양가·청약경쟁률·계약조건 등)을 상세히 수집·표기했고, 공공 실거래 원자료 부재(no_data)를 명시하며 gemini_search 우선 사용·perplexity로 교차검증하겠다는 데이터 출처 신뢰도 판단을 제시한 점은 분석적 근거로 가점요소임. 단점: 대부분 정보가 단순 나열 수준에 머물러 요청된 ‘매매 시세와 분양가의 비교(평당 기준)’에 대한 정량적 비교(예: 래미안 대치팰리스 평당 1억1,000만 vs 대치 푸르지오 써밋 4,700~4,800만 비교 분석)가 빠져 있고, 시계열적 해석·흐름(과거→현재→미래)에 대한 분석과 추세·원인 규명이 부족함(거래일자 일부 표기만 있을 뿐 추세 해석 없음). 또한 이를 바탕한 명확한 결론·향후 전망 제시가 없어 평가기준의 핵심 요구사항을 충족하지 못함.
+      AnalysisDepth: 40.00% | DataFidelity: 70.00% | StructuralCompleteness: 70.00%
+    - 판단 이유: 강점: 래미안 대치팰리스·대치 아이파크·은마아파트(매매)와 대치 푸르지오 써밋·디에이치 퍼스티어·래미안 원베일리(분양) 등 주변 단지별 세대수·평당가격·준공연도·거리·입지정보를 상세히 나열하고, 공공 실거래 원자료 부재(no_data)·데이터 출처(gemini_search·Perplexity·kakao_api)를 명시해 자료 신뢰성 문제를 분석한 점은 긍정적입니다. 단점: 요청한 '매매 시세와 분양가의 비교 분석(평당가 기준)'에 대한 정량적 비교·해석(예: 평당 차이 계산, 프리미엄/디스카운트 분석)이 빠져 있고, 시계열적 해석(과거-현재-추세·변동 원인 분석)과 이를 바탕으로 한 명확한 향후 전망·결론 제시가 부족합니다. 전반적으로 데이터 나열 수준이 강해 분석 심도가 약합니다.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] {   "매매아파트": [     {       "주소와단지명": "서울특별시 강남구 대치동 래미안 대치팰리스",       "세대수": "1,608세대",       "타입": "84m²",       "평당매매가격": "1억 1,000만원",       "준공연도"... | [2] [{'주소': '서울특별시 강남구 대치동 래미안 대치팰리스', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소'... | [3] [{'status': 'no_data', 'message': "'서울특별시 강남구 대치동 래미안 대치팰리스'에 대한 최근 실거래가 데이터를 찾을 수 없습니다.", 'tip': '최근 5년간 거래 내역이 없거나, 다른 지역명이나 아파트명으로 시도해보세요.', '타입': ... | ... 외 1건
     - 출력: think_tool(reflection: "발견: 입력 데이터(gemini_search, kakao_api_distance_context, real_estate_price_context, perplexity_search)가 대치동 주요 비교 단지(래미안 대치팰리스, 대치 아이파크, 은마아파트, 대치 푸르지오 써밋 등)의 세부 입지정보와 기본 가격 표기를 제...
-    - RAG 점수: 100.00%
-      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the Contradictions list is empty ([]) — there are no discrepancies noted, so the actual output fully aligns with the retrieval context. Nice work!
+    - RAG 점수: 97.22%
+      Faithfulness: 91.67% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 0.92 because the actual output incorrectly pairs the Perplexity price 4,700~4,800만원 with 청약일시 2023-10-16; the retrieval shows multiple 대치 푸르지오 써밋 records — the 4,700~4,800만원 (3.3㎡당 4,751만원) corresponds to 2020-08-10, while the 2023-10-16 entry lists gemini 입력값 평당분양가격 6,700만원.
 
   [nearby_market] 케이스 2/3 평가 중...
-    AnalysisDepth: 0.60 (14.8s)
-    DataFidelity: 0.90 (37.4s)
-    StructuralCompleteness: 0.80 (19.2s)
-    Faithfulness: 0.83 (141.4s)
-    Contextual Relevancy: 0.89 (46.8s)
-    Answer Relevancy: 1.00 (414.1s)
+    AnalysisDepth: 0.40 (15.4s)
+    DataFidelity: 0.90 (22.4s)
+    StructuralCompleteness: 0.70 (13.0s)
+    Faithfulness: 1.00 (177.2s)
+    Contextual Relevancy: 1.00 (54.6s)
+    [경고] Answer Relevancy 평가 실패 (120.1s): Request timed out.
 
   * [nearby_002] 시세 데이터 수치 정확성 검증
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 제공된 시세 관련 컨텍스트 데이터(Gemini 검색, Perplexity 검증, 실거래가, 카카오 API 거리)를 기반으로 정확한 수치를 인용하여 분석하세요. - 각 단지의 평당가격, 세대수, 거리 등 수치를 컨텍스트 원문에 근거하여 표기할 것 - Gemini 검색 결과와 Perplexity 검증 결과의 일치/불일치를 명시할 것 - 실거래가 ...
     - 출력: think_tool(reflection: "발견: 입력 데이터(gemini_search, kakao_api_distance_context, real_estate_price_context, perplexity_search)가 대치동 주요 비교 단지(래미안 대치팰리스, 대치 아이파크, 은마아파트, 대치 푸르지오 써밋 등)의 세부 입지정보와 기본 가격 표기를 제...
-    - 분석 점수: 70.00%
-      AnalysisDepth: 60.00% | DataFidelity: 90.00% | StructuralCompleteness: 80.00%
-    - 판단 이유: 강점: 컨텍스트 원문 수치(평당가격, 세대수, 카카오 좌표·거리 등)를 정확히 인용했고(예: 래미안 대치팰리스 1,608세대·평당 1억1,000만원, 좌표 127.056693501258/37.4932421505465, 거리 예: 252m 등), 공공 실거래 조회 결과가 'no_data'임을 명확히 표기하여 gemini_search 값을 우선 사용한 근거도 제시함. 또한 gemini와 Perplexity의 불일치 사례도 일부 표기(예: 대치 푸르지오 써밋 gemini 6,700만원 vs Perplexity 4,700~4,800만원)해 데이터 간 차이를 인지한 점은 긍정적임. 단점: 전반적으로 제공된 정보를 거의 그대로 나열하는 수준에 머물러 원인·이유 규명이나 심층 분석(시계열 변화 해석, 과거-현재-미래 흐름 설명)이 부족함. 향후 전망이나 객관적 결론도 gemini 우선 사용 방침만 기술했을 뿐 구체적 예측이나 리스크·신뢰도 평가가 약함. 평가 기준(시계열 해석·심층 원인 규명·명확한 전망)에서 부족하여 감점됨.
+    - 분석 점수: 56.00%
+      AnalysisDepth: 40.00% | DataFidelity: 90.00% | StructuralCompleteness: 70.00%
+    - 판단 이유: 강점: 출력물은 컨텍스트 원문에 근거한 구체적 수치(예: 래미안 대치팰리스 평당 1억1,000만원·세대수 1,608·사업지와의 거리 약 500m, 대치 아이파크 평당 8,500만원·세대수 468, 은마 평당 8,000만원·세대수 4,424 등)와 카카오 API로 제공된 좌표·학교·역사 등의 거리(예: 도곡역 227m, 학원 107m 등)를 정확히 인용했고, 공공 실거래 데이터가 모두 'no_data'임을 명시한 점이 요구사항을 잘 충족함. 또한 gemini_search와 Perplexity 간 불일치(예: 대치 푸르지오 써밋의 평당분양가 gemini 6,700만원 vs Perplexity 4,700~4,800만원)를 일부 표기하고, 실거래 부재 시 gemini를 우선 사용하겠다는 결정도 제시함. 단점: 전반적으로 데이터 나열 위주로 심층원인 분석(가격 차이의 원인 규명, 입지별 프리미엄 분석 등)이 부족하고(평면적 서술), 시계열 변화나 과거-현재-미래 흐름 해석이 전혀 없으며(예: 가격 추이 또는 거래 빈도 변화 분석 부재), 향후 전망이나 객관적 결론도 한 줄 수준으로 미약하게 제시되어 실무적 권고·예측으로 이어지지 않음. 평가기준(심층분석·시계열 해석·명확한 전망) 중 다수를 충족하지 못해 중하위 점수를 부여함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] {   "매매아파트": [     {       "주소와단지명": "서울특별시 강남구 대치동 래미안 대치팰리스",       "세대수": "1,608세대",       "타입": "84m²",       "평당매매가격": "1억 1,000만원",       "준공연도"... | [2] [{'주소': '서울특별시 강남구 대치동 래미안 대치팰리스', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소'... | [3] [{'status': 'no_data', 'message': "'서울특별시 강남구 대치동 래미안 대치팰리스'에 대한 최근 실거래가 데이터를 찾을 수 없습니다.", 'tip': '최근 5년간 거래 내역이 없거나, 다른 지역명이나 아파트명으로 시도해보세요.', '타입': ... | ... 외 1건
     - 출력: think_tool(reflection: "발견: 입력 데이터(gemini_search, kakao_api_distance_context, real_estate_price_context, perplexity_search)가 대치동 주요 비교 단지(래미안 대치팰리스, 대치 아이파크, 은마아파트, 대치 푸르지오 써밋 등)의 세부 입지정보와 기본 가격 표기를 제...
-    - RAG 점수: 90.65%
-      Faithfulness: 83.33% | Contextual Relevancy: 88.64% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 0.83 because the actual output assigns specific 거래일자 values that contradict the retrieval context's 'status': 'no_data' entries: for '서울특별시 강남구 대치동 래미안 대치팰리스' the output gives 거래일자 '2025-06-24' (contradicted by no_data) and for '서울특별시 강남구 대치동 대치 아이파크' the output gives 거래일자 range '2024-10 ~ 2025-07' (also contradicted by no_data). The correct action would be to remove 거래일자 or set 거래일자 to '정보없음' (공공 실거래 원자료 없음); other listed attributes (평당, 준공연도, 거리, 주변 정보) do match the retrieval context.
+    - RAG 점수: 66.70%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 0.00%
 
 
 
 
 
 
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty ([]) — no mismatches were reported, indicating the actual output fully aligns with the retrieval context. Great job!
 
   [nearby_market] 케이스 3/3 평가 중...
-    AnalysisDepth: 0.30 (18.2s)
-    DataFidelity: 0.70 (30.1s)
-    StructuralCompleteness: 0.70 (16.9s)
-    Faithfulness: 1.00 (161.1s)
-    Contextual Relevancy: 0.96 (71.0s)
-    Answer Relevancy: 1.00 (134.0s)
+    AnalysisDepth: 0.20 (12.3s)
+    DataFidelity: 0.70 (25.8s)
+    StructuralCompleteness: 0.70 (15.3s)
+    Faithfulness: 1.00 (185.0s)
+    Contextual Relevancy: 0.86 (58.0s)
+    Answer Relevancy: 0.96 (131.8s)
 
   * [nearby_003] 주변 시세 기반 분양 전략 시사점
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 주변 시세 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 주변 매매 시세 대비 적정 분양가 포지셔닝 (프리미엄/디스카운트 전략) - 경쟁 분양 단지 대비 차별화 요소 - 주변 시세 추이에 따른 분양 타이밍 판단 - 가격 경쟁력 확보를 위한 전략 제언 - 종합적인 분양가 전략 및 분양성 판단
     - 출력: think_tool(reflection: "발견: 입력 데이터(gemini_search, kakao_api_distance_context, real_estate_price_context, perplexity_search)가 대치동 주요 비교 단지(래미안 대치팰리스, 대치 아이파크, 은마아파트, 대치 푸르지오 써밋 등)의 세부 입지정보와 기본 가격 표기를 제...
-    - 분석 점수: 46.00%
-      AnalysisDepth: 30.00% | DataFidelity: 70.00% | StructuralCompleteness: 70.00%
-    - 판단 이유: 강점: 출력에 주변 매매·분양 단지(래미안 대치팰리스 1억1,000만원, 대치 아이파크 8,500만원, 은마 8,000만원 등)와 분양사례(대치 푸르지오 써밋 분양가 4,700~4,800만원, 청약경쟁률 168.1:1 등), 입지·계약정보를 상세히 나열했고, 공공 실거래원자료 부재(no_data)를 식별해 gemini_search 우선 사용 및 Perplexity로 교차검증하겠다는 데이터 품질 판단을 제시한 점은 긍정적입니다. 단점(중대한 감점요인): 요청된 실무적 시사점(적정 분양가 포지셔닝: 프리미엄/디스카운트 전략, 경쟁 단지 대비 차별화 요소, 주변 시세 추이에 따른 분양 타이밍 판단, 가격 경쟁력 확보 전략 제언, 종합 분양가 전략·분양성 판단)에 대한 원인·근거 기반 분석이 거의 없고 단순 데이터 나열에 그쳤습니다. 특히 시계열 변화 해석(과거-현재-미래)과 이를 바탕으로 한 분양 타이밍·전략 전망이 빠져 있고, 최종적인 가격 포지셔닝·권고(예: 몇 % 프리미엄/디스카운트 권고, 타깃 수요층, 리스크·수익성 결론)가 제시되지 않아 실무적 활용성이 낮습니다.
+    - 분석 점수: 40.00%
+      AnalysisDepth: 20.00% | DataFidelity: 70.00% | StructuralCompleteness: 70.00%
+    - 판단 이유: 출력물은 래미안 대치팰리스·대치 아이파크·은마아파트·대치 푸르지오 써밋 등 주변 매매·분양단지의 평당 가격·입지 정보를 자세히 나열하고(데이터 열거 성실함), 공공 실거래 원자료 부재(no_data)를 확인하고 gemini_search 기준 채택 및 Perplexity로 교차검증하겠다는 판단을 제시한 점은 긍정적임. 그러나 평가 요구사항 핵심인 '분양가 포지셔닝(프리미엄/디스카운트)', '경쟁 단지 대비 차별화 요소', '주변 시세 추이에 따른 분양 타이밍(시계열 해석)', '가격 경쟁력 확보 전략 제언', '종합적 분양성 판단 및 향후 전망'에 대한 분석·판단이나 시계열 흐름·미래 전망이 사실상 부재함. 즉, 데이터 나열은 충실하나 원인·이유 규명·시계열 해석·구체적 실무적 결론이 부족하여 평가 기준(가점요소)을 충족하지 못함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] {   "매매아파트": [     {       "주소와단지명": "서울특별시 강남구 대치동 래미안 대치팰리스",       "세대수": "1,608세대",       "타입": "84m²",       "평당매매가격": "1억 1,000만원",       "준공연도"... | [2] [{'주소': '서울특별시 강남구 대치동 래미안 대치팰리스', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소'... | [3] [{'status': 'no_data', 'message': "'서울특별시 강남구 대치동 래미안 대치팰리스'에 대한 최근 실거래가 데이터를 찾을 수 없습니다.", 'tip': '최근 5년간 거래 내역이 없거나, 다른 지역명이나 아파트명으로 시도해보세요.', '타입': ... | ... 외 1건
     - 출력: think_tool(reflection: "발견: 입력 데이터(gemini_search, kakao_api_distance_context, real_estate_price_context, perplexity_search)가 대치동 주요 비교 단지(래미안 대치팰리스, 대치 아이파크, 은마아파트, 대치 푸르지오 써밋 등)의 세부 입지정보와 기본 가격 표기를 제...
-    - RAG 점수: 98.72%
-      Faithfulness: 100.00% | Contextual Relevancy: 96.15% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating no contradictions — the actual output fully aligns with the retrieval context. Great job!
+    - RAG 점수: 94.16%
+      Faithfulness: 100.00% | Contextual Relevancy: 86.21% | Answer Relevancy: 96.26%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty, meaning no contradictions were reported and the actual output fully aligns with the retrieval context — great job!
 [31mFAILED[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight 
 
@@ -384,12 +382,12 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight
 ------------------------------------------------------------
 
   [location_insight] 케이스 1/3 평가 중...
-    AnalysisDepth: 0.70 (15.3s)
-    DataFidelity: 0.80 (21.6s)
-    StructuralCompleteness: 0.90 (16.7s)
-    Faithfulness: 1.00 (154.8s)
-    Contextual Relevancy: 0.90 (28.2s)
-    Answer Relevancy: 1.00 (89.0s)
+    AnalysisDepth: 0.70 (16.0s)
+    DataFidelity: 0.80 (16.0s)
+    StructuralCompleteness: 0.90 (9.9s)
+    Faithfulness: 1.00 (184.8s)
+    Contextual Relevancy: 0.90 (33.0s)
+    Answer Relevancy: 1.00 (88.9s)
 
   * [location_001] 입지 종합 분석
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
@@ -397,59 +395,57 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight
     - 출력: {   "입지정보": {     "주소": "서울특별시 강남구 대치동",     "좌표": {       "latitude": 37.4932421505465,       "longitude": 127.056693501258     },     "교육환경": {       "요약": "단지 인근에 초·중·고가 근거리에 분포해 학군 수요에 우호적임.",    ...
     - 분석 점수: 76.00%
       AnalysisDepth: 70.00% | DataFidelity: 80.00% | StructuralCompleteness: 90.00%
-    - 판단 이유: 응답은 단순 나열을 넘어서 강점·약점 진단, 원인(간선도로 인접에 따른 소음·미세먼지 리스크), 데이터 공백(버스정류장·역 출구·재건축 단계) 및 실무적 권고까지 제시해 분석 심도가 양호함. 또한 Gemini API 오류를 개발호재에서 제외한 검증(Perplexity 근거)과 향후 확인할 공식 출처 권고를 포함한 점은 정확성과 실무적 유용성을 높임. 다만 요청사항 중 ‘각 입지 요소에 대한 등급 판정(우수/양호/보통/미흡)’이 항목별로 표준화되어 명시적으로 정리되지 않았고(교육·교통·편의 일부에만 문장상 평어 사용), 시계열 변화(과거→현재→미래 흐름)나 명확한 미래가치 전망(단계별 ETA·추세 분석)이 부족해 감점 요인임. 예시로 개발호재 관련 후보는 목록화됐지만 단계·예상시점(ETA)이 미제공되어 미래 예측력이 제한적임.
+    - 판단 이유: 강점: 강남구 대치동의 교육시설(단국대부속고·서울대도초 등), 지하철(도곡역·한티역) 및 편의시설(대형마트·병원·근린공원) 거리를 구체 제시하고(보행속도 가정 포함) 리스크(도로소음·통학로 안전)와 데이터 공백(버스 정류장·역 출구 기준·정비사업 단계)까지 명확히 지적해 원인·권고를 제시함(평가항목 1·5 충족). 단점: 요청한 '각 입지 요소에 대한 등급 판정(우수/양호/보통/미흡)'이 명시된 표준 등급 필드로 제공되지 않음(평가항목 필수 누락)과 시계열(과거-현재-미래) 변화 흐름·추세 분석이 부족해 장기적 변동성 해석이 미비함(평가항목 3·4 결여). 또한 개발호재 항목에서 Gemini API 오류를 적절히 식별한 점은 우수하나, 주변 재건축 호재들의 단계·ETA 부재로 인해 개발호재 판단이 불완전함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] Gemini API 오류: Object of type ModelMetaclass is not JSON serializable. 잠시 후 다시 시도해주세요. | [2] {'주소': '서울특별시 강남구 대치동', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소': '서울 강남구 도...
     - 출력: {   "입지정보": {     "주소": "서울특별시 강남구 대치동",     "좌표": {       "latitude": 37.4932421505465,       "longitude": 127.056693501258     },     "교육환경": {       "요약": "단지 인근에 초·중·고가 근거리에 분포해 학군 수요에 우호적임.",    ...
     - RAG 점수: 96.67%
       Faithfulness: 100.00% | Contextual Relevancy: 90.00% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating no discrepancies between the actual output and the retrieval context — well done, the output faithfully matches the context.
+    - 판단 이유: The score is 1.00 because the contradictions list is empty (Contradictions: []), indicating no discrepancies between the actual output and the retrieval context — great alignment!
 
   [location_insight] 케이스 2/3 평가 중...
-    AnalysisDepth: 0.60 (17.4s)
-    DataFidelity: 0.80 (17.3s)
-    StructuralCompleteness: 0.90 (17.6s)
-    Faithfulness: 0.99 (169.8s)
-API error occurred. Waiting 2s...
-API error occurred. Waiting 2s...
-    Contextual Relevancy: 0.96 (15020.4s)
-    Answer Relevancy: 1.00 (124.6s)
+    AnalysisDepth: 0.80 (11.8s)
+    DataFidelity: 0.40 (16.8s)
+    StructuralCompleteness: 0.90 (10.6s)
+    Faithfulness: 1.00 (128.7s)
+    Contextual Relevancy: 0.96 (40.7s)
+    Answer Relevancy: 1.00 (118.0s)
 
   * [location_002] 입지 데이터 수치 정확성 검증
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 제공된 입지 관련 컨텍스트 데이터(Gemini 검색, 카카오 API 거리)를 기반으로 정확한 정보를 인용하여 분석하세요. - 주변 시설(학교, 역, 병원, 마트 등)의 이름과 거리(m)를 컨텍스트 원문에 근거하여 표기할 것 - 도보 시간 산정은 카카오 API 데이터에 근거할 것 - 개발 호재의 명칭, 예정 시기, 위치를 정확히 인용할 것 - ...
     - 출력: {   "입지정보": {     "주소": "서울특별시 강남구 대치동",     "좌표": {       "latitude": 37.4932421505465,       "longitude": 127.056693501258     },     "교육환경": {       "요약": "단지 인근에 초·중·고가 근거리에 분포해 학군 수요에 우호적임.",    ...
-    - 분석 점수: 70.00%
-      AnalysisDepth: 60.00% | DataFidelity: 80.00% | StructuralCompleteness: 90.00%
-    - 판단 이유: 장점: 제공된 컨텍스트(예: 단국대학교사범대학부속고 252m, 서울대도초 320m, 도곡역 227m 등)를 정확히 인용하고, Gemini 오류문구를 기술적 오류로 판정한 점과 향후 권고·분양성(마케팅·소음저감 등)까지 제시한 점은 평가기준의 심층분석·결론 도출 항목을 충족함. 단점: 도보시간 산정 요구사항(카카오 API 근거)을 지키지 않고 '보행속도 80m/min 가정'으로 표기한 점은 명시적 요구 불이행이며(테스트 파라미터 위배), 시계열(과거-현재-미래) 변화·흐름 분석이 부족해 관련 감점 항목에도 해당됨. 또한 일부 항목(역 출구 기준 보행경로·재건축 단계 ETA)은 미제공으로 명시했으나, 시간축 기반 전망·변화 분석 부재가 아쉬움.
+    - 분석 점수: 74.00%
+      AnalysisDepth: 80.00% | DataFidelity: 40.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 컨텍스트 원문의 시설·거리 정보를 정확히 인용(예: 단국대학교사범대학부속고등학교 252m, 도곡역 227m, 큰골근린공원 192m)하고 Gemini 오류문구를 개발호재로 보지 않은 논리적 판단과 공식문서 확인 권고가 포함되어 있음. 분석 깊이도 양호하여 학군·교통·편의성 강점과 도로소음·재건축 불확실성 등 리스크를 도출하고 향후 마케팅·안전대책 권고를 제시함. 단점: 요청사항 중 ‘도보 시간 산정은 카카오 API 데이터에 근거할 것’이라는 필수 조건을 충족하지 않고 보행속도 가정(80m/min)을 사용해 일부 도보시간을 표기한 점이 요구 불이행임. 또한 재건축 호재에 대해 ETA·단계가 미제공임을 명시했으나 시계열(과거→현재→예상 미래) 변화 흐름을 명확히 설명한 부분은 제한적임.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] Gemini API 오류: Object of type ModelMetaclass is not JSON serializable. 잠시 후 다시 시도해주세요. | [2] {'주소': '서울특별시 강남구 대치동', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소': '서울 강남구 도...
     - 출력: {   "입지정보": {     "주소": "서울특별시 강남구 대치동",     "좌표": {       "latitude": 37.4932421505465,       "longitude": 127.056693501258     },     "교육환경": {       "요약": "단지 인근에 초·중·고가 근거리에 분포해 학군 수요에 우호적임.",    ...
-    - RAG 점수: 98.14%
-      Faithfulness: 98.57% | Contextual Relevancy: 95.83% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 0.99 because the only contradiction is a single minor numeric error: the retrieval context’s distance (272m) and walking speed assumption (80 m/min, with rounding) give 272/80 = 3.4 → 반올림하여 3분인데, 실제 출력은 '4분'이라고 하여 컨텍스트의 계산 규칙과 직접적으로 모순됩니다; otherwise the rest of the output appears faithful.
+    - RAG 점수: 98.61%
+      Faithfulness: 100.00% | Contextual Relevancy: 95.83% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty (Contradictions: []), indicating the actual output fully aligns with the retrieval context and no inconsistencies were found — great job!
 
   [location_insight] 케이스 3/3 평가 중...
-    AnalysisDepth: 0.70 (17.0s)
-    DataFidelity: 0.80 (24.0s)
-    StructuralCompleteness: 0.80 (26.9s)
-    Faithfulness: 1.00 (148.0s)
-    Contextual Relevancy: 0.90 (43.0s)
-    Answer Relevancy: 1.00 (120.0s)
+    AnalysisDepth: 0.80 (6.5s)
+    DataFidelity: 0.70 (11.8s)
+    StructuralCompleteness: 0.90 (10.0s)
+    Faithfulness: 1.00 (104.5s)
+    Contextual Relevancy: 0.88 (23.3s)
+    Answer Relevancy: 1.00 (100.2s)
 
   * [location_003] 입지 경쟁력 기반 분양성 시사점
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 입지 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 입지 강점(역세권, 학군, 공원 등)이 분양 수요에 미치는 영향 - 입지 약점(소음, 혐오시설, 교통 불편 등)의 리스크 - 개발 호재의 실현 가능성 및 분양성 기여도 - 주변 경쟁 단지 대비 입지 차별화 요소 - 종합적인 입지 경쟁력 평가 및 분양성 판단
     - 출력: {   "입지정보": {     "주소": "서울특별시 강남구 대치동",     "좌표": {       "latitude": 37.4932421505465,       "longitude": 127.056693501258     },     "교육환경": {       "요약": "단지 인근에 초·중·고가 근거리에 분포해 학군 수요에 우호적임.",    ...
-    - 분석 점수: 74.00%
-      AnalysisDepth: 70.00% | DataFidelity: 80.00% | StructuralCompleteness: 80.00%
-    - 판단 이유: 응답은 대치동(강남구) 구체적 입지데이터(학교·학원·지하철·공원·대형마트 거리 및 도보시간)를 제시하고, 교육수요·대중교통 접근성·생활편의성 등을 근거로 분양 마케팅·소음저감·통학로 개선 등 실무적 권고를 도출해 분석 심도가 양호함(가점 요건 충족). 또한 'Gemini API 오류'를 호재로 오인하지 않고 기술오류로 처리한 점과 재건축 호재의 단계·ETA 부재를 지적한 점은 현실적 제약을 반영해 적절함. 다만 시계열 변화(과거→현재→미래)나 호재 실현 가능성의 정량적 판단·확률 평가가 부족하고(감점), 주변 경쟁 단지와의 명확한 비교·차별화 요소가 별도 분석으로 제시되지 않음(감점). 버스·출구별 보행경로나 재건축 단계 등 공백을 지적한 것은 적절하나, 최종 분양성의 명확한 결론(예: 등급·수치화) 제시는 부족함.
+    - 분석 점수: 80.00%
+      AnalysisDepth: 80.00% | DataFidelity: 70.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 전반적으로 단순 데이터 나열을 넘는 종합평가·리스크 진단·실무적 권고(학군·지하철·근린공원 등 강점 강조, 도로 소음·미세먼지 리스크·이중창·통학로 개선 제안, Gemini 오류를 호재로 취급하지 않음 등)를 제시해 분석 심도가 높음. 또한 미래가치 후보(은마 등)와 데이터 공백(버스·출구 기준 보행경로·재건축 단계 미제공)을 명확히 지적하고 공식문서 확인 권고 등 실무적 후속조치도 포함되어 있음. 다만 시계열적 변화(과거→현재→미래 흐름)나 호재의 실현 가능성에 대한 구체적 타임라인·확률 분석은 부족해 그 부분에서 감점된다.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] Gemini API 오류: Object of type ModelMetaclass is not JSON serializable. 잠시 후 다시 시도해주세요. | [2] {'주소': '서울특별시 강남구 대치동', '좌표': {'longitude': 127.056693501258, 'latitude': 37.4932421505465}, '교육환경': {'학교': [{'이름': '단국대학교사범대학부속고등학교', '주소': '서울 강남구 도...
     - 출력: {   "입지정보": {     "주소": "서울특별시 강남구 대치동",     "좌표": {       "latitude": 37.4932421505465,       "longitude": 127.056693501258     },     "교육환경": {       "요약": "단지 인근에 초·중·고가 근거리에 분포해 학군 수요에 우호적임.",    ...
-    - RAG 점수: 96.67%
-      Faithfulness: 100.00% | Contextual Relevancy: 90.00% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the Contradictions list is empty, indicating no discrepancies between the actual output and the retrieval context; the output is fully faithful — great job!
+    - RAG 점수: 95.84%
+      Faithfulness: 100.00% | Contextual Relevancy: 87.50% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the Contradictions list is empty, indicating no discrepancies between the actual output and the retrieval context; the output appears fully faithful — nice work.
 [32mPASSED[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight 
 
@@ -474,33 +470,33 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight
 ------------------------------------------------------------
 
   [population_insight] 케이스 1/3 평가 중...
-    AnalysisDepth: 0.60 (18.5s)
-    DataFidelity: 1.00 (16.6s)
-    StructuralCompleteness: 1.00 (16.8s)
-    [경고] Faithfulness 평가 실패 (453.6s): Request timed out.
-    Contextual Relevancy: 0.97 (65.4s)
-    Answer Relevancy: 1.00 (123.6s)
+    AnalysisDepth: 0.80 (9.9s)
+    DataFidelity: 1.00 (9.2s)
+    StructuralCompleteness: 0.90 (8.0s)
+    [경고] Faithfulness 평가 실패 (120.1s): Request timed out.
+    Contextual Relevancy: 1.00 (24.9s)
+    Answer Relevancy: 1.00 (77.6s)
 
   * [population_001] 인구 동향 종합 분석
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
     - 입력: [분석 요청] 사업지 지역의 인구 동향을 종합 분석하세요. - 연령별 인구 구성 (특히 30~40대 주택 구매 핵심층 비율) - 인구 이동 동향 (전입/전출 추이, 순유입/순유출) - 주요 전입/전출 지역 및 이동 요인 - 총인구 변화 추이 (증가/감소/안정) - 각 지표의 시계열적 흐름(월별/연도별 변화)과 향후 전망을 포함할 것
     - 출력: # 입력 데이터 정리 — 대상: 서울특별시 강남구 (원자료 기준) (요청 대상지: 대치동이나 동단위가 아니라 제공된 데이터는 강남구 전체입니다. 대치동 단위 데이터는 별도 요청 필요)  목표: 연령구조의 월별(시계열) 변화와 연도별 인구이동(전입/전출) 흐름을 정량·시계열적으로 정리. 성별 분포는 요청사항에 따라 본 정리에서 제외.  ---  ## 1) 연...
-    - 분석 점수: 76.00%
-      AnalysisDepth: 60.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
-    - 판단 이유: 강점: 월별 연령분포(2025-04~09)를 표로 정리하고 총인구 추이(556,822 → 556,324, 약 -498명)와 연도별 전입·전출 집계(2024년 순유입 +5,762 → 2025년 순유출 -477)를 명확히 제시하여 시계열 흐름을 파악했고(평가항목 3 충족), 원자료 보존·데이터 품질 주의사항 및 후속정제 권고를 포함해 실무적 제안을 제공한 점은 긍정적임(평가항목 5). 단점: 분석이 많은 부분 원자료의 단순 나열과 상위 항목 나열에 치중되어 있어 이동 원인·요인(주택가격, 고용, 정책 등)에 대한 인과적 규명과 심층 해석이 부족함(평가항목 1,2에 약점). 또한 요청항목 중 '특히 30~40대 주택 구매 핵심층 비율'에 대한 심층적 해석이나 전망(구매력·수요 추정)은 거의 없고, 장기적(연도별 다년) 추세·예측 제시는 데이터 한계 설명은 했지만 실질적 전망 제시는 미흡함(평가항목 4,6). 전반적으로 시계열 정리와 실무 권고는 잘했으나 인과분석과 30~40대 수요·미래전망 부분에서 보완 필요.
+    - 분석 점수: 86.00%
+      AnalysisDepth: 80.00% | DataFidelity: 100.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 강점: 월별 연령구성(2025-04~09)을 표로 제시하고 40~59세(약 33.8%)·30~39세(약 14.5%) 등 핵심 연령대 비중과 월별 총인구(556,822→556,324, 약 -498명) 흐름을 명확히 해석했으며, 2024년(순유입 +5,762)→2025년(순유출 -477)으로의 전환을 연도별 인구이동 집계로 잘 보여줌. 주요 전입·전출 지역 상위 항목을 구체적으로 나열하고 원자료(중복·자체전입 등) 품질문제와 정제·추가자료(동단위·장기자료) 권고까지 제시한 점도 우수함. 단점: 원인·요인 규명(예: 주택가격·일자리 기반의 이동 원인 분석)이 부족하고 장기적 수치형 전망(정량적 예측)은 제시되지 않았음. 또한 사용자 요청의 ‘대치동(동) 단위’ 분석 요구는 자료 한계로 미충족된 점(단, 주의사항에서 명시)을 명확히 해야 함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] 행정구역: 강남구 2025년04월_계_총인구수: 556,822 2025년04월_계_연령구간인구수: 556,822 2025년04월_계_0~9세: 32,770 2025년04월_계_10~19세: 63,574 2025년04월_계_20~29세: 65,177 2025년04월_계_... | [2] [{'year': 2025, 'origin': '서울 강남구', 'destination': '전국', 'total': 37350}, {'year': 2025, 'origin': '전국', 'destination': '서울 강남구', 'total': 36873}, {'y...
     - 출력: # 입력 데이터 정리 — 대상: 서울특별시 강남구 (원자료 기준) (요청 대상지: 대치동이나 동단위가 아니라 제공된 데이터는 강남구 전체입니다. 대치동 단위 데이터는 별도 요청 필요)  목표: 연령구조의 월별(시계열) 변화와 연도별 인구이동(전입/전출) 흐름을 정량·시계열적으로 정리. 성별 분포는 요청사항에 따라 본 정리에서 제외.  ---  ## 1) 연...
-    - RAG 점수: 65.49%
-      Faithfulness: 0.00% | Contextual Relevancy: 96.67% | Answer Relevancy: 100.00%
+    - RAG 점수: 66.60%
+      Faithfulness: 0.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
 
   [population_insight] 케이스 2/3 평가 중...
-    AnalysisDepth: 0.90 (12.4s)
-    DataFidelity: 1.00 (14.5s)
-    StructuralCompleteness: 1.00 (12.4s)
-    Faithfulness: 1.00 (166.3s)
-    Contextual Relevancy: 1.00 (310.0s)
-    Answer Relevancy: 1.00 (102.7s)
+    AnalysisDepth: 0.90 (12.7s)
+    DataFidelity: 1.00 (11.9s)
+    StructuralCompleteness: 1.00 (9.0s)
+    [경고] Faithfulness 평가 실패 (120.1s): Request timed out.
+    Contextual Relevancy: 1.00 (72.7s)
+    Answer Relevancy: 1.00 (86.9s)
 
   * [population_002] 인구 데이터 수치 정확성 검증
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
@@ -508,21 +504,20 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight
     - 출력: # 입력 데이터 정리 — 대상: 서울특별시 강남구 (원자료 기준) (요청 대상지: 대치동이나 동단위가 아니라 제공된 데이터는 강남구 전체입니다. 대치동 단위 데이터는 별도 요청 필요)  목표: 연령구조의 월별(시계열) 변화와 연도별 인구이동(전입/전출) 흐름을 정량·시계열적으로 정리. 성별 분포는 요청사항에 따라 본 정리에서 제외.  ---  ## 1) 연...
     - 분석 점수: 94.00%
       AnalysisDepth: 90.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
-    - 판단 이유: 출력물은 요청된 수치를 원자료(예: 월별 총인구 2025-04 556,822 → 2025-09 556,324, 감소 약 498명; 40~49 100,502 등 연령대별 수치와 비율을 소수점 둘째 자리 반올림으로 제시)와 일치하게 제시했고, 2024년 전입·전출(전국 기준 순유입 +5,762)과 2025년(순유출 -477) 전환을 명확히 짚어 시계열적 변화도 해석함. 원자료(전항목) 표를 그대로 보존하고 중복·이상값(예: 세종 중복, 구내전입 7,540) 존재를 명시한 점도 충실함. 다만 인과 분석(왜 순유입→순유출 전환이 발생했는지)에 대한 심층적 해석은 부족하고, 제시된 6개월 분 시계열만으로 장기 전망을 내리기 어렵다는 한계가 있어 그 점에서는 약간 감점함.
+    - 판단 이유: 강점: 요구사항에 따라 월별 연령구간 수치와 비율(예: 2025-04 총인구 556,822 → 2025-09 556,324, 변동 -498) 및 연도별 전입·전출 수치(2024 전입 59,730·전출 53,968 → 순유입 +5,762; 2025 전입 36,873·전출 37,350 → 순유출 -477)를 정확히 인용하고 원자료 행 전체를 보존해 제시함. 시계열 흐름(상반기 인구 안정, 2024→2025 순유입에서 순유출 전환)과 데이터 품질(중복 표기·구내이동 7,540 등) 문제를 명시하고 정제 규칙·후속조치까지 권고한 점도 우수함. 단점: 원인·배경에 대한 심층적 인과분석(왜 순유출로 전환되었는지에 대한 정량적·정성적 원인 규명)과 향후 정량적 전망(예: 예측치)은 다소 부족하여 분석 심도가 완전하진 않음.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] 행정구역: 강남구 2025년04월_계_총인구수: 556,822 2025년04월_계_연령구간인구수: 556,822 2025년04월_계_0~9세: 32,770 2025년04월_계_10~19세: 63,574 2025년04월_계_20~29세: 65,177 2025년04월_계_... | [2] [{'year': 2025, 'origin': '서울 강남구', 'destination': '전국', 'total': 37350}, {'year': 2025, 'origin': '전국', 'destination': '서울 강남구', 'total': 36873}, {'y...
     - 출력: # 입력 데이터 정리 — 대상: 서울특별시 강남구 (원자료 기준) (요청 대상지: 대치동이나 동단위가 아니라 제공된 데이터는 강남구 전체입니다. 대치동 단위 데이터는 별도 요청 필요)  목표: 연령구조의 월별(시계열) 변화와 연도별 인구이동(전입/전출) 흐름을 정량·시계열적으로 정리. 성별 분포는 요청사항에 따라 본 정리에서 제외.  ---  ## 1) 연...
-    - RAG 점수: 100.00%
-      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating the actual output fully aligns with the retrieval context and contains no discrepancies—well done!
+    - RAG 점수: 66.60%
+      Faithfulness: 0.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
 
   [population_insight] 케이스 3/3 평가 중...
-    AnalysisDepth: 0.60 (16.4s)
-    DataFidelity: 1.00 (21.3s)
-    StructuralCompleteness: 1.00 (11.9s)
-    [경고] Faithfulness 평가 실패 (361.5s): Request timed out.
-    Contextual Relevancy: 0.87 (50.9s)
-    Answer Relevancy: 1.00 (140.0s)
+    AnalysisDepth: 0.60 (10.8s)
+    DataFidelity: 1.00 (11.2s)
+    StructuralCompleteness: 1.00 (12.1s)
+    Faithfulness: 1.00 (101.8s)
+    Contextual Relevancy: 1.00 (41.7s)
+    Answer Relevancy: 1.00 (82.8s)
 
   * [population_003] 인구 동향 기반 수요 전망 시사점
     [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
@@ -530,12 +525,613 @@ src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight
     - 출력: # 입력 데이터 정리 — 대상: 서울특별시 강남구 (원자료 기준) (요청 대상지: 대치동이나 동단위가 아니라 제공된 데이터는 강남구 전체입니다. 대치동 단위 데이터는 별도 요청 필요)  목표: 연령구조의 월별(시계열) 변화와 연도별 인구이동(전입/전출) 흐름을 정량·시계열적으로 정리. 성별 분포는 요청사항에 따라 본 정리에서 제외.  ---  ## 1) 연...
     - 분석 점수: 76.00%
       AnalysisDepth: 60.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
-    - 판단 이유: 강점: 월별(2025-04~09) 연령대 시계열 표와 비율 제시, 40~59세 집중(약 33.8%)·총인구 소폭 감소(-498명) 등 핵심 관찰을 명확히 제시했고, 2024년 순유입(+5,762)에서 2025년 근소한 순유출(-477)로 전환된 시계열적 흐름을 비교해 데이터품질(구 vs 동 불일치, 중복표기)과 후속 정제 필요성을 구체적으로 적시함. 약점: 사용자가 요청한 '실무적 시사점'(연령별 타겟 수요층(30~40대, 1인 가구 등)별 권장 분양전략, 인구유입·유출이 주택수요에 미치는 구체적 영향, 중장기 수요전망, 구조적 리스크·분양성 판단)에 대한 인과적 해석과 명확한 결론·전망 제시는 부족함(원인 분석·수요 예측·분양 판단이 표면적 요약에 그침). 또한 장기간 추세 분석을 위해 추가 데이터가 필요함을 지적만 하고 자체적인 중장기 수요 시나리오·권고안을 제시하지 않음.
+    - 판단 이유: 강점: 월별 연령 시계열(2025-04→09)과 연도별 전입·전출(2024년 순유입 +5,762 → 2025년 근소 순유출 -477)을 정량적으로 제시하고(예: 40~59세 합산 약 33.8%, 총인구 -498명), 데이터 품질(구 단위 vs 동 단위 불일치, 중복표기, 자체전입 등)과 후속 정제·수집 권고를 명확히 적시해 실무적 후속조치 제안이 포함됨. 단점: 제시된 사실을 나열하면서 원인·배경(왜 2025년에 순유출로 전환했는지, 40~59세 비중이 높은 구조적 원인 등)에 대한 심층적 분석과 정책·분양 전략(타깃 상품, 가구유형별 수요·가격 영향 등) 연결이 부족함. 또한 장기(중장기) 수요 전망이나 분양성에 대한 명확한 결론·권고(예: 분양 포지셔닝, 예상수요 규모 산정 등)가 제시되지 않아 의사결정 관점의 실무적 시사점 도출이 미흡함.
     [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
     - 검색 컨텍스트: [1] 행정구역: 강남구 2025년04월_계_총인구수: 556,822 2025년04월_계_연령구간인구수: 556,822 2025년04월_계_0~9세: 32,770 2025년04월_계_10~19세: 63,574 2025년04월_계_20~29세: 65,177 2025년04월_계_... | [2] [{'year': 2025, 'origin': '서울 강남구', 'destination': '전국', 'total': 37350}, {'year': 2025, 'origin': '전국', 'destination': '서울 강남구', 'total': 36873}, {'y...
     - 출력: # 입력 데이터 정리 — 대상: 서울특별시 강남구 (원자료 기준) (요청 대상지: 대치동이나 동단위가 아니라 제공된 데이터는 강남구 전체입니다. 대치동 단위 데이터는 별도 요청 필요)  목표: 연령구조의 월별(시계열) 변화와 연도별 인구이동(전입/전출) 흐름을 정량·시계열적으로 정리. 성별 분포는 요청사항에 따라 본 정리에서 제외.  ---  ## 1) 연...
-    - RAG 점수: 62.16%
-      Faithfulness: 0.00% | Contextual Relevancy: 86.67% | Answer Relevancy: 100.00%
-    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating the actual output fully aligns with the retrieval context and contains no discrepancies—well done!
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the contradictions list is empty, indicating no discrepancies were found and the actual output fully aligns with the retrieval context — great job!
 [32mPASSED[0m
 src/tests/analysis/analysis_eval/test_analysis.py::test_unsold_insight 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>> [분석 에이전트 - unsold_insight] 평가 시작 (3건)
+------------------------------------------------------------
+
+  [unsold_insight] 케이스 1/3 평가 중...
+    AnalysisDepth: 0.90 (12.0s)
+    DataFidelity: 1.00 (16.2s)
+    StructuralCompleteness: 1.00 (9.2s)
+    Faithfulness: 1.00 (122.8s)
+    Contextual Relevancy: 1.00 (34.2s)
+    Answer Relevancy: 1.00 (90.3s)
+
+  * [unsold_001] 미분양 현황 종합 분석
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 사업지 지역의 미분양 현황을 종합 분석하세요. - 총 미분양 호수 및 변동 추이 (증가/감소/보합) - 준공 전/후 미분양 구분 및 비중 분석 - 규모별(소형/중형/대형) 미분양 분포 - 주변 지역(시도/시군구) 대비 미분양 수준 비교 - 미분양 추이의 시계열적 흐름과 향후 전망을 포함할 것
+    - 출력: # 제공 데이터 요약 (대상: 서울특별시 강남구 — 요청지는 ‘대치동’이나 제공 데이터는 구(강남구) 수준) - 레코드 수: 50건   - 기간(최소·최대): 2017-08 ~ 2025-08 (불연속 월 포함)   - 연도별 레코드 분포:   - 2017: 5건     - 2018: 10건     - 2019: 6건     - 2021: 10건     - ...
+    - 분석 점수: 94.00%
+      AnalysisDepth: 90.00% | DataFidelity: 100.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 강점: 제공 데이터(레코드수 50, 기간 2017-08~2025-08)에서 모든 미분양 값이 0임을 명확히 지적하고(미분양 합계=0) 동(대치동) 정보 부재·준공구분·공급호수·전용면적 등 핵심 필드 결손을 구체적으로 열거해 분석 불가 원인을 잘 규명함. 또한 월별 미분양률 정의·수식, 이동평균·delta_pct 등 시계열 판단용 지표와 결측 처리 규칙을 제시하고(3·6개월 이동평균, 분모 0 시 N/A 등) 보완 데이터 쿼리 및 우선순위 Next Steps까지 명확히 제안해 분석 심도가 높음. 단점: 실제 시계열 흐름 해석이나 정량적 향후 전망(예: 시나리오 기반 추정)은 데이터 부족으로 불가하다고 결론만 제시했고, 대체 가능한 간단한 예측 시나리오나 질적 전망(주택시장 상황에 따른 가능성)은 제시되지 않음.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] [{'시도': '서울', '시군구': '강남구', '연도': 2018, '월': 12, '미분양': 0, '내용': '[서울 강남구] 지역의 2018년 12월 미분양 아파트 세대수는 총 0세대입니다.'}, {'시도': '서울', '시군구': '강남구', '연도': 20...
+    - 출력: # 제공 데이터 요약 (대상: 서울특별시 강남구 — 요청지는 ‘대치동’이나 제공 데이터는 구(강남구) 수준) - 레코드 수: 50건   - 기간(최소·최대): 2017-08 ~ 2025-08 (불연속 월 포함)   - 연도별 레코드 분포:   - 2017: 5건     - 2018: 10건     - 2019: 6건     - 2021: 10건     - ...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because there are no contradictions (Contradictions: []), indicating the actual output fully aligns with the retrieval context — nicely consistent.
+
+  [unsold_insight] 케이스 2/3 평가 중...
+    AnalysisDepth: 1.00 (11.2s)
+    DataFidelity: 1.00 (19.7s)
+    StructuralCompleteness: 0.90 (13.5s)
+    Faithfulness: 1.00 (96.5s)
+    Contextual Relevancy: 1.00 (40.6s)
+    Answer Relevancy: 1.00 (77.4s)
+
+  * [unsold_002] 미분양 데이터 수치 정확성 검증
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 제공된 미분양 관련 컨텍스트 데이터(unsold_unit)를 기반으로 정확한 수치를 인용하여 분석하세요. - 미분양 호수, 기간(연월), 지역명을 컨텍스트 원문에 근거하여 표기할 것 - 시계열 데이터의 레코드 수, 기간 범위를 정확히 파악하고 명시할 것 - 데이터 품질 이슈(결측값, 집계 수준 등)가 있으면 명시할 것 - 컨텍스트에 없는 미분...
+    - 출력: # 제공 데이터 요약 (대상: 서울특별시 강남구 — 요청지는 ‘대치동’이나 제공 데이터는 구(강남구) 수준) - 레코드 수: 50건   - 기간(최소·최대): 2017-08 ~ 2025-08 (불연속 월 포함)   - 연도별 레코드 분포:   - 2017: 5건     - 2018: 10건     - 2019: 6건     - 2021: 10건     - ...
+    - 분석 점수: 98.00%
+      AnalysisDepth: 100.00% | DataFidelity: 100.00% | StructuralCompleteness: 90.00%
+    - 판단 이유: 응답은 컨텍스트에 근거해 '서울특별시 강남구' 대상, 레코드 수(50건), 기간(2017-08~2025-08)과 연도별 분포, 모든 미분양값이 0(합계 0호)임을 명시했고(평가항목: 레코드 수·기간 표기 만족), 요청 지역('대치동')과 실제 데이터 집계 수준(강남구) 불일치 및 시계열 불연속성·공급호수·준공구분 부재 등 데이터 품질 문제를 구체적으로 열거해 분석 심도가 높음(가점요인). 시계열상 변화 관측 불가라는 해석과 향후 계산식(미분양률), 이동평균/증감률 처리 규칙, 결측 처리 규칙 및 구체적 수집 쿼리·스키마·다음 단계 제시까지 포함해 결론과 실행가능한 권고를 명확히 제시함(가점요인). 허위 수치 생성은 없었고(비위험), 분석 깊이·시계열 해석·향후 전망 제시 요건을 충족함.
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] [{'시도': '서울', '시군구': '강남구', '연도': 2018, '월': 12, '미분양': 0, '내용': '[서울 강남구] 지역의 2018년 12월 미분양 아파트 세대수는 총 0세대입니다.'}, {'시도': '서울', '시군구': '강남구', '연도': 20...
+    - 출력: # 제공 데이터 요약 (대상: 서울특별시 강남구 — 요청지는 ‘대치동’이나 제공 데이터는 구(강남구) 수준) - 레코드 수: 50건   - 기간(최소·최대): 2017-08 ~ 2025-08 (불연속 월 포함)   - 연도별 레코드 분포:   - 2017: 5건     - 2018: 10건     - 2019: 6건     - 2021: 10건     - ...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because the 'Contradictions' list is empty, indicating no contradictions were found and the actual output aligns fully with the retrieval context — great job!
+
+  [unsold_insight] 케이스 3/3 평가 중...
+    AnalysisDepth: 0.70 (10.6s)
+    DataFidelity: 0.90 (14.1s)
+    StructuralCompleteness: 1.00 (13.3s)
+    Faithfulness: 1.00 (88.4s)
+    Contextual Relevancy: 1.00 (18.6s)
+    Answer Relevancy: 1.00 (101.9s)
+
+  * [unsold_003] 미분양 리스크 평가 및 분양 전략 시사점
+    [분석 평가] AnalysisDepth 60% | DataFidelity 20% | StructuralCompleteness 20%
+    - 입력: [분석 요청] 미분양 분석을 바탕으로 사업지 분양에 대한 실무적 시사점을 도출하세요. - 현재 미분양 수준의 리스크 등급 판정 (안전/주의/경고/위험) - 미분양 추이 변화가 신규 분양에 미치는 영향 - 준공후 미분양 비중에 따른 사업 리스크 평가 - 미분양 해소 속도 및 시장 회복 가능성 - 종합적인 미분양 리스크 기반 분양 시점 및 가격 전략
+    - 출력: # 제공 데이터 요약 (대상: 서울특별시 강남구 — 요청지는 ‘대치동’이나 제공 데이터는 구(강남구) 수준) - 레코드 수: 50건   - 기간(최소·최대): 2017-08 ~ 2025-08 (불연속 월 포함)   - 연도별 레코드 분포:   - 2017: 5건     - 2018: 10건     - 2019: 6건     - 2021: 10건     - ...
+    - 분석 점수: 80.00%
+      AnalysisDepth: 70.00% | DataFidelity: 90.00% | StructuralCompleteness: 100.00%
+    - 판단 이유: 강점: 응답은 제공데이터(강남구, 대치동 대상 아님)에서 모든 미분양 값이 0임을 정확히 확인하고(레코드 수=50, 기간 2017-08~2025-08) 행정구역(동)·준공구분·공급호수 등 핵심 필드 결여를 구체적으로 지적했으며, 월별 미분양률 정의·집계 단위, 이동평균·delta_pct 등 시계열 분석 지표와 명확한 데이터 보완·검증(예: stat.molit 쿼리)·스키마·우선순위 Next Steps까지 실무적이고 실행 가능한 권고를 제시한 점은 분석 깊이와 실무성에서 우수함. 단점: 사용자가 요청한 실무적 시사점(리스크 등급 판정(안전/주의/경고/위험), 준공후 미분양 비중별 사업 리스크 평가, 분양 시점·가격 전략 등)에 대해 정량적·시나리오 기반 결론이나 명확한 리스크 등급 부여가 빠져 있어 최종 의사결정에 필요한 전망·권고가 부족함(대안으로 시나리오 가정 제시나 임계값 제안이 있으면 더 좋았음).
+    [RAG 평가] Faithfulness 33.4% | Contextual Relevancy 33.3% | Answer Relevancy 33.3%
+    - 검색 컨텍스트: [1] [{'시도': '서울', '시군구': '강남구', '연도': 2018, '월': 12, '미분양': 0, '내용': '[서울 강남구] 지역의 2018년 12월 미분양 아파트 세대수는 총 0세대입니다.'}, {'시도': '서울', '시군구': '강남구', '연도': 20...
+    - 출력: # 제공 데이터 요약 (대상: 서울특별시 강남구 — 요청지는 ‘대치동’이나 제공 데이터는 구(강남구) 수준) - 레코드 수: 50건   - 기간(최소·최대): 2017-08 ~ 2025-08 (불연속 월 포함)   - 연도별 레코드 분포:   - 2017: 5건     - 2018: 10건     - 2019: 6건     - 2021: 10건     - ...
+    - RAG 점수: 100.00%
+      Faithfulness: 100.00% | Contextual Relevancy: 100.00% | Answer Relevancy: 100.00%
+    - 판단 이유: The score is 1.00 because there are no contradictions (Contradictions: []), indicating the actual output aligns fully with the retrieval context and includes no conflicting statements—nice work.
+[32mPASSED[0m
+src/tests/final_report/report_eval/test_final_report.py::test_final_report 
+
+
+>>> [최종 보고서(Final Report)] 평가 시작 (1건)
+------------------------------------------------------------
+
+  * [e2e_final_report] E2E 서버 생산 최종 분양성 검토 보고서
+    - 입력: [사업지] 서울특별시 강남구 대치동 [주력 타입] 84㎡ [세대수] 500세대 [요청] 위 사업지에 대한 분양성 검토 최종 보고서를 작성하시오.
+    - 출력: # 1. 사업환경 분석  [핵심 판단] - 입지 종합 평가: ★★★★☆ (교육·교통 매우 우수, 간선도로 인접으로 소음·대기오염 리스크 존재) - 분양성 기여도: 높음(복합역세권·학군·생활편의 삼박자, 혐오시설 없음) - 결정 포인트: 도곡역 복합역세권(3·분당선) 도보 3~4분, 대치 학원가 핵심 축 1~5분, 근린공원·마트·의료 5분 내 집적 → 가족·...
+    - 점수: 86.00%
+    - 판단 이유: 응답은 서울 강남구 대치동(주력 84㎡, 500세대) 사업지에 대해 분양가·매매가·수급지수 등 부동산 전문 용어를 적절히 사용하고 문어체로 보고서 형식을 유지했으며(가점 항목 충족), 입지·정책·수요·비교시세를 종합해 최종평(분양성 '상', 완판 가능성)과 구체적 분양가 레인지(평당 90M~98M, 총액 2.29~2.49억원 수준) 및 '25억 미만' 전략을 명확히 제시해 결론 요건을 충족했다. 정량 지표(매매/전세 비율, 수급지수 101.12, 주변 평단 등)와 정책문서 출처를 표기해 판단 근거를 제시한 점도 강점이다. 다만 일부 출처가 ‘민간 크롤링/Agent#’ 표기나 공공 실거래 링크 미첨부로 원자료 검증이 어려운 점과 동(대치동) 단위 미분양·공급호수 데이터 부재를 스스로 지적한 부분이 있어 신뢰성 보강이 필요해 소폭 감점했다.
+[32mPASSED[0m
+src/tests/source/source_eval/test_source.py::test_source 
+
+>>> [출처 추출(Source)] 평가 시작 (1건)
+------------------------------------------------------------
+
+  * [e2e_source] E2E 서버 생산 출처 추출 결과
+    - 입력: # 1. 사업환경 분석  [핵심 판단] - 입지 종합 평가: ★★★★☆ (교육·교통 매우 우수, 간선도로 인접으로 소음·대기오염 리스크 존재) - 분양성 기여도: 높음(복합역세권·학군·생활편의 삼박자, 혐오시설 없음) - 결정 포인트: 도곡역 복합역세권(3·분당선) 도보 3~4분, 대치 학원가 핵심 축 1~5분, 근린공원·마트·의료 5분 내 집적 → 가족·...
+    - 출력: 아래는 보고서의 7개 지표(전문가)별로 최종보고서 작성에 사용된 원본 데이터(요약)와 출처(원본 사이트 링크 + 다운로드 링크) 정리입니다. 각 링크는 클릭 가능한 하이퍼링크로 제공됩니다. 필요하시면 각 데이터의 원본 파일명(또는 파일내 특정 시트/탭)을 추가로 표기해 드리겠습니다.  ---  # 지표 1 — 주택청약 - 사용 데이터   - 주택청약 관련 ...
+    - 점수: 30.00%
+    - 판단 이유: 강점: 보고서의 7개 지표별로 체계적(번호/섹션)으로 출처를 정리했고, 국토교통부·법제처·카카오 개발자센터·KOSIS·행정안전부 등 기관명을 명시한 점은 평가기준(출처 명시)에 부합함. 단점: 대부분 출처에 명확한 기준일(수신일/확인일)이 누락되어 기준일 기재 요구를 충족하지 못함(감점요인). 더 심각한 문제는 다수의 Google Drive 다운로드 링크(및 콘솔 링크 등)가 보고서 내부 첨부물처럼 제시된 점으로, 해당 파일·링크가 실제 존재하는지 불명확하여 '존재하지 않는 출처 생성' 위험이 있어 크게 감점함. 전반적으로 항목별 출처 표기는 잘 구조화되어 있으나 기준일 미기재와 의심스러운 외부 링크로 신뢰도가 저하되어 중하위 점수로 평가함.
+[31mFAILED[0m
+============================================================
+         [ ALL FOR ONE 평가 종합 리포트 ]
+============================================================
+
+  [정적 데이터셋]
+  Judge               | (결과 없음)
+  Extraction          | (결과 없음)
+  Renderer            | (결과 없음)
+
+  [E2E 분석 에이전트]
+  - housing_faq       | 분석 72.00% | RAG 93.10% (3건)
+  - policy            | 분석 64.67% | RAG 95.62% (3건)
+  - supply_demand     | 분석 75.33% | RAG 65.32% (3건)
+  - nearby_market     | 분석 49.33% | RAG 86.03% (3건)
+  - location_insight  | 분석 76.67% | RAG 97.04% (3건)
+  - population_insight| 분석 85.33% | RAG 77.73% (3건)
+  - unsold_insight    | 분석 90.67% | RAG 100.00% (3건)
+
+  [E2E 보고서]
+  Final Report        | 가중 86.00% (1건) | PASS
+  Source              | 평균 30.00% (1건) | FAIL
+
+============================================================
+  최종 결과: 총 23건 평가 완료 / 전체 평균 점수 72.09%
+============================================================
+
+  [JSON 상세 결과 저장 완료] test_eval_details.json
+Running teardown with pytest sessionfinish...
+
+
+================================== FAILURES ===================================
+[31m[1m_________________________________ test_policy _________________________________[0m
+
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...드/확인 일자)과 버전(예: 법령 공포·개정일) 표기\n\n원하시는 추가 항목(예: 각 지표별 인용 문구/원문 캡처 위치, 데이터 신뢰성/전처리 메모 등)이 있으면 알려주시면 바로 정리해 드리겠습니다.', ...}
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_policy[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""정책 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33mpolicy[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+agent_name = 'policy'
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...드/확인 일자)과 버전(예: 법령 공포·개정일) 표기\n\n원하시는 추가 항목(예: 각 지표별 인용 문구/원문 캡처 위치, 데이터 신뢰성/전처리 메모 등)이 있으면 알려주시면 바로 정리해 드리겠습니다.', ...}
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_evaluation_for_agent[39;49;00m(agent_name: [96mstr[39;49;00m, e2e_result: [96mdict[39;49;00m):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""[39;49;00m
+    [33m    특정 분석 에이전트의 E2E 결과를 평가합니다.[39;49;00m
+    [33m[39;49;00m
+    [33m    [동작 흐름][39;49;00m
+    [33m    1. e2e_result에서 해당 에이전트의 actual_output + retrieval_context 추출[39;49;00m
+    [33m    2. LLMTestCase 생성 (input은 데이터셋, actual_output/context는 E2E 결과)[39;49;00m
+    [33m    3. metric.measure()로 각 메트릭 평가 실행[39;49;00m
+    [33m    4. calculate_separated_scores()로 분석/RAG 점수 분리 산출[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m        e2e_result: E2E 서버 파이프라인 반환값[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [90m# E2E 결과에서 에이전트 데이터 추출[39;49;00m[90m[39;49;00m
+        analysis_outputs = e2e_result.get([33m"[39;49;00m[33manalysis_outputs[39;49;00m[33m"[39;49;00m, {})[90m[39;49;00m
+        e2e_key = E2E_KEY_MAP.get(agent_name, agent_name)[90m[39;49;00m
+        agent_data = analysis_outputs.get(e2e_key, {})[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m agent_data:[90m[39;49;00m
+            pytest.skip([33mf[39;49;00m[33m"[39;49;00m[33mE2E 결과에 [39;49;00m[33m'[39;49;00m[33m{[39;49;00me2e_key[33m}[39;49;00m[33m'[39;49;00m[33m 데이터가 없습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# actual_output 추출 ("result" 키에 분석 보고서 문자열이 담김)[39;49;00m[90m[39;49;00m
+        actual_output = agent_data.get([33m"[39;49;00m[33mresult[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m actual_output:[90m[39;49;00m
+            pytest.skip([33mf[39;49;00m[33m"[39;49;00m[33m'[39;49;00m[33m{[39;49;00me2e_key[33m}[39;49;00m[33m'[39;49;00m[33m의 result가 비어 있습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# retrieval_context 추출[39;49;00m[90m[39;49;00m
+        retrieval_contexts = _extract_retrieval_contexts(agent_name, agent_data)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 데이터셋에서 input(질문) 로드[39;49;00m[90m[39;49;00m
+        dataset = load_dataset(agent_name)[90m[39;49;00m
+        summary = {[33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name, [33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m: []}[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 메트릭 생성 (팩토리 패턴 -- 매번 새 인스턴스)[39;49;00m[90m[39;49;00m
+        metrics = get_metrics_for_type(agent_name)[90m[39;49;00m
+        primary_metric_name = get_primary_metric(agent_name)[90m[39;49;00m
+        rag_primary_metric_name = get_rag_primary_metric(agent_name)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 분석/RAG 메트릭 이름 목록 (개별 점수 표시용)[39;49;00m[90m[39;49;00m
+        analysis_metric_names = {[33m"[39;49;00m[33mAnalysisDepth[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mDataFidelity[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mStructuralCompleteness[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        rag_metric_names = {[33m"[39;49;00m[33mFaithfulness[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mContextual Relevancy[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mAnswer Relevancy[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+    [90m[39;49;00m
+        print_module_header([33mf[39;49;00m[33m"[39;49;00m[33m분석 에이전트 - [39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m"[39;49;00m, [96mlen[39;49;00m(dataset))[90m[39;49;00m
+    [90m[39;49;00m
+        case_scores = [][90m[39;49;00m
+        [94mfor[39;49;00m i, item [95min[39;49;00m [96menumerate[39;49;00m(dataset, [94m1[39;49;00m):[90m[39;49;00m
+            [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m  [[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m] 케이스 [39;49;00m[33m{[39;49;00mi[33m}[39;49;00m[33m/[39;49;00m[33m{[39;49;00m[96mlen[39;49;00m(dataset)[33m}[39;49;00m[33m 평가 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            test_case = LLMTestCase([90m[39;49;00m
+                [96minput[39;49;00m=item[[33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                actual_output=actual_output,[90m[39;49;00m
+                retrieval_context=retrieval_contexts,[90m[39;49;00m
+            )[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# metric.measure() 반환값 직접 사용[39;49;00m[90m[39;49;00m
+            [90m# 개별 메트릭 실패 시 0.0으로 대체하여 테스트 전체 크래시 방지[39;49;00m[90m[39;49;00m
+            [90m# 실패 원인은 [경고] 메시지로 출력하여 진단 가능[39;49;00m[90m[39;49;00m
+            all_metric_scores = {}[90m[39;49;00m
+            [94mfor[39;49;00m metric [95min[39;49;00m metrics:[90m[39;49;00m
+                [90m# .name이 없는 메트릭(Built-in RAG 등) 대비 안전한 이름 추출[39;49;00m[90m[39;49;00m
+                m_name = [96mgetattr[39;49;00m(metric, [33m"[39;49;00m[33mname[39;49;00m[33m"[39;49;00m, [96mtype[39;49;00m(metric).[91m__name__[39;49;00m)[90m[39;49;00m
+                t0 = time.time()[90m[39;49;00m
+                [94mtry[39;49;00m:[90m[39;49;00m
+                    score = metric.measure(test_case)[90m[39;49;00m
+                    elapsed = time.time() - t0[90m[39;49;00m
+                    [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m    [39;49;00m[33m{[39;49;00mm_name[33m}[39;49;00m[33m: [39;49;00m[33m{[39;49;00mscore[33m:[39;49;00m[33m.2f[39;49;00m[33m}[39;49;00m[33m ([39;49;00m[33m{[39;49;00melapsed[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33ms)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                    all_metric_scores[m_name] = score [94mif[39;49;00m score [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m [94melse[39;49;00m [94m0.0[39;49;00m[90m[39;49;00m
+                [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
+                    elapsed = time.time() - t0[90m[39;49;00m
+                    [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m    [경고] [39;49;00m[33m{[39;49;00mm_name[33m}[39;49;00m[33m 평가 실패 ([39;49;00m[33m{[39;49;00melapsed[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33ms): [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                    all_metric_scores[m_name] = [94m0.0[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# 분석/RAG 점수 분리 산출[39;49;00m[90m[39;49;00m
+            separated = calculate_separated_scores(agent_name, all_metric_scores)[90m[39;49;00m
+            case_scores.append(separated)[90m[39;49;00m
+    [90m[39;49;00m
+            q_id = item.get([33m"[39;49;00m[33mid[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33munknown[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            q_desc = item.get([33m"[39;49;00m[33mdescription[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- 분석 대표 메트릭에서 reason 추출 ---[39;49;00m[90m[39;49;00m
+            analysis_primary = [96mnext[39;49;00m([90m[39;49;00m
+                (m [94mfor[39;49;00m m [95min[39;49;00m metrics [94mif[39;49;00m [96mgetattr[39;49;00m(m, [33m"[39;49;00m[33mname[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m) == primary_metric_name),[90m[39;49;00m
+                metrics[[94m0[39;49;00m],[90m[39;49;00m
+            )[90m[39;49;00m
+            analysis_reason = [96mgetattr[39;49;00m(analysis_primary, [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- RAG 대표 메트릭에서 reason 추출 (RAG 에이전트만) ---[39;49;00m[90m[39;49;00m
+            rag_reason = [94mNone[39;49;00m[90m[39;49;00m
+            [94mif[39;49;00m rag_primary_metric_name:[90m[39;49;00m
+                rag_primary = [96mnext[39;49;00m([90m[39;49;00m
+                    (m [94mfor[39;49;00m m [95min[39;49;00m metrics [94mif[39;49;00m [96mgetattr[39;49;00m(m, [33m"[39;49;00m[33mname[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m) == rag_primary_metric_name),[90m[39;49;00m
+                    [94mNone[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+                [94mif[39;49;00m rag_primary:[90m[39;49;00m
+                    rag_reason = [96mgetattr[39;49;00m(rag_primary, [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- 개별 메트릭 점수를 분석/RAG로 분리 ---[39;49;00m[90m[39;49;00m
+            analysis_metrics = {k: v [94mfor[39;49;00m k, v [95min[39;49;00m all_metric_scores.items() [94mif[39;49;00m k [95min[39;49;00m analysis_metric_names}[90m[39;49;00m
+            rag_metrics = {k: v [94mfor[39;49;00m k, v [95min[39;49;00m all_metric_scores.items() [94mif[39;49;00m k [95min[39;49;00m rag_metric_names}[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- [분석 평가] 섹션 출력 ---[39;49;00m[90m[39;49;00m
+            print_analysis_case_result([90m[39;49;00m
+                case_id=q_id,[90m[39;49;00m
+                description=q_desc,[90m[39;49;00m
+                input_text=item[[33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                output_text=actual_output,[90m[39;49;00m
+                analysis_score=separated[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                analysis_reason=analysis_reason,[90m[39;49;00m
+                metric_scores=analysis_metrics,[90m[39;49;00m
+            )[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- [RAG 평가] 섹션 출력 (RAG 에이전트만) ---[39;49;00m[90m[39;49;00m
+            [94mif[39;49;00m separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                print_rag_case_result([90m[39;49;00m
+                    retrieval_context=retrieval_contexts,[90m[39;49;00m
+                    output_text=actual_output,[90m[39;49;00m
+                    rag_score=separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                    rag_reason=rag_reason,[90m[39;49;00m
+                    metric_scores=rag_metrics,[90m[39;49;00m
+                )[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- JSON 상세 결과 저장 ---[39;49;00m[90m[39;49;00m
+            detail_entry = {[90m[39;49;00m
+                [33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name,[90m[39;49;00m
+                [33m"[39;49;00m[33mid[39;49;00m[33m"[39;49;00m: q_id,[90m[39;49;00m
+                [33m"[39;49;00m[33mdescription[39;49;00m[33m"[39;49;00m: q_desc,[90m[39;49;00m
+                [33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m: separated[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                [33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m: separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                [33m"[39;49;00m[33manalysis[39;49;00m[33m"[39;49;00m: {[90m[39;49;00m
+                    [33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m: item[[33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                    [33m"[39;49;00m[33moutput[39;49;00m[33m"[39;49;00m: actual_output,[90m[39;49;00m
+                    [33m"[39;49;00m[33mscore[39;49;00m[33m"[39;49;00m: separated[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                    [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m: analysis_reason,[90m[39;49;00m
+                    [33m"[39;49;00m[33mmetrics[39;49;00m[33m"[39;49;00m: analysis_metrics,[90m[39;49;00m
+                },[90m[39;49;00m
+            }[90m[39;49;00m
+            [94mif[39;49;00m separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                detail_entry[[33m"[39;49;00m[33mrag[39;49;00m[33m"[39;49;00m] = {[90m[39;49;00m
+                    [33m"[39;49;00m[33mretrieval_context[39;49;00m[33m"[39;49;00m: retrieval_contexts,[90m[39;49;00m
+                    [33m"[39;49;00m[33moutput[39;49;00m[33m"[39;49;00m: actual_output,[90m[39;49;00m
+                    [33m"[39;49;00m[33mscore[39;49;00m[33m"[39;49;00m: separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                    [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m: rag_reason,[90m[39;49;00m
+                    [33m"[39;49;00m[33mmetrics[39;49;00m[33m"[39;49;00m: rag_metrics,[90m[39;49;00m
+                }[90m[39;49;00m
+            append_detail([33m"[39;49;00m[33manalysis[39;49;00m[33m"[39;49;00m, detail_entry)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 에이전트 평균 점수 계산[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m case_scores:[90m[39;49;00m
+            avg_analysis = [96msum[39;49;00m(s[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m] [94mfor[39;49;00m s [95min[39;49;00m case_scores) / [96mlen[39;49;00m(case_scores)[90m[39;49;00m
+            summary_entry = {[90m[39;49;00m
+                [33m"[39;49;00m[33mtype[39;49;00m[33m"[39;49;00m: agent_name,[90m[39;49;00m
+                [33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m: avg_analysis,[90m[39;49;00m
+                [33m"[39;49;00m[33mcount[39;49;00m[33m"[39;49;00m: [96mlen[39;49;00m(case_scores),[90m[39;49;00m
+            }[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# RAG 점수가 있는 에이전트는 RAG 평균도 기록[39;49;00m[90m[39;49;00m
+            rag_scores = [s[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] [94mfor[39;49;00m s [95min[39;49;00m case_scores [94mif[39;49;00m s[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m][90m[39;49;00m
+            [94mif[39;49;00m rag_scores:[90m[39;49;00m
+                avg_rag = [96msum[39;49;00m(rag_scores) / [96mlen[39;49;00m(rag_scores)[90m[39;49;00m
+                summary_entry[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] = avg_rag[90m[39;49;00m
+    [90m[39;49;00m
+            summary[[33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m].append(summary_entry)[90m[39;49;00m
+    [90m[39;49;00m
+        GLOBAL_RESULTS.append(summary)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 분석 점수 기준으로 assertion (70% 이상)[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m case_scores:[90m[39;49;00m
+            avg_analysis = [96msum[39;49;00m(s[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m] [94mfor[39;49;00m s [95min[39;49;00m case_scores) / [96mlen[39;49;00m(case_scores)[90m[39;49;00m
+>           [94massert[39;49;00m avg_analysis >= [94m0.7[39;49;00m, ([90m[39;49;00m
+                [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m 분석 점수 평균 [39;49;00m[33m{[39;49;00mavg_analysis[33m:[39;49;00m[33m.2%[39;49;00m[33m}[39;49;00m[33m로 기준(70%) 미달[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           AssertionError: policy 분석 점수 평균 64.67%로 기준(70%) 미달[0m
+[1m[31mE           assert 0.6466666666666667 >= 0.7[0m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:283: AssertionError
+[31m[1m_____________________________ test_nearby_market ______________________________[0m
+
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...드/확인 일자)과 버전(예: 법령 공포·개정일) 표기\n\n원하시는 추가 항목(예: 각 지표별 인용 문구/원문 캡처 위치, 데이터 신뢰성/전처리 메모 등)이 있으면 알려주시면 바로 정리해 드리겠습니다.', ...}
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_nearby_market[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""주변 시장 분석 에이전트 평가"""[39;49;00m[90m[39;49;00m
+>       run_evaluation_for_agent([33m"[39;49;00m[33mnearby_market[39;49;00m[33m"[39;49;00m, e2e_result)[90m[39;49;00m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:308: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+agent_name = 'nearby_market'
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...드/확인 일자)과 버전(예: 법령 공포·개정일) 표기\n\n원하시는 추가 항목(예: 각 지표별 인용 문구/원문 캡처 위치, 데이터 신뢰성/전처리 메모 등)이 있으면 알려주시면 바로 정리해 드리겠습니다.', ...}
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mrun_evaluation_for_agent[39;49;00m(agent_name: [96mstr[39;49;00m, e2e_result: [96mdict[39;49;00m):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""[39;49;00m
+    [33m    특정 분석 에이전트의 E2E 결과를 평가합니다.[39;49;00m
+    [33m[39;49;00m
+    [33m    [동작 흐름][39;49;00m
+    [33m    1. e2e_result에서 해당 에이전트의 actual_output + retrieval_context 추출[39;49;00m
+    [33m    2. LLMTestCase 생성 (input은 데이터셋, actual_output/context는 E2E 결과)[39;49;00m
+    [33m    3. metric.measure()로 각 메트릭 평가 실행[39;49;00m
+    [33m    4. calculate_separated_scores()로 분석/RAG 점수 분리 산출[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        agent_name: 에이전트 식별자 (예: "housing_faq")[39;49;00m
+    [33m        e2e_result: E2E 서버 파이프라인 반환값[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [90m# E2E 결과에서 에이전트 데이터 추출[39;49;00m[90m[39;49;00m
+        analysis_outputs = e2e_result.get([33m"[39;49;00m[33manalysis_outputs[39;49;00m[33m"[39;49;00m, {})[90m[39;49;00m
+        e2e_key = E2E_KEY_MAP.get(agent_name, agent_name)[90m[39;49;00m
+        agent_data = analysis_outputs.get(e2e_key, {})[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m agent_data:[90m[39;49;00m
+            pytest.skip([33mf[39;49;00m[33m"[39;49;00m[33mE2E 결과에 [39;49;00m[33m'[39;49;00m[33m{[39;49;00me2e_key[33m}[39;49;00m[33m'[39;49;00m[33m 데이터가 없습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# actual_output 추출 ("result" 키에 분석 보고서 문자열이 담김)[39;49;00m[90m[39;49;00m
+        actual_output = agent_data.get([33m"[39;49;00m[33mresult[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m actual_output:[90m[39;49;00m
+            pytest.skip([33mf[39;49;00m[33m"[39;49;00m[33m'[39;49;00m[33m{[39;49;00me2e_key[33m}[39;49;00m[33m'[39;49;00m[33m의 result가 비어 있습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# retrieval_context 추출[39;49;00m[90m[39;49;00m
+        retrieval_contexts = _extract_retrieval_contexts(agent_name, agent_data)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 데이터셋에서 input(질문) 로드[39;49;00m[90m[39;49;00m
+        dataset = load_dataset(agent_name)[90m[39;49;00m
+        summary = {[33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name, [33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m: []}[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 메트릭 생성 (팩토리 패턴 -- 매번 새 인스턴스)[39;49;00m[90m[39;49;00m
+        metrics = get_metrics_for_type(agent_name)[90m[39;49;00m
+        primary_metric_name = get_primary_metric(agent_name)[90m[39;49;00m
+        rag_primary_metric_name = get_rag_primary_metric(agent_name)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 분석/RAG 메트릭 이름 목록 (개별 점수 표시용)[39;49;00m[90m[39;49;00m
+        analysis_metric_names = {[33m"[39;49;00m[33mAnalysisDepth[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mDataFidelity[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mStructuralCompleteness[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        rag_metric_names = {[33m"[39;49;00m[33mFaithfulness[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mContextual Relevancy[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mAnswer Relevancy[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+    [90m[39;49;00m
+        print_module_header([33mf[39;49;00m[33m"[39;49;00m[33m분석 에이전트 - [39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m"[39;49;00m, [96mlen[39;49;00m(dataset))[90m[39;49;00m
+    [90m[39;49;00m
+        case_scores = [][90m[39;49;00m
+        [94mfor[39;49;00m i, item [95min[39;49;00m [96menumerate[39;49;00m(dataset, [94m1[39;49;00m):[90m[39;49;00m
+            [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m\n[39;49;00m[33m  [[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m] 케이스 [39;49;00m[33m{[39;49;00mi[33m}[39;49;00m[33m/[39;49;00m[33m{[39;49;00m[96mlen[39;49;00m(dataset)[33m}[39;49;00m[33m 평가 중...[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            test_case = LLMTestCase([90m[39;49;00m
+                [96minput[39;49;00m=item[[33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                actual_output=actual_output,[90m[39;49;00m
+                retrieval_context=retrieval_contexts,[90m[39;49;00m
+            )[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# metric.measure() 반환값 직접 사용[39;49;00m[90m[39;49;00m
+            [90m# 개별 메트릭 실패 시 0.0으로 대체하여 테스트 전체 크래시 방지[39;49;00m[90m[39;49;00m
+            [90m# 실패 원인은 [경고] 메시지로 출력하여 진단 가능[39;49;00m[90m[39;49;00m
+            all_metric_scores = {}[90m[39;49;00m
+            [94mfor[39;49;00m metric [95min[39;49;00m metrics:[90m[39;49;00m
+                [90m# .name이 없는 메트릭(Built-in RAG 등) 대비 안전한 이름 추출[39;49;00m[90m[39;49;00m
+                m_name = [96mgetattr[39;49;00m(metric, [33m"[39;49;00m[33mname[39;49;00m[33m"[39;49;00m, [96mtype[39;49;00m(metric).[91m__name__[39;49;00m)[90m[39;49;00m
+                t0 = time.time()[90m[39;49;00m
+                [94mtry[39;49;00m:[90m[39;49;00m
+                    score = metric.measure(test_case)[90m[39;49;00m
+                    elapsed = time.time() - t0[90m[39;49;00m
+                    [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m    [39;49;00m[33m{[39;49;00mm_name[33m}[39;49;00m[33m: [39;49;00m[33m{[39;49;00mscore[33m:[39;49;00m[33m.2f[39;49;00m[33m}[39;49;00m[33m ([39;49;00m[33m{[39;49;00melapsed[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33ms)[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                    all_metric_scores[m_name] = score [94mif[39;49;00m score [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m [94melse[39;49;00m [94m0.0[39;49;00m[90m[39;49;00m
+                [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
+                    elapsed = time.time() - t0[90m[39;49;00m
+                    [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m    [경고] [39;49;00m[33m{[39;49;00mm_name[33m}[39;49;00m[33m 평가 실패 ([39;49;00m[33m{[39;49;00melapsed[33m:[39;49;00m[33m.1f[39;49;00m[33m}[39;49;00m[33ms): [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                    all_metric_scores[m_name] = [94m0.0[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# 분석/RAG 점수 분리 산출[39;49;00m[90m[39;49;00m
+            separated = calculate_separated_scores(agent_name, all_metric_scores)[90m[39;49;00m
+            case_scores.append(separated)[90m[39;49;00m
+    [90m[39;49;00m
+            q_id = item.get([33m"[39;49;00m[33mid[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33munknown[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            q_desc = item.get([33m"[39;49;00m[33mdescription[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- 분석 대표 메트릭에서 reason 추출 ---[39;49;00m[90m[39;49;00m
+            analysis_primary = [96mnext[39;49;00m([90m[39;49;00m
+                (m [94mfor[39;49;00m m [95min[39;49;00m metrics [94mif[39;49;00m [96mgetattr[39;49;00m(m, [33m"[39;49;00m[33mname[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m) == primary_metric_name),[90m[39;49;00m
+                metrics[[94m0[39;49;00m],[90m[39;49;00m
+            )[90m[39;49;00m
+            analysis_reason = [96mgetattr[39;49;00m(analysis_primary, [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- RAG 대표 메트릭에서 reason 추출 (RAG 에이전트만) ---[39;49;00m[90m[39;49;00m
+            rag_reason = [94mNone[39;49;00m[90m[39;49;00m
+            [94mif[39;49;00m rag_primary_metric_name:[90m[39;49;00m
+                rag_primary = [96mnext[39;49;00m([90m[39;49;00m
+                    (m [94mfor[39;49;00m m [95min[39;49;00m metrics [94mif[39;49;00m [96mgetattr[39;49;00m(m, [33m"[39;49;00m[33mname[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m) == rag_primary_metric_name),[90m[39;49;00m
+                    [94mNone[39;49;00m,[90m[39;49;00m
+                )[90m[39;49;00m
+                [94mif[39;49;00m rag_primary:[90m[39;49;00m
+                    rag_reason = [96mgetattr[39;49;00m(rag_primary, [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m, [94mNone[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- 개별 메트릭 점수를 분석/RAG로 분리 ---[39;49;00m[90m[39;49;00m
+            analysis_metrics = {k: v [94mfor[39;49;00m k, v [95min[39;49;00m all_metric_scores.items() [94mif[39;49;00m k [95min[39;49;00m analysis_metric_names}[90m[39;49;00m
+            rag_metrics = {k: v [94mfor[39;49;00m k, v [95min[39;49;00m all_metric_scores.items() [94mif[39;49;00m k [95min[39;49;00m rag_metric_names}[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- [분석 평가] 섹션 출력 ---[39;49;00m[90m[39;49;00m
+            print_analysis_case_result([90m[39;49;00m
+                case_id=q_id,[90m[39;49;00m
+                description=q_desc,[90m[39;49;00m
+                input_text=item[[33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                output_text=actual_output,[90m[39;49;00m
+                analysis_score=separated[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                analysis_reason=analysis_reason,[90m[39;49;00m
+                metric_scores=analysis_metrics,[90m[39;49;00m
+            )[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- [RAG 평가] 섹션 출력 (RAG 에이전트만) ---[39;49;00m[90m[39;49;00m
+            [94mif[39;49;00m separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                print_rag_case_result([90m[39;49;00m
+                    retrieval_context=retrieval_contexts,[90m[39;49;00m
+                    output_text=actual_output,[90m[39;49;00m
+                    rag_score=separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                    rag_reason=rag_reason,[90m[39;49;00m
+                    metric_scores=rag_metrics,[90m[39;49;00m
+                )[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# --- JSON 상세 결과 저장 ---[39;49;00m[90m[39;49;00m
+            detail_entry = {[90m[39;49;00m
+                [33m"[39;49;00m[33magent[39;49;00m[33m"[39;49;00m: agent_name,[90m[39;49;00m
+                [33m"[39;49;00m[33mid[39;49;00m[33m"[39;49;00m: q_id,[90m[39;49;00m
+                [33m"[39;49;00m[33mdescription[39;49;00m[33m"[39;49;00m: q_desc,[90m[39;49;00m
+                [33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m: separated[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                [33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m: separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                [33m"[39;49;00m[33manalysis[39;49;00m[33m"[39;49;00m: {[90m[39;49;00m
+                    [33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m: item[[33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                    [33m"[39;49;00m[33moutput[39;49;00m[33m"[39;49;00m: actual_output,[90m[39;49;00m
+                    [33m"[39;49;00m[33mscore[39;49;00m[33m"[39;49;00m: separated[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                    [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m: analysis_reason,[90m[39;49;00m
+                    [33m"[39;49;00m[33mmetrics[39;49;00m[33m"[39;49;00m: analysis_metrics,[90m[39;49;00m
+                },[90m[39;49;00m
+            }[90m[39;49;00m
+            [94mif[39;49;00m separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                detail_entry[[33m"[39;49;00m[33mrag[39;49;00m[33m"[39;49;00m] = {[90m[39;49;00m
+                    [33m"[39;49;00m[33mretrieval_context[39;49;00m[33m"[39;49;00m: retrieval_contexts,[90m[39;49;00m
+                    [33m"[39;49;00m[33moutput[39;49;00m[33m"[39;49;00m: actual_output,[90m[39;49;00m
+                    [33m"[39;49;00m[33mscore[39;49;00m[33m"[39;49;00m: separated[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                    [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m: rag_reason,[90m[39;49;00m
+                    [33m"[39;49;00m[33mmetrics[39;49;00m[33m"[39;49;00m: rag_metrics,[90m[39;49;00m
+                }[90m[39;49;00m
+            append_detail([33m"[39;49;00m[33manalysis[39;49;00m[33m"[39;49;00m, detail_entry)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 에이전트 평균 점수 계산[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m case_scores:[90m[39;49;00m
+            avg_analysis = [96msum[39;49;00m(s[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m] [94mfor[39;49;00m s [95min[39;49;00m case_scores) / [96mlen[39;49;00m(case_scores)[90m[39;49;00m
+            summary_entry = {[90m[39;49;00m
+                [33m"[39;49;00m[33mtype[39;49;00m[33m"[39;49;00m: agent_name,[90m[39;49;00m
+                [33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m: avg_analysis,[90m[39;49;00m
+                [33m"[39;49;00m[33mcount[39;49;00m[33m"[39;49;00m: [96mlen[39;49;00m(case_scores),[90m[39;49;00m
+            }[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# RAG 점수가 있는 에이전트는 RAG 평균도 기록[39;49;00m[90m[39;49;00m
+            rag_scores = [s[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] [94mfor[39;49;00m s [95min[39;49;00m case_scores [94mif[39;49;00m s[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m][90m[39;49;00m
+            [94mif[39;49;00m rag_scores:[90m[39;49;00m
+                avg_rag = [96msum[39;49;00m(rag_scores) / [96mlen[39;49;00m(rag_scores)[90m[39;49;00m
+                summary_entry[[33m"[39;49;00m[33mrag_score[39;49;00m[33m"[39;49;00m] = avg_rag[90m[39;49;00m
+    [90m[39;49;00m
+            summary[[33m"[39;49;00m[33mresults[39;49;00m[33m"[39;49;00m].append(summary_entry)[90m[39;49;00m
+    [90m[39;49;00m
+        GLOBAL_RESULTS.append(summary)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 분석 점수 기준으로 assertion (70% 이상)[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m case_scores:[90m[39;49;00m
+            avg_analysis = [96msum[39;49;00m(s[[33m"[39;49;00m[33manalysis_score[39;49;00m[33m"[39;49;00m] [94mfor[39;49;00m s [95min[39;49;00m case_scores) / [96mlen[39;49;00m(case_scores)[90m[39;49;00m
+>           [94massert[39;49;00m avg_analysis >= [94m0.7[39;49;00m, ([90m[39;49;00m
+                [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00magent_name[33m}[39;49;00m[33m 분석 점수 평균 [39;49;00m[33m{[39;49;00mavg_analysis[33m:[39;49;00m[33m.2%[39;49;00m[33m}[39;49;00m[33m로 기준(70%) 미달[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           AssertionError: nearby_market 분석 점수 평균 49.33%로 기준(70%) 미달[0m
+[1m[31mE           assert 0.49333333333333335 >= 0.7[0m
+
+[1m[31msrc\tests\analysis\analysis_eval\test_analysis.py[0m:283: AssertionError
+[31m[1m_________________________________ test_source _________________________________[0m
+
+e2e_result = {'analysis_outputs': {'housing_faq': {'housing_faq_context': ['"Q1: 청약신청이 가능한 청약가능지역에는 어떤 곳들이 포함되나요?\\nA1: 청약가능지역에는 산업...드/확인 일자)과 버전(예: 법령 공포·개정일) 표기\n\n원하시는 추가 항목(예: 각 지표별 인용 문구/원문 캡처 위치, 데이터 신뢰성/전처리 메모 등)이 있으면 알려주시면 바로 정리해 드리겠습니다.', ...}
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_source[39;49;00m(e2e_result):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""E2E 서버가 생산한 출처 추출 완전성 평가"""[39;49;00m[90m[39;49;00m
+        [90m# E2E 결과에서 실제 출처 추출 결과 가져오기[39;49;00m[90m[39;49;00m
+        source_output = e2e_result.get([33m"[39;49;00m[33msource[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m source_output:[90m[39;49;00m
+            pytest.skip([33m"[39;49;00m[33mE2E 결과에 [39;49;00m[33m'[39;49;00m[33msource[39;49;00m[33m'[39;49;00m[33m가 비어 있습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# input: 최종 보고서 (출처 추출의 입력물)[39;49;00m[90m[39;49;00m
+        final_report = e2e_result.get([33m"[39;49;00m[33mfinal_report[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m final_report:[90m[39;49;00m
+            pytest.skip([33m"[39;49;00m[33mE2E 결과에 [39;49;00m[33m'[39;49;00m[33mfinal_report[39;49;00m[33m'[39;49;00m[33m가 비어 있습니다.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# 팩토리 패턴: 새 메트릭 인스턴스 생성[39;49;00m[90m[39;49;00m
+        metrics = get_all_metrics()[90m[39;49;00m
+    [90m[39;49;00m
+        tc = LLMTestCase([90m[39;49;00m
+            [96minput[39;49;00m=final_report,[90m[39;49;00m
+            actual_output=source_output,[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# metric.measure() 반환값 직접 사용[39;49;00m[90m[39;49;00m
+        metric_scores = {}[90m[39;49;00m
+        [94mfor[39;49;00m m [95min[39;49;00m metrics:[90m[39;49;00m
+            m_name = [96mgetattr[39;49;00m(m, [33m"[39;49;00m[33mname[39;49;00m[33m"[39;49;00m, [96mtype[39;49;00m(m).[91m__name__[39;49;00m)[90m[39;49;00m
+            [94mtry[39;49;00m:[90m[39;49;00m
+                score = m.measure(tc)[90m[39;49;00m
+                metric_scores[m_name] = score [94mif[39;49;00m score [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m [94melse[39;49;00m [94m0.0[39;49;00m[90m[39;49;00m
+            [94mexcept[39;49;00m [96mException[39;49;00m [94mas[39;49;00m e:[90m[39;49;00m
+                [96mprint[39;49;00m([33mf[39;49;00m[33m"[39;49;00m[33m  [경고] [39;49;00m[33m{[39;49;00mm_name[33m}[39;49;00m[33m 평가 실패: [39;49;00m[33m{[39;49;00me[33m}[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                metric_scores[m_name] = [94m0.0[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        avg = [96msum[39;49;00m(metric_scores.values()) / [96mlen[39;49;00m(metric_scores)[90m[39;49;00m
+        primary = metrics[[94m0[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+        print_module_header([33m"[39;49;00m[33m출처 추출(Source)[39;49;00m[33m"[39;49;00m, [94m1[39;49;00m)[90m[39;49;00m
+        print_case_result([90m[39;49;00m
+            case_id=[33m"[39;49;00m[33me2e_source[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            description=[33m"[39;49;00m[33mE2E 서버 생산 출처 추출 결과[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            input_text=final_report,[90m[39;49;00m
+            output_text=source_output,[90m[39;49;00m
+            score=avg,[90m[39;49;00m
+            reason=primary.reason,[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        append_detail([33m"[39;49;00m[33msource[39;49;00m[33m"[39;49;00m, {[90m[39;49;00m
+            [33m"[39;49;00m[33mid[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33me2e_source[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33minput[39;49;00m[33m"[39;49;00m: final_report,[90m[39;49;00m
+            [33m"[39;49;00m[33moutput[39;49;00m[33m"[39;49;00m: source_output,[90m[39;49;00m
+            [33m"[39;49;00m[33mscore[39;49;00m[33m"[39;49;00m: avg,[90m[39;49;00m
+            [33m"[39;49;00m[33mreason[39;49;00m[33m"[39;49;00m: primary.reason,[90m[39;49;00m
+        })[90m[39;49;00m
+    [90m[39;49;00m
+        GLOBAL_RESULTS.append({[33m"[39;49;00m[33mid[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33me2e_source[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mscore[39;49;00m[33m"[39;49;00m: avg})[90m[39;49;00m
+    [90m[39;49;00m
+>       [94massert[39;49;00m avg >= [94m0.7[39;49;00m, [33mf[39;49;00m[33m"[39;49;00m[33m출처 추출 점수 [39;49;00m[33m{[39;49;00mavg[33m:[39;49;00m[33m.2%[39;49;00m[33m}[39;49;00m[33m로 기준(70%) 미달[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE       AssertionError: 출처 추출 점수 30.00%로 기준(70%) 미달[0m
+[1m[31mE       assert 0.3 >= 0.7[0m
+
+[1m[31msrc\tests\source\source_eval\test_source.py[0m:74: AssertionError
+============================ slowest 10 durations =============================
+1199.44s call     src/tests/analysis/analysis_eval/test_analysis.py::test_supply_demand
+1181.98s call     src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
+1167.88s call     src/tests/analysis/analysis_eval/test_analysis.py::test_nearby_market
+1042.00s call     src/tests/analysis/analysis_eval/test_analysis.py::test_policy
+931.45s call     src/tests/analysis/analysis_eval/test_analysis.py::test_location_insight
+823.39s call     src/tests/analysis/analysis_eval/test_analysis.py::test_population_insight
+790.60s call     src/tests/analysis/analysis_eval/test_analysis.py::test_unsold_insight
+25.49s call     src/tests/final_report/report_eval/test_final_report.py::test_final_report
+13.81s call     src/tests/source/source_eval/test_source.py::test_source
+0.16s setup    src/tests/analysis/analysis_eval/test_analysis.py::test_housing_faq
+[36m[1m=========================== short test summary info ===========================[0m
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_policy[0m - AssertionError: policy 분석 점수 평균 64.67%로 기준(70%) 미달
+[31mFAILED[0m src/tests/analysis/analysis_eval/test_analysis.py::[1mtest_nearby_market[0m - AssertionError: nearby_market 분석 점수 평균 49.33%로 기준(70%) 미달
+[31mFAILED[0m src/tests/source/source_eval/test_source.py::[1mtest_source[0m - AssertionError: 출처 추출 점수 30.00%로 기준(70%) 미달
+[31m============ [31m[1m3 failed[0m, [32m6 passed[0m, [33m4 warnings[0m[31m in 7224.33s (2:00:24)[0m[31m =============[0m
+No test cases found, please try again.
