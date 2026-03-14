@@ -2,6 +2,7 @@ from enum import StrEnum
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
+import openai
 import os
 import time
 import asyncio
@@ -42,6 +43,19 @@ patch_google_genai()
 # 재시도하지 않을 구조적 에러 (코드 버그)
 # 이 에러들은 반복해도 결과가 동일하므로 즉시 전파하여 디버깅을 빠르게 합니다.
 _NON_RETRYABLE_ERRORS = (AttributeError, TypeError, ValueError, ImportError, SyntaxError)
+
+# 재시도할 일시적 에러 (Transient Error)
+# openai 예외 계층: APITimeoutError -> APIConnectionError -> APIError
+# RateLimitError, InternalServerError -> APIStatusError -> APIError
+# isinstance 체크이므로 SDK 에러 메시지 변경에 영향받지 않습니다.
+# 이것이 없을 경우: 문자열 매칭("api", "error")에 의존하게 되어
+# str(APITimeoutError)="Request timed out." 처럼 패턴에 걸리지 않는 예외가 재시도되지 않습니다.
+_RETRYABLE_ERRORS = (
+    openai.APITimeoutError,      # 요청 시간 초과
+    openai.APIConnectionError,   # 네트워크 연결 실패
+    openai.RateLimitError,       # 429 Too Many Requests
+    openai.InternalServerError,  # 500 서버 내부 오류
+)
 
 
 class RetryableChatOpenAI(ChatOpenAI):
@@ -117,24 +131,19 @@ class RetryableChatOpenAI(ChatOpenAI):
             except _NON_RETRYABLE_ERRORS:
                 # 구조적 에러는 재시도 무의미 → 즉시 전파
                 raise
-            except Exception as e:
-                error_str = str(e)
-
+            except _RETRYABLE_ERRORS as e:
+                # 일시적 에러 → exponential backoff 후 재시도
                 if i == max_retries - 1:
                     raise
-
-                if "429" in error_str or "rate_limit" in error_str.lower():
-                    wait_time = (2**i) + 1
-                    print(f"Rate limit hit. Waiting {wait_time}s...")
-                    time.sleep(wait_time)
-                    continue
-
-                if "api" in error_str.lower() or "error" in error_str.lower():
-                    wait_time = (2**i) + 1
-                    print(f"API error occurred. Waiting {wait_time}s...")
-                    time.sleep(wait_time)
-                    continue
-
+                wait_time = (2 ** i) + 1
+                print(
+                    f"[Retry {i+1}/{max_retries}] "
+                    f"{type(e).__name__}: {e} -> {wait_time}s 후 재시도"
+                )
+                time.sleep(wait_time)
+                continue
+            except Exception:
+                # 분류되지 않은 에러 → 즉시 전파 (디버깅 용이)
                 raise
 
     async def ainvoke(self, input, config=None, **kwargs):
@@ -159,24 +168,19 @@ class RetryableChatOpenAI(ChatOpenAI):
             except _NON_RETRYABLE_ERRORS:
                 # 구조적 에러는 재시도 무의미 → 즉시 전파
                 raise
-            except Exception as e:
-                error_str = str(e)
-
+            except _RETRYABLE_ERRORS as e:
+                # 일시적 에러 → exponential backoff 후 재시도
                 if i == max_retries - 1:
                     raise
-
-                if "429" in error_str or "rate_limit" in error_str.lower():
-                    wait_time = (2**i) + 1
-                    print(f"Rate limit hit. Waiting {wait_time}s...")
-                    await asyncio.sleep(wait_time)
-                    continue
-
-                if "api" in error_str.lower() or "error" in error_str.lower():
-                    wait_time = (2**i) + 1
-                    print(f"API error occurred. Waiting {wait_time}s...")
-                    await asyncio.sleep(wait_time)
-                    continue
-
+                wait_time = (2 ** i) + 1
+                print(
+                    f"[Retry {i+1}/{max_retries}] "
+                    f"{type(e).__name__}: {e} -> {wait_time}s 후 재시도"
+                )
+                await asyncio.sleep(wait_time)
+                continue
+            except Exception:
+                # 분류되지 않은 에러 → 즉시 전파 (디버깅 용이)
                 raise
 
 
