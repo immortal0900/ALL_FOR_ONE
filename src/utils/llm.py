@@ -184,6 +184,36 @@ class RetryableChatOpenAI(ChatOpenAI):
                 raise
 
 
+class RetryableChatGemini(ChatGoogleGenerativeAI):
+    """Langfuse 자동 추적이 적용된 ChatGoogleGenerativeAI.
+
+    [존재 이유]
+    with_fallbacks()에서 fallback으로 사용될 때,
+    RetryableChatOpenAI와 동일하게 Langfuse callback을 config에 자동 주입합니다.
+    이것이 없을 경우: fallback 경로의 LLM 호출이 Langfuse에 기록되지 않아
+    비용 추적에 사각지대가 생깁니다.
+
+    [retry 비활성화]
+    with_fallbacks() 자체가 primary 실패 시 fallback으로 전환하는 역할을 하므로
+    Gemini 자체의 retry는 비활성화합니다.
+    langchain-google-genai의 max_retries 버그 우회(patch_google_genai)와도 일치합니다.
+    """
+
+    def _merge_langfuse_config(self, config=None):
+        """기존 config에 Langfuse CallbackHandler를 안전하게 병합합니다."""
+        return _langfuse_tracker.merge_config(config)
+
+    def invoke(self, input, config=None, **kwargs):
+        """동기 호출 시 Langfuse 자동 추적 적용"""
+        config = self._merge_langfuse_config(config)
+        return super().invoke(input, config=config, **kwargs)
+
+    async def ainvoke(self, input, config=None, **kwargs):
+        """비동기 호출 시 Langfuse 자동 추적 적용"""
+        config = self._merge_langfuse_config(config)
+        return await super().ainvoke(input, config=config, **kwargs)
+
+
 class ModelName(StrEnum):
     GPT_4_1_MINI = "gpt-4.1-mini"
     GPT_4_1 = "gpt-4.1"
@@ -196,6 +226,30 @@ class ModelName(StrEnum):
     CLAUDE_SONNET_4_5_20250929 = "claude-sonnet-4-5-20250929"
 
     GEMINI_2_5_PRO = "gemini-2.5-pro"
+    GEMINI_3_FLASH_PREVIEW = "gemini-3-flash-preview"       # 분석 에이전트 fallback
+    GEMINI_3_1_PRO_PREVIEW = "gemini-3.1-pro-preview"       # 보고서 에이전트 fallback
+
+
+def _create_gemini_fallback(model: str, temperature: float = 0, max_tokens: int = 65536):
+    """Gemini fallback LLM 인스턴스를 생성합니다.
+
+    [존재 이유]
+    ChatGoogleGenerativeAI를 여러 곳에서 생성할 때
+    API key, max_retries, Langfuse 추적 설정을 일관되게 적용합니다.
+    이것이 없을 경우: max_retries 설정 누락으로 langchain-google-genai 버그 재발.
+
+    Args:
+        model: Gemini 모델명 (예: "gemini-3-flash-preview")
+        temperature: 생성 온도 (기본 0)
+        max_tokens: 최대 출력 토큰 수 (기본 65536, Gemini 3 모델 최대치)
+    """
+    return RetryableChatGemini(
+        model=model,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        max_retries=0,  # monkey patch(patch_google_genai)와 호환, 자체 retry 비활성화
+        google_api_key=os.getenv("GEMINI_API_KEY"),
+    )
 
 
 class LLMProfile(StrEnum):
@@ -244,28 +298,42 @@ class LLMProfile(StrEnum):
 
     @staticmethod
     def analysis_llm():
-        return RetryableChatOpenAI(
+        """분석 에이전트용 LLM (GPT-5-mini primary + Gemini-3-flash fallback).
+
+        [Fallback 메커니즘]
+        RunnableWithFallbacks를 반환합니다.
+        __getattr__ 프록시가 bind_tools(), with_structured_output() 호출을
+        primary와 fallback 모두에 자동 전파하므로 에이전트 코드 변경이 불필요합니다.
+        (참고: langchain_core/runnables/fallbacks.py:591-645)
+
+        [이것이 없을 경우]
+        OpenAI API 장기 장애 시 7개 분석 에이전트가 모두 중단됩니다.
+        """
+        primary = RetryableChatOpenAI(
             model=LLMProfile.ANALYSIS.value,
             temperature=0,
             request_timeout=300,
-            # reasoning_effort="high", # minimal, low, medium, high
-            # verbosity="high",
         )
-
-    # @staticmethod
-    # def analysis_llm():
-    #     return ChatGoogleGenerativeAI(
-    #         model=LLMProfile.ANALYSIS.value,
-    #         temperature=0,
-    #         max_tokens=8192,  # Gemini 최대 출력 토큰
-    #         max_retries=0,  # max_retries를 0으로 설정하여 SDK 호환성 문제 방지
-    #         google_api_key=os.getenv("GEMINI_API_KEY"),  # 환경변수 미설정 시 직접 전달
-    #     )
+        fallback = _create_gemini_fallback(
+            model=ModelName.GEMINI_3_FLASH_PREVIEW,
+            temperature=0,
+        )
+        return primary.with_fallbacks([fallback])
 
     @staticmethod
     def report_llm():
-        # jung_min_jae 6회 순차 호출(4세그먼트+검토+수정), 대용량 컨텍스트 고려
-        return RetryableChatOpenAI(
+        """보고서 에이전트용 LLM (GPT-5 primary + Gemini-3.1-pro fallback).
+
+        jung_min_jae 6회 순차 호출(4세그먼트+검토+수정), 대용량 컨텍스트 고려.
+
+        [이것이 없을 경우]
+        OpenAI API 장기 장애 시 최종 보고서 생성이 중단됩니다.
+        """
+        primary = RetryableChatOpenAI(
             model=LLMProfile.REPORT.value,
             request_timeout=300,
         )
+        fallback = _create_gemini_fallback(
+            model=ModelName.GEMINI_3_1_PRO_PREVIEW,
+        )
+        return primary.with_fallbacks([fallback])

@@ -94,8 +94,8 @@ flowchart TB
 | Agent Framework | LangGraph | 1.0.0+ | 멀티에이전트 오케스트레이션 |
 | LLM Framework | LangChain | 1.0.3+ | LLM 통합 |
 | Vector DB | PostgreSQL + pgvector | 14+ | RAG 벡터 검색 |
-| LLM | OpenAI GPT-4o | - | 보고서 작성 |
-| LLM | Anthropic Claude | - | 분석 에이전트 |
+| LLM | OpenAI GPT-5-mini | - | 보고서 작성 |
+| LLM | OpenAI GPT-5 | - | 분석 에이전트 |
 | LLM | Google Gemini | - | 웹 검색 |
 | PDF 생성 | WeasyPrint | 66.0+ | Markdown → PDF |
 | 이메일 | Gmail API | - | 보고서 발송 |
