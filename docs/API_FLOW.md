@@ -1,6 +1,6 @@
 # ALL-FOR-ONE API & Data Flow 문서
 
-> 최종 업데이트: 2026-03-14
+> 최종 업데이트: 2026-03-15
 > 프로젝트: 부동산 분양성 검토 보고서 자동 생성 시스템
 
 ---
@@ -1034,6 +1034,123 @@ pie title 이메일 첨부 파일 데이터 유형 분포
 | 크롤링 원본 | 2개 | 웹에서 수집한 원본 |
 | LLM 분석/요약 | 3개 | 최종보고서, 출처페이지, 규칙요약 |
 
+### 5.5 7개 에이전트 데이터 출처
+
+> 이메일 첨부 파일(5.2)과는 별개로, 각 분석 에이전트가 보고서 작성을 위해 **실시간으로 수집하는 데이터의 원천**을 정리합니다.
+
+<!-- AGENT:DATA_SOURCES:START -->
+
+#### 1. Policy Agent (정책분석) - 데이터 출처 5개
+
+| # | 데이터 수집 함수 | Tool / Retriever | 주요 데이터 출처 | 데이터 유형 |
+|---|---|---|---|---|
+| 1 | `national_news()` | `national_policy_retrieve()` | 로컬 CSV (`src/data/policy_factors/국토교통부_부동산정책(2024~2025).csv`) | 국토교통부 정책 기사 |
+| 2 | `region_news()` | `collect_articles_result()` | 웹 크롤링 (`https://housing-post.com`) | 지역 부동산 정책 기사 |
+| 3 | `policy_pdf_retrieve()` | `PolicyPDFRetriever.hybrid_search()` | Supabase PGVector (collection: `policy_documents`) | 정책 보도자료 PDF 문서 |
+| 4 | ReAct 루프 내 Tool | `perplexity_search()` | Perplexity API (model: `sonar-reasoning-pro`) | 실시간 웹 검색 보충 |
+| 5 | ReAct 루프 내 Tool | `think_tool()` | 없음 (내부 Reflection) | 내부 검증 메모 |
+
+> 부수적 Tool: `perplexity_search` - 주요 출처는 Perplexity AI API (실시간 웹 인덱스 기반 검색)
+
+#### 2. Housing FAQ Agent (청약분석) - 데이터 출처 2개
+
+| # | 데이터 수집 함수 | Tool / Retriever | 주요 데이터 출처 | 데이터 유형 |
+|---|---|---|---|---|
+| 1 | `get_rule_data()` | `housing_rule_retrieve()` | Supabase PGVector (collection: `HOUSING_RULE`) | 주택공급규칙 문서 |
+| 2 | `get_faq_data()` | `housing_faq_retrieve()` | Supabase PGVector (collection: `HOUSING_FAQ`) | 청약 FAQ 질의응답 |
+
+> 부수적 Tool: 없음 (RAG 전용, 외부 API 미사용)
+
+#### 3. Location Insight Agent (입지분석) - 데이터 출처 3개
+
+| # | 데이터 수집 함수 | Tool / Retriever | 주요 데이터 출처 | 데이터 유형 |
+|---|---|---|---|---|
+| 1 | `gemini_search_tool()` | `gemini_search()` | Google Gemini API (model: `gemini-2.5-pro`, Structured Output) | 지역 특징 + 주변 호재 |
+| 2 | `kakao_api_distance_tool()` | `get_location_profile()` | Kakao Local API (주소→좌표, 카테고리 검색: 학교/학원/교통/마트/병원/공원) | 입지 프로필 + 거리 |
+| 3 | ReAct 루프 내 Tool | `perplexity_search()` | Perplexity API (model: `sonar-reasoning-pro`) | 호재 검증 보충 |
+
+> 부수적 Tool: `perplexity_search` - 주요 출처는 Perplexity AI API
+
+#### 4. Nearby Market Agent (주변시세분석) - 데이터 출처 4개
+
+| # | 데이터 수집 함수 | Tool / Retriever | 주요 데이터 출처 | 데이터 유형 |
+|---|---|---|---|---|
+| 1 | `gemini_search_tool()` | `gemini_search()` | Google Gemini API (model: `gemini-2.5-pro`, Structured Output) | 매매아파트 3개 + 분양아파트 3개 |
+| 2 | `kakao_api_distance_tool()` | `get_location_profile()` | Kakao Local API | 아파트별 좌표 + 사업지 거리 |
+| 3 | `get_real_estate_price_tool()` | `get_real_estate_price()` | 공공데이터포털 API (`apis.data.go.kr/1613000/RTMSDataSvcAptTrade`) | 아파트 실거래가 |
+| 4 | `perplexity_search_tool()` | `perplexity_search_structured()` | Perplexity API (Structured Output) | 분양아파트 최신 분양가 검증 |
+
+> 부수적 Tool (ReAct 루프): `perplexity_search`, `get_real_estate_price`, `get_location_profile` - ReAct 시 추가 호출 가능
+
+#### 5. Supply Demand Agent (공급수요분석) - 데이터 출처 11개
+
+| # | 데이터 수집 함수 | Tool / Retriever | 주요 데이터 출처 | 데이터 유형 |
+|---|---|---|---|---|
+| 1 | `year10_after_house()` | `get_10_year_after_house()` | 통계청 SGIS API (`sgisapi.kostat.go.kr/OpenAPI3/stats/house.json`) | 10년 이상 노후주택 수 |
+| 2 | `pre_promise_competition()` | `pre_promise()` → `tavily_search()` | Tavily 웹 검색 API (depth: advanced) | 청약 경쟁률 |
+| 3 | `sale_and_jeonse_price_ratio()` | `sale_price_retrieve()` | Supabase PGVector (collection: 매매가격) | 매매가격 시계열 |
+| 4 | `sale_and_jeonse_price_ratio()` | `jeonse_price_retrieve()` | Supabase PGVector (collection: 전세가격) | 전세가격 시계열 |
+| 5 | `trade_balance()` | `get_trade_balance()` | R-ONE API (한국부동산원, `reb.or.kr/r-one/openapi`) | 매매수급지수 |
+| 6 | `planning_move()` | `planning_move_retrieve()` | Supabase PGVector (collection: `PLANNING_MOVE_KEY`) | 입주예정 단지 물량 |
+| 7 | `housing_sales_volume()` | `housing_sales_volume_retrieve()` | Supabase PGVector (collection: 매매거래량) | 매매 거래량 시계열 |
+| 8 | `use_kor_rate()` | `get_rate()` | FRED API (`api.stlouisfed.org`) + 한국은행 ECOS API (`ecos.bok.or.kr`) | 한미 기준금리 비교 |
+| 9 | `get_home_mortgage()` | `home_mortgage_retrieve()` | Supabase PGVector (collection: 주택담보대출) | 주택담보대출 금리 시계열 |
+| 10 | `get_gdp_and_grdp()` | `get_one_people_gdp()` | 하드코딩 데이터 (출처: 우리은행 환율 + 세계은행 GDP 통계) | 1인당 GDP (원화 환산) |
+| 11 | `get_gdp_and_grdp()` | `one_people_grdp_retrieve()` | Supabase PGVector + 로컬 CSV (`src/data/economic_metrics/서울 자치구별 GRDP.csv`) | 1인당 GRDP |
+
+> 부수적 Tool: `think_tool` - 내부 Reflection 전용 (데이터 출처 없음)
+
+#### 6. Population Insight Agent (인구분석) - 데이터 출처 2개
+
+| # | 데이터 수집 함수 | Tool / Retriever | 주요 데이터 출처 | 데이터 유형 |
+|---|---|---|---|---|
+| 1 | `age_population()` | `age_population_retrieve()` | Supabase PGVector (collection: `AGE_POPULATION`) - 원본: 로컬 CSV `src/data/population_insight/202504_202509_연령별인구현황_월간.csv` | 연령별 인구 분포 |
+| 2 | `move_population()` | `get_move_population()` | PostgreSQL 직접 쿼리 (table: `age_population`, Text-to-SQL) - 원본: 로컬 Excel `인구이동_전출입_2024~2025.xlsx` | 인구 전출입 통계 |
+
+> 부수적 Tool: `think_tool` - 내부 Reflection 전용
+
+#### 7. Unsold Insight Agent (미분양분석) - 데이터 출처 1개
+
+| # | 데이터 수집 함수 | Tool / Retriever | 주요 데이터 출처 | 데이터 유형 |
+|---|---|---|---|---|
+| 1 | `get_unsold_unit()` | `unsold_units()` | Supabase PGVector (collection: `UNSOLD_HOUSING_KEY`, similarity_search k=50) | 미분양 현황 시계열 |
+
+> 부수적 Tool: `think_tool` - 내부 Reflection 전용
+
+#### 에이전트별 데이터 출처 총 갯수
+
+| 에이전트 | 주요 데이터 출처 수 | 부수적 Tool 출처 |
+|---|:---:|---|
+| 1. Policy Agent (정책분석) | **5** | Perplexity API |
+| 2. Housing FAQ Agent (청약분석) | **2** | 없음 |
+| 3. Location Insight Agent (입지분석) | **3** | Perplexity API |
+| 4. Nearby Market Agent (주변시세분석) | **4** | Perplexity API, 공공데이터포털, Kakao API |
+| 5. Supply Demand Agent (공급수요분석) | **11** | 없음 (think_tool만) |
+| 6. Population Insight Agent (인구분석) | **2** | 없음 (think_tool만) |
+| 7. Unsold Insight Agent (미분양분석) | **1** | 없음 (think_tool만) |
+| **합계** | **28** | |
+
+#### 데이터 출처 유형별 분류 (고유 14종류)
+
+| 출처 유형 | 세부 출처 | 사용하는 에이전트 |
+|---|---|---|
+| Supabase PGVector (RAG) | 10개 collection (policy_documents, HOUSING_RULE, HOUSING_FAQ, AGE_POPULATION, UNSOLD_HOUSING, 매매가격, 전세가격, 주택담보대출, 매매거래량, GRDP, PLANNING_MOVE) | Policy, Housing FAQ, Supply Demand, Population, Unsold |
+| PostgreSQL 직접 쿼리 | age_population 테이블 (Text-to-SQL) | Population |
+| Google Gemini API | gemini-2.5-pro (Structured Output) | Location, Nearby Market |
+| Perplexity API | sonar-reasoning-pro | Policy, Location, Nearby Market |
+| Kakao Local API | 주소→좌표, 카테고리/키워드 검색 | Location, Nearby Market |
+| 공공데이터포털 API | 실거래가 API (RTMSDataSvcAptTrade) | Nearby Market |
+| 통계청 SGIS API | 노후주택 통계 | Supply Demand |
+| R-ONE API (한국부동산원) | 매매수급지수 | Supply Demand |
+| FRED API (미국 연준) | 미국 기준금리 | Supply Demand |
+| 한국은행 ECOS API | 한국 기준금리 | Supply Demand |
+| Tavily 웹 검색 API | 청약 경쟁률 검색 | Supply Demand |
+| 웹 크롤링 | housing-post.com (BeautifulSoup) | Policy |
+| 로컬 CSV/Excel | 정책 CSV, 인구이동 Excel, GRDP CSV | Policy, Population, Supply Demand |
+| 하드코딩 데이터 | 1인당 GDP (환율 x 달러 GDP) | Supply Demand |
+
+<!-- AGENT:DATA_SOURCES:END -->
+
 <!-- SECTION:DELIVERY:END -->
 
 ---
@@ -1171,6 +1288,7 @@ src/
 |-----|------|----------|-------|
 | 2026-02-03 | 1.0.0 | 최초 작성 - 7개 에이전트 데이터 흐름 문서화 | - |
 | 2026-03-14 | 1.1.0 | Langfuse Observability, DeepEval Testing, Structured Output 스키마, 미분양 RAG 전환, Policy SEGMENT 구조, jung_min_jae 토큰 폭발 방지, Tavily 검색 추가 | - |
+| 2026-03-15 | 1.2.0 | 7개 분석 에이전트 데이터 출처 전체 정리 (에이전트별 상세표 + 총 28개 출처 + 14종류 유형별 분류) 추가 | - |
 <!-- APPENDIX:HISTORY:END -->
 
 <!-- SECTION:APPENDIX:END -->

@@ -5,6 +5,8 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.121+-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-316192?style=flat&logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
 [![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Langfuse](https://img.shields.io/badge/Langfuse-Observability-6B4FFF?style=flat)](https://langfuse.com/)
+[![DeepEval](https://img.shields.io/badge/DeepEval-LLM_Testing-00B4D8?style=flat)](https://docs.confident-ai.com/)
 
 > **7개의 전문 AI 에이전트**가 부동산 시장을 다각도로 분석하고, **종합 리서치 보고서를 자동 생성**하는 멀티에이전트 시스템
 
@@ -1054,6 +1056,7 @@ set E2E_MODE=full && set DEEPEVAL_SERVER_URL=https://allforone-production.up.rai
 | ![OpenAI](https://img.shields.io/badge/GPT--4o-412991?style=flat&logo=openai&logoColor=white) | 보고서 작성, 분석 추론 |
 | ![Gemini](https://img.shields.io/badge/Gemini_2.5-8E75B2?style=flat&logo=google&logoColor=white) | 실시간 웹 검색, 주변 아파트 조사 |
 | ![Claude](https://img.shields.io/badge/Claude-191919?style=flat) | 복잡한 분석 태스크 |
+| ![Perplexity](https://img.shields.io/badge/Perplexity-20808D?style=flat) | 실시간 웹 검색 (SDK 직접 호출) |
 
 ### Backend & Database
 
@@ -1062,6 +1065,13 @@ set E2E_MODE=full && set DEEPEVAL_SERVER_URL=https://allforone-production.up.rai
 | ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white) | REST API 서버 |
 | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL+pgvector-316192?style=flat&logo=postgresql&logoColor=white) | 벡터 데이터베이스 (RAG) |
 | ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white) | 웹 UI (챗봇 인터페이스) |
+
+### Observability & Testing
+
+| 기술 | 용도 |
+|-----|------|
+| ![Langfuse](https://img.shields.io/badge/Langfuse-6B4FFF?style=flat) | LLM 토큰/비용 추적, 세션 Observability |
+| ![DeepEval](https://img.shields.io/badge/DeepEval-00B4D8?style=flat) | LLM 출력 품질 정량 평가 (Two-Tier) |
 
 ### 외부 API
 
