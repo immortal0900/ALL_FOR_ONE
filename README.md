@@ -22,6 +22,8 @@
   - [4. 다중 외부 API 오케스트레이션](#4-다중-외부-api-오케스트레이션-tool-시스템)
   - [5. think_tool 기반 Reflection](#5-think_tool-기반-reflection성찰-메커니즘)
   - [6. 정책 뉴스 웹 크롤링 + LLM 정제](#6-정책-뉴스-웹-크롤링--llm-정제-파이프라인)
+  - [7. Langfuse 이중 계층 Observability](#7-langfuse-이중-계층-observability)
+  - [8. DeepEval Two-Tier 테스트 아키텍처](#8-deepeval-two-tier-테스트-아키텍처)
 - [기술 스택](#기술-스택)
 - [빠른 시작](#빠른-시작-5분)
 - [상세 설치 가이드](#상세-설치-가이드)
@@ -793,6 +795,239 @@ def collect_articles_result():
 
 ---
 
+### 7. Langfuse 이중 계층 Observability
+
+#### 선택 이유
+
+| 기존 방식의 한계 | 해결 필요성 |
+|-----------------|------------|
+| LLM 호출 비용 수동 추적 시 누락 | 모든 LLM 호출 토큰/비용 **자동 추적** |
+| LangChain 추적은 SDK 직접 호출(Gemini, Perplexity) 감지 못함 | **이중 계층 추적**으로 경로 무관하게 커버 |
+| 30개+ 호출이 개별 트레이스로 흩어지면 전후 비교 불가 | **세션 ID로 묶어** 1회 요청 전체를 한 화면에서 확인 |
+| Observability 도입 시 기존 코드 수정 필요 | **Graceful Degradation**: 비활성화 시 안전한 기본값 반환 |
+
+#### 구현 방법
+
+**구현 파일**: `src/utils/langfuse_tracker.py` (추적 핵심 로직), `src/utils/llm.py` (자동 주입), `src/fastapi/main_api.py` (세션 관리)
+
+#### 이중 계층 추적 흐름
+
+```mermaid
+flowchart LR
+    subgraph LangChainAuto["LangChain 자동 추적"]
+        L1[RetryableChatOpenAI<br/>OpenAI / Claude]
+        L2[CallbackHandler<br/>자동 주입]
+    end
+
+    subgraph SDKDirect["SDK 직접 호출 추적"]
+        N1["gemini_search_tool.py<br/>@observe 데코레이터"]
+        N2["perplexity_search_tool.py<br/>@observe 데코레이터"]
+    end
+
+    subgraph Session["세션 관리"]
+        S1[main_api.py<br/>session_context]
+        S2[ContextVar<br/>_active_session_id]
+    end
+
+    subgraph LF["Langfuse Cloud"]
+        LFD[대시보드<br/>토큰/비용/세션]
+    end
+
+    L1 --> L2 --> LFD
+    N1 --> LFD
+    N2 --> LFD
+    S1 --> S2
+    S2 -.-> L2
+    S2 -.-> N1
+    S2 -.-> N2
+
+    style L1 fill:#e3f2fd,color:#000
+    style N1 fill:#fff3e0,color:#000
+    style LFD fill:#f3e5f5,color:#000
+```
+
+#### 코드 예시
+
+**LangChain 자동 추적 — 28개 호출 지점에 CallbackHandler를 일괄 주입:**
+```python
+# src/utils/llm.py
+class RetryableChatOpenAI(ChatOpenAI):
+    def _merge_langfuse_config(self, config=None):
+        """기존 callbacks에 Langfuse CallbackHandler를 덮어쓰지 않고 병합"""
+        return _langfuse_tracker.merge_config(config)
+
+    def invoke(self, input, config=None, **kwargs):
+        config = self._merge_langfuse_config(config)  # 28개 호출 지점에 자동 적용
+        return super().invoke(input, config=config, **kwargs)
+```
+
+**세션 전파 — 1회 요청의 30개+ LLM 호출을 단일 세션으로 묶기:**
+```python
+# src/fastapi/main_api.py
+async with tracker.session_context(session_id=job_id):
+    result = await graph.ainvoke(...)
+    # 이 안에서 발생하는 30개+ LLM 호출이 job_id 세션에 자동 귀속
+    # ContextVar가 asyncio.create_task() 경계를 넘어 자동 전파
+```
+
+#### 핵심 기능
+
+- **이중 계층 추적**: LangChain 경유(OpenAI/Claude) + SDK 직접 호출(Gemini/Perplexity) 모두 통합
+- **ContextVar 기반 Session 전파**: asyncio 경계에서도 세션 ID 자동 상속
+- **Graceful Degradation**: `LANGFUSE_ENABLED=false` 또는 패키지 미설치 시 시스템 무변경 동작
+- **CallbackHandler 병합**: LangGraph ToolNode의 기존 callbacks 덮어쓰기 방지
+
+**참고**: [Langfuse 공식 문서](https://langfuse.com/docs)
+
+---
+
+### 8. DeepEval Two-Tier 테스트 아키텍처
+
+#### 선택 이유
+
+| 기존 방식의 한계 | 해결 필요성 |
+|-----------------|------------|
+| 일반 단위 테스트(`assert output == expected`)는 '정해진 정답'이 있을 때만 동작 — LLM은 같은 입력에도 매번 다른 표현으로 출력을 생성하므로 이 방식으로는 품질 검증 자체가 불가능 | **LLM-as-Judge** 방식으로 출력 품질 정량 평가 |
+| DeepEval 기본 메트릭은 범용적 → 부동산 분석 보고서에 부적합 | 도메인 특화 **자체 커스텀 메트릭** + 에이전트별 **가중치 오버라이드** |
+| E2E 파이프라인 실행에 40분+ 소요 → 메트릭 수정마다 재실행 비효율 | **3-mode fixture**로 서버 실행과 평가를 분리 |
+| 분석 품질과 RAG 검색 품질 합산 시 문제 원인 파악 불가 | 자체 커스텀 메트릭 + **RAGAS 메트릭으로 독립 평가** |
+
+#### 구현 방법
+
+**구현 파일**: `src/tests/` 디렉터리 전체 — Tier 1(`judge/`, `extraction/`, `renderer/`), Tier 2(`analysis/`, `final_report/`, `source/`)
+
+#### Two-Tier 구조 흐름
+
+```mermaid
+flowchart TB
+    subgraph Tier1["Tier 1: 정적 데이터셋 (서버 불필요, ~3분)"]
+        S1[Judge<br/>검수자 평가]
+        S2[Extraction<br/>추출 정확도]
+        S3[Renderer<br/>슬라이드 변환]
+    end
+
+    subgraph Tier2["Tier 2: E2E 파이프라인 (서버 필요, ~40분)"]
+        E1[Analysis<br/>7개 분석 에이전트]
+        E2[Final Report<br/>최종 보고서]
+        E3[Source<br/>출처 검증]
+    end
+
+    subgraph Fixture["conftest.py - 3-mode fixture"]
+        F1{E2E_MODE?}
+        F2[eval_only<br/>캐시 로드]
+        F3[cache_only<br/>서버 호출만]
+        F4[full<br/>서버+평가]
+    end
+
+    F1 -->|eval_only| F2
+    F1 -->|cache_only| F3
+    F1 -->|full| F4
+    F2 & F4 --> E1 & E2 & E3
+
+    style Tier1 fill:#e3f2fd,color:#000
+    style Tier2 fill:#fff3e0,color:#000
+```
+
+#### 전체 평가 항목 종합표
+
+| # | 평가 항목 | 평가 대상 | 메트릭 | 가중치 | RAG | 데이터 소스 |
+|---|----------|----------|--------|--------|-----|-----------|
+| 1 | **Judge** | policy 에이전트의 `evaluate_report_completeness()` — 초안 보고서에서 누락된 필수 항목을 자동 지적하는 기능 | CritiqueAccuracy | 100% | X | 정적 JSON |
+| 2 | **Extraction** | policy_agent의 `evaluate_report_completeness()`, supply_demand_agent의 `trade_balance()` — 지정 조건에 맞는 데이터만 정확히 필터링하는 능력(프롬프트 품질) | ExtractionAccuracy | 100% | X | 정적 JSON |
+| 3 | **Renderer** | 분석 보고서 → PPT 슬라이드 플래닝 JSON 변환 품질 | SlidePlanStructure | 100% | X | 정적 JSON |
+| 4 | **housing_faq** | 청약 FAQ 분석 에이전트 보고서 품질 | 분석 3개 + RAG 3개 | 아래 참조 | **O** | E2E 결과 |
+| 5 | **policy** | 부동산 정책 분석 에이전트 보고서 품질 | 분석 3개 + RAG 3개 | 아래 참조 | **O** | E2E 결과 |
+| 6 | **supply_demand** | 수급 지표 분석 에이전트 보고서 품질 | 분석 3개 + RAG 3개 | 아래 참조 | **O** | E2E 결과 |
+| 7 | **nearby_market** | 주변 시세 분석 에이전트 보고서 품질 | 분석 3개 + RAG 3개 | 아래 참조 | **O** | E2E 결과 |
+| 8 | **location_insight** | 입지 분석 에이전트 보고서 품질 | 분석 3개 + RAG 3개 | 아래 참조 | **O** | E2E 결과 |
+| 9 | **population_insight** | 인구 동향 분석 에이전트 보고서 품질 | 분석 3개 + RAG 3개 | 아래 참조 | **O** | E2E 결과 |
+| 10 | **unsold_insight** | 미분양 현황 분석 에이전트 보고서 품질 | 분석 3개 + RAG 3개 | 아래 참조 | **O** | E2E 결과 |
+| 11 | **Final Report** | 최종 분양성 검토 보고서의 전문성 및 분석 범위 | ReportProfessionalism + AnalysisCoverage | 60% + 40% | X | E2E 결과 |
+| 12 | **Source** | 최종 보고서에서 각 분석 항목의 데이터 출처 추출 정확성 | SourceCompleteness | 100% | X | E2E 결과 |
+
+#### 메트릭 상세
+
+**정적 데이터셋 메트릭 (Tier 1 전용, 3개):**
+
+| 메트릭 | 평가 항목 | evaluation_params | 평가 기준 |
+|--------|----------|-------------------|----------|
+| **CritiqueAccuracy** | Judge | INPUT, ACTUAL_OUTPUT | 누락 필수 목차 지적 정확도, Over/Under-critique 방지, 검색 키워드 적절성 |
+| **ExtractionAccuracy** | Extraction | INPUT, ACTUAL_OUTPUT | 필터 조건 부합성, 무관 데이터 포함 여부, 할루시네이션 방지, 간결성 |
+| **SlidePlanStructure** | Renderer | INPUT, ACTUAL_OUTPUT | JSON 형식 유효성, 원문 충실도, 텍스트 손상 여부, 환각 방지 |
+
+**7개 분석 에이전트 메트릭 (Tier 2, 분석 3개 + RAG 3개 독립 산출):**
+
+| 메트릭 | 가중치 | evaluation_params | 평가 기준 |
+|--------|--------|-------------------|----------|
+| **AnalysisDepth** (분석 주메트릭) | 60% | INPUT, ACTUAL_OUTPUT, RETRIEVAL_CONTEXT | 원인/이유 규명 깊이, 시계열 변화 해석(과거→현재→미래), 향후 전망/결론 도출 |
+| **DataFidelity** | 20% | ACTUAL_OUTPUT, RETRIEVAL_CONTEXT | 검색 컨텍스트와 출력 수치 일치도, 출처 명시, 할루시네이션 방지 |
+| **StructuralCompleteness** | 20% | ACTUAL_OUTPUT | Markdown 형식, 서론-본론-결론 흐름, 문어체 일관성 |
+| **Faithfulness** (RAG 주메트릭) | 33.4% | ACTUAL_OUTPUT, RETRIEVAL_CONTEXT | 검색 컨텍스트 기반 사실 충실도 |
+| **ContextualRelevancy** | 33.3% | INPUT, RETRIEVAL_CONTEXT | 검색된 컨텍스트가 질문에 관련되는 정도 |
+| **AnswerRelevancy** | 33.3% | INPUT, ACTUAL_OUTPUT | 답변이 질문에 직접 답하는 정도 |
+
+> 분석 점수(AnalysisDepth/DataFidelity/StructuralCompleteness)와 RAG 점수(Faithfulness/Relevancy)는 독립 산출(합산 X) → "분석 우수 + RAG 미흡" 상황을 즉시 식별
+
+#### 코드 예시 — 에이전트별 가중치 오버라이드
+
+```python
+# src/tests/analysis/analysis_eval/custom_metrics.py
+AGENT_ANALYSIS_WEIGHTS = {
+    "policy": {                        # 정책은 표 구조가 핵심
+        "AnalysisDepth": 0.20,
+        "DataFidelity": 0.20,
+        "StructuralCompleteness": 0.60,
+    },
+    "nearby_market": {                 # 시장 데이터 정확성이 핵심
+        "AnalysisDepth": 0.30,
+        "DataFidelity": 0.35,
+        "StructuralCompleteness": 0.35,
+    },
+}
+```
+
+#### 실행 명령어
+
+**Tier 1: 정적 테스트 (서버 불필요, ~3분)**
+```bash
+set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/judge/judge_eval/test_judge.py src/tests/extraction/extraction_eval/test_extraction.py src/tests/renderer/renderer_eval/test_renderer.py -v
+```
+
+**Tier 2 — 모드 1: eval_only** (`e2e_result.json` 존재 시, 서버 호출 없이 평가만 반복 실행)
+```bash
+# Quick Mode (analysis 에이전트당 1건만)
+set EVAL_QUICK_MODE=1 && set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py src/tests/final_report/report_eval/test_final_report.py src/tests/source/source_eval/test_source.py -v -s > test_e2e_results.txt 2>&1
+
+# Full Mode (analysis 에이전트당 3건 전체)
+set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py src/tests/final_report/report_eval/test_final_report.py src/tests/source/source_eval/test_source.py -v -s > test_e2e_results.txt 2>&1
+```
+
+**Tier 2 — 모드 2: cache_only** (서버 파이프라인 실행 → `e2e_result.json` 갱신, 평가 생략)
+```bash
+set E2E_MODE=cache_only && set DEEPEVAL_SERVER_URL=https://allforone-production.up.railway.app && set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py -v -s > test_e2e_results.txt 2>&1
+```
+
+**Tier 2 — 모드 3: full** (서버 호출 → 캐시 저장 → 평가까지 한 번에)
+```bash
+# Quick Mode — 전체 E2E (analysis 1건 + final_report + source)
+set E2E_MODE=full && set EVAL_QUICK_MODE=1 && set DEEPEVAL_SERVER_URL=https://allforone-production.up.railway.app && set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py src/tests/final_report/report_eval/test_final_report.py src/tests/source/source_eval/test_source.py -v -s > test_e2e_results.txt 2>&1
+
+# Full Mode — 전체 E2E (analysis 3건 + final_report + source)
+set E2E_MODE=full && set DEEPEVAL_SERVER_URL=https://allforone-production.up.railway.app && set PYTHONIOENCODING=utf-8 && uv run deepeval test run src/tests/analysis/analysis_eval/test_analysis.py src/tests/final_report/report_eval/test_final_report.py src/tests/source/source_eval/test_source.py -v -s > test_e2e_results.txt 2>&1
+```
+
+#### 핵심 기능
+
+- **자체 커스텀 메트릭 3개**(AnalysisDepth, DataFidelity, StructuralCompleteness) + 에이전트별 가중치 오버라이드
+- **RAGAS 계열 메트릭 3개**로 RAG 검색 품질 독립 평가 (분석 점수와 합산 X)
+- **Two-Tier 분리**: 정적 테스트(즉시) + E2E 테스트(캐시 기반)로 개발 속도 유지
+- **3-mode fixture**: eval_only/cache_only/full로 서버 실행과 평가를 독립 제어
+- **126+ 평가 케이스**: 7개 에이전트 × 3 케이스 + 정적(Judge/Extraction/Renderer) + 보고서/출처
+
+**참고**: [DeepEval 공식 문서](https://docs.confident-ai.com/), [RAGAS Metrics](https://docs.ragas.io/)
+
+---
+
 ## 핵심 기술 요약
 
 | 기술/기능 | 선택 이유 | 구현 방법 | 핵심 기능 |
@@ -803,6 +1038,8 @@ def collect_articles_result():
 | **다중 API Tool 시스템** | Agent가 외부 데이터 자율 수집 | @tool 래핑 + 주소 정규화 + 재시도 로직 | Kakao 입지, 국토부 실거래가, Gemini 검색 통합 |
 | **think_tool Reflection** | 보고서 품질 자체 검증 | Tool 강제 호출 + 피드백 기반 수정 | 구조화된 성찰, 자동 피드백 반영 |
 | **뉴스 크롤링 + LLM 정제** | 최신 정책 뉴스 자동 수집/정제 | ASP.NET 페이징 + LLM 노이즈 제거 | 실시간 수집, 정책 핵심만 추출 |
+| **Langfuse Observability** | LLM 비용/토큰 자동 추적 필요 | 이중 계층 추적 + ContextVar Session 전파 | 자동 추적, Graceful Degradation |
+| **DeepEval Two-Tier 테스트** | LLM 품질 정량 평가 + 빠른 반복 | 3-mode fixture + 커스텀/RAGAS 독립 평가 | 126+ 케이스, eval_only 재평가 |
 
 ---
 
@@ -846,6 +1083,8 @@ def collect_articles_result():
 | **Backend API** | Railway (FastAPI) | Agent 실행 API 서버 |
 | **Frontend** | Streamlit Community Cloud | 사용자 인터페이스 |
 | **LLM** | OpenAI GPT-4o, Gemini 2.5 Pro | Agent 추론, 검색, 정제 |
+| **Observability** | Langfuse Cloud | 토큰/비용 추적, 세션 관리 |
+| **LLM 테스트** | DeepEval | LLM 출력 품질 정량 평가 |
 
 ---
 
