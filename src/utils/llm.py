@@ -1,6 +1,5 @@
 from enum import StrEnum
 from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 import openai
 import os
@@ -271,30 +270,65 @@ class LLMProfile(StrEnum):
 
     @staticmethod
     def renderer_llm():
-        return RetryableChatOpenAI(
+        """보고서 PPT 변환용 LLM (Claude Sonnet primary + Gemini-3-flash fallback).
+
+        renderer_agent에서 사용.
+
+        [이것이 없을 경우]
+        Claude API 장애 시 보고서 렌더링이 중단됩니다.
+        """
+        primary = RetryableChatOpenAI(
             model=LLMProfile.RENDERING.value,
             temperature=0,
             request_timeout=300,
         )
-        # return ChatAnthropic(
-        #     model_name=LLMProfile.RENDERING.value, temperature=0.0, max_tokens=32000
-        # )
+        fallback = _create_gemini_fallback(
+            model=ModelName.GEMINI_3_FLASH_PREVIEW,
+            temperature=0,
+        )
+        return primary.with_fallbacks([fallback])
 
     @staticmethod
     def dev_llm():
-        return RetryableChatOpenAI(
+        """개발/유틸리티용 LLM (GPT-5-mini primary + Gemini-3-flash fallback).
+
+        kostat_api, context_to_csv, main_agent, jung_min_jae reflect 등에서 사용.
+        with_structured_output(), bind_tools() 호출 시 __getattr__ 프록시가
+        primary와 fallback 모두에 자동 전파합니다.
+
+        [이것이 없을 경우]
+        OpenAI API 장애 시 출처 페이지 생성, 자치구 추출, 보고서 자가 검증 등이 중단됩니다.
+        """
+        primary = RetryableChatOpenAI(
             model=LLMProfile.DEV.value,
             temperature=0,
             request_timeout=300,
         )
+        fallback = _create_gemini_fallback(
+            model=ModelName.GEMINI_3_FLASH_PREVIEW,
+            temperature=0,
+        )
+        return primary.with_fallbacks([fallback])
 
     @staticmethod
     def chat_bot_llm():
-        return RetryableChatOpenAI(
+        """챗봇/보조분석용 LLM (GPT-5-mini primary + Gemini-3-flash fallback).
+
+        무역 수급지수 분석 등에서 사용.
+
+        [이것이 없을 경우]
+        OpenAI API 장애 시 무역 수급지수 분석이 중단됩니다.
+        """
+        primary = RetryableChatOpenAI(
             model=LLMProfile.CHAT_BOT.value,
             temperature=0,
             request_timeout=300,
         )
+        fallback = _create_gemini_fallback(
+            model=ModelName.GEMINI_3_FLASH_PREVIEW,
+            temperature=0,
+        )
+        return primary.with_fallbacks([fallback])
 
     @staticmethod
     def analysis_llm():
