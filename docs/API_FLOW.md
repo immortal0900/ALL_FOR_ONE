@@ -742,44 +742,55 @@ stateDiagram-v2
 ### 3.3 보고서 작성 에이전트 (Jung Min Jae) 상세
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph Input["입력"]
+        direction TB
         I1[start_input<br/>사용자 입력]
         I2[analysis_outputs<br/>7개 에이전트 결과]
     end
-    
+
+    subgraph Loop["세그먼트 루프"]
+        direction TB
+        L1[retriever<br/>RAG 컨텍스트]
+        L2{seg == 1?}
+        L2a["reporting (Full)<br/>SystemMessage + 기초자료 7종<br/>+ 세그먼트 지시서"]
+        L2b["reporting (Light)<br/>세그먼트 지시서만"]
+        L3[agent<br/>LLM 작성]
+        L4{seg <= 4?}
+    end
+
     subgraph Segments["4단계 세그먼트 작성"]
+        direction TB
         S1[Segment 1<br/>개요/입지/정책]
         S2[Segment 2<br/>공급수요/미분양]
         S3[Segment 3<br/>인구/주변시장]
         S4[Segment 4<br/>종합평가/결론]
     end
-    
-    subgraph Loop["세그먼트 루프"]
-        L1[retreiver<br/>RAG 컨텍스트]
-        L2[reporting<br/>프롬프트 구성]
-        L3[agent<br/>LLM 작성]
-        L4{seg <= 4?}
-    end
-    
+
     subgraph Merge["병합 및 검증"]
+        direction TB
         M1[finalize_merge<br/>4개 세그먼트 병합]
         M2[reflection_prompt<br/>검증 프롬프트]
         M3[reflect_agent<br/>think_tool 호출]
         M4[apply_reflection<br/>피드백 반영]
     end
-    
+
     subgraph Output["출력"]
         O1[final_report<br/>최종 보고서 Markdown]
     end
-    
-    I1 & I2 --> L1 --> L2 --> L3 --> L4
+
+    I1 & I2 --> L1 --> L2
+    L2 -->|"Yes (첫 턴)"| L2a --> L3
+    L2 -->|"No (2~4턴)"| L2b --> L3
+    L3 --> L4
     L4 -->|Yes| S1 --> S2 --> S3 --> S4
     S4 --> L4
     L4 -->|No| M1 --> M2 --> M3 --> M4 --> O1
-    
+
     style I1 fill:#e3f2fd,color:#000
     style I2 fill:#e3f2fd,color:#000
+    style L2a fill:#fff3e0,color:#000
+    style L2b fill:#e8f5e9,color:#000
     style O1 fill:#c8e6c9,color:#000
 ```
 
