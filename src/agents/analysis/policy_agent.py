@@ -3,7 +3,6 @@ from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage
-from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import ToolNode
 from pydantic import BaseModel, Field
@@ -22,22 +21,8 @@ from utils.llm import LLMProfile
 from utils.util import get_today_str
 
 
-@tool(parse_docstring=True)
-def think_tool(reflection: str) -> str:
-    """
-    각 노드가 끝날 때마다 메모를 남기는 도구, 내부 반성·점검(Reflection)용
-
-    Args:
-        reflection: 중간 추론 내용(체크리스트, 검증사항, 계획 등)
-
-    Returns:
-        추론이 기록되었다는 확인 메세지
-    """
-    return f"Reflection recorded: {reflection}"
-
-
 llm = LLMProfile.analysis_llm()
-tool_list = [think_tool, perplexity_search]
+tool_list = [perplexity_search]
 llm_with_tools = llm.bind_tools(tool_list)
 tool_node = ToolNode(tool_list)
 evaluator_llm = llm.with_structured_output(ReportCheck)
@@ -61,10 +46,8 @@ MAX_ITERATIONS = 3  # 재검색 최대 횟수, LLM이 전체 보고서를 작성
 
 
 def record_reflection(title: str, hint: str) -> None:
-    """
-    노드가 끝날 때마다 think_tool 도구를 호출하여 간단한 메모 남김
-    """
-    think_tool.invoke({"reflection": f"{title}\n{hint}"})
+    """think_tool 제거 실험: no-op"""
+    pass
 
 
 # 1. 자료수집

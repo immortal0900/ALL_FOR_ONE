@@ -15,7 +15,6 @@ Structured Output 적용:
 import json
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 
@@ -45,41 +44,7 @@ from utils.util import get_today_str
 llm = LLMProfile.analysis_llm()
 
 
-@tool(parse_docstring=False)
-def think_tool(reflection: str) -> str:
-    """
-    [역할]
-    당신은 사업지 주변 매매 아파트, 분양 아파트들 각각의 시세와 입지를 정리하는 전문가의
-    내부 반성·점검(Reflection) 담당자입니다.
-    최종 보고서에 들어갈 본문(Markdown)을 쓰기 직전에, 데이터 품질·핵심 수치·리스크·보고서용
-    한 줄 메시지를 짧고 구조적으로 요약해 think_tool에 기록합니다.
-    이 반성문은 내부용이며, 최종 보고서에 직접 노출되지 않습니다.
-
-    [언제 호출할 것인지]
-    - Node 하나의 결과를 받고 tool을 사용하기 전에 호출(필수)
-    - 데이터 수집/정제 → 핵심 수치 산출 → 시계열 해석을 마친 직후 1회 호출(필수)
-    - 추가 데이터로 최신 데이터로 바뀌면 갱신 시마다 1회 재호출(선택)
-
-    [강력 지시]
-    - 해당 지역에 관련된 내용만 기록
-    - 허상 가정, 출처 수치 금지
-    - Think step by step 방식으로 생각하세요.
-    - 다음 단계(보고서 에이전트)가 바로 쓸 수 있는 한 줄 핵심 메시지 포함
-
-    [나쁜 예]
-    - "경제가 좋아진듯함. 분위기 좋음."(수치·기간·단위·근거 없음)
-    - "인근 해운대의 입지는 이렇다~"(대상 지역 외 서술)
-    - "향후 집값 상승 확실."(근거 없는 단정)
-
-    [검증 체크리스트]
-    - 정량 수치가 어긋난 것이 있는가?
-    - GPT가 시계열 판단하기에 좋은 형식으로 되어있는가?
-    - 잘못된 내용은 없는가?
-    """
-    return f"Reflection recorded: {reflection}"
-
-
-tool_list = [think_tool, perplexity_search, get_real_estate_price, get_location_profile]
+tool_list = [perplexity_search, get_real_estate_price, get_location_profile]
 llm_with_tools = llm.bind_tools(tool_list)
 tool_node = ToolNode(tool_list)
 
