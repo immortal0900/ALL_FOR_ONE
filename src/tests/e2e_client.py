@@ -2,7 +2,7 @@
 import httpx
 import time
 import os
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional
 
 # 서버 파이프라인은 장시간 소요(40분+)되므로 HTTP 클라이언트 타임아웃을 충분히 설정
 # Ref: https://www.python-httpx.org/advanced/timeouts/
@@ -21,7 +21,12 @@ class E2EClient:
     def __init__(self, base_url: str = None):
         self.base_url = base_url or get_server_url()
 
-    def run_pipeline(self, start_input: Dict[str, Any], timeout: int = 7200) -> Dict[str, Any]:
+    def run_pipeline(
+        self,
+        start_input: Dict[str, Any],
+        timeout: int = 7200,
+        tags: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
         """
         서버에 생성 파이프라인(/invoke)을 요청하고
         결과가 나올 때까지 폴링하여 최종 output을 반환합니다.
@@ -30,18 +35,28 @@ class E2EClient:
             start_input: 파이프라인 시작 입력값
             timeout: 최대 대기 시간(초), 기본값 7200 (2시간)
                      환경변수 PIPELINE_TIMEOUT으로도 제어 가능
+            tags: Langfuse 태그 목록 (예: ["deepeval", "pipeline"])
+                  서버의 /invoke 엔드포인트에 전달되어 파이프라인 trace에 태그를 추가합니다.
+                  이 파라미터가 없으면 Langfuse 대시보드에서 테스트 파이프라인과
+                  프로덕션 파이프라인을 구분할 수 없습니다.
 
         Raises:
             TimeoutError: timeout 초과 시
             RuntimeError: 서버 오류 또는 파이프라인 실패 시
         """
         print(f"\n[E2EClient] 서버({self.base_url})에 파이프라인 요청 중...")
+        if tags:
+            print(f"[E2EClient] Langfuse 태그: {tags}")
 
         # 1. 파이프라인 트리거
+        request_body = {"start_input": start_input}
+        if tags:
+            request_body["tags"] = tags
+
         try:
             resp = httpx.post(
                 f"{self.base_url}/invoke",
-                json={"start_input": start_input},
+                json=request_body,
                 timeout=_HTTP_TIMEOUT,
             )
             resp.raise_for_status()

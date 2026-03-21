@@ -34,6 +34,14 @@ _active_session_id: contextvars.ContextVar[Optional[str]] = contextvars.ContextV
     "langfuse_session_id", default=None
 )
 
+# 현재 활성 태그를 전파하는 ContextVar.
+# set_test_context()에서 설정하면 merge_config()가 모든 LLM 호출에 태그를 자동 주입합니다.
+# 이 ContextVar가 없으면 평가 LLM 호출(DeepEval gpt-5-mini)에 태그를 붙일 방법이 없어
+# Langfuse 대시보드에서 테스트 trace와 프로덕션 trace를 구분할 수 없습니다.
+_active_tags: contextvars.ContextVar[Optional[list]] = contextvars.ContextVar(
+    "langfuse_tags", default=None
+)
+
 load_dotenv()
 
 logger = logging.getLogger(__name__)
@@ -241,6 +249,22 @@ class TokenTracker:
 
         merged["callbacks"] = existing_callbacks
 
+        # ContextVar에 session_id/tags가 설정되어 있으면 metadata에 자동 주입.
+        # [존재 이유]
+        # RetryableChatOpenAI._merge_langfuse_config()는 merge_config()만 호출하므로
+        # session_id/tags를 전달할 경로가 없었습니다.
+        # ContextVar → metadata 자동 주입으로 set_test_context()에서 설정한 값이
+        # 모든 LLM 호출의 trace에 반영됩니다.
+        # setdefault()를 사용하여 기존 config에 명시적으로 설정된 값은 덮어쓰지 않습니다.
+        session_id = _active_session_id.get(None)
+        tags = _active_tags.get(None)
+        if session_id or tags:
+            metadata = merged.setdefault("metadata", {})
+            if session_id:
+                metadata.setdefault("langfuse_session_id", session_id)
+            if tags:
+                metadata.setdefault("langfuse_tags", tags)
+
         return merged
 
     def observe(self, *args, **kwargs):
@@ -393,6 +417,70 @@ class TokenTracker:
                 client.shutdown()
             except Exception as e:
                 logger.warning("Langfuse shutdown 실패: %s", e)
+
+    def set_test_context(
+        self,
+        session_id: str,
+        tags: Optional[list] = None,
+    ) -> tuple:
+        """동기 환경(pytest 등)에서 session_id와 tags를 ContextVar에 설정합니다.
+
+        [존재 이유]
+        기존 session_context()는 async-only 컨텍스트 매니저이므로
+        동기적으로 실행되는 pytest fixture에서 사용할 수 없습니다.
+        이 메서드는 ContextVar를 직접 설정하여 동일한 효과를 제공합니다.
+
+        [데이터 흐름]
+        set_test_context(session_id, tags)
+          → _active_session_id.set(session_id)
+          → _active_tags.set(tags)
+          → 이후 merge_config() 호출 시 metadata에 자동 주입
+          → Langfuse trace에 session_id + tags 기록
+
+        Args:
+            session_id: Langfuse 세션 ID (예: "deepeval-20260321-154507")
+            tags: Langfuse 태그 목록 (예: ["deepeval", "evaluation"])
+
+        Returns:
+            (session_token, tags_token) 튜플 — clear_test_context()에 전달하여
+            ContextVar를 원래 값으로 복원합니다.
+        """
+        session_token = _active_session_id.set(session_id)
+        tags_token = _active_tags.set(tags)
+
+        # Langfuse SDK의 propagate_attributes()도 동기적으로 설정
+        # @observe 데코레이터로 감싸진 외부 도구 호출까지 session_id 전파
+        self._propagate_ctx = None
+        if self._enabled:
+            try:
+                from langfuse import propagate_attributes
+                self._propagate_ctx = propagate_attributes(session_id=session_id)
+                self._propagate_ctx.__enter__()
+            except Exception as e:
+                logger.debug("propagate_attributes 설정 실패 (무시 가능): %s", e)
+
+        logger.info("테스트 컨텍스트 설정: session_id=%s, tags=%s", session_id, tags)
+        return (session_token, tags_token)
+
+    def clear_test_context(self, tokens: tuple) -> None:
+        """set_test_context()에서 반환된 토큰으로 ContextVar를 원래 값으로 복원합니다.
+
+        Args:
+            tokens: set_test_context()가 반환한 (session_token, tags_token) 튜플
+        """
+        session_token, tags_token = tokens
+
+        # propagate_attributes 해제
+        if self._propagate_ctx is not None:
+            try:
+                self._propagate_ctx.__exit__(None, None, None)
+            except Exception:
+                pass  # ContextVar 토큰 불일치 — 무해한 경고
+            self._propagate_ctx = None
+
+        _active_session_id.reset(session_token)
+        _active_tags.reset(tags_token)
+        logger.info("테스트 컨텍스트 해제 완료")
 
 
 # ---------------------------------------------------------------------------

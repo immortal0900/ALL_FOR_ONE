@@ -7,7 +7,7 @@ import uuid
 import traceback
 import logging
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from agents.main.main_agent import graph_builder
 from agents.state.start_state import StartInput
@@ -44,6 +44,7 @@ async def _schedule_job_cleanup(job_id: str, delay_seconds: int) -> None:
 
 class GraphRequest(BaseModel):
     start_input: StartInput
+    tags: List[str] = []  # Langfuse 태그 (예: ["deepeval", "pipeline"])
 
 
 class GraphResponse(BaseModel):
@@ -89,15 +90,24 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-async def run_graph_task(job_id: str, start_input: dict):
-    """백그라운드에서 그래프 실행하는 함수"""
+async def run_graph_task(job_id: str, start_input: dict, tags: Optional[List[str]] = None):
+    """백그라운드에서 그래프 실행하는 함수
+
+    Args:
+        job_id: 작업 고유 ID (Langfuse session_id로도 사용)
+        start_input: 파이프라인 시작 입력값
+        tags: Langfuse 태그 목록 (예: ["deepeval", "pipeline"])
+              테스트 실행과 프로덕션 실행을 구분하기 위해 사용됩니다.
+              이 파라미터가 없으면 Langfuse 대시보드에서 테스트 trace를 필터링할 수 없습니다.
+    """
     from utils.langfuse_tracker import tracker
     try:
         jobs[job_id]["status"] = "running"
         jobs[job_id]["message"] = "작업 실행 중..."
 
         # Langfuse Session ID를 job_id로 주입하여 1회 파이프라인 전체를 단일 Session으로 묶음
-        config = tracker.get_langfuse_config(session_id=job_id)
+        # tags가 전달되면 trace에 태그를 추가하여 대시보드에서 필터링 가능
+        config = tracker.get_langfuse_config(session_id=job_id, tags=tags or None)
         
         # 외부 통신(도구)들의 관찰 내역까지 모두 포괄하기 위해 session_context 사용
         async with tracker.session_context(session_id=job_id):
@@ -134,8 +144,8 @@ async def invoke_graph(request: GraphRequest):
         "error": None,
     }
 
-    # 백그라운드 작업 시작
-    asyncio.create_task(run_graph_task(job_id, request.start_input.model_dump()))
+    # 백그라운드 작업 시작 (tags가 있으면 Langfuse trace에 태그 추가)
+    asyncio.create_task(run_graph_task(job_id, request.start_input.model_dump(), tags=request.tags))
 
     return JobResponse(
         job_id=job_id, status="pending", message="작업이 시작되었습니다."

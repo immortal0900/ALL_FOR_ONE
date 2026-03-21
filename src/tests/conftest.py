@@ -21,8 +21,48 @@ analysis / final_report / source 등 E2E 연동 테스트에서 공유합니다.
 
 import json
 import os
+from datetime import datetime
 import pytest
 from tests.e2e_client import E2EClient
+
+
+# ============================================================
+# Langfuse 테스트 세션 추적
+# ============================================================
+# [존재 이유]
+# 이 fixture가 없으면 DeepEval 평가 LLM 호출(gpt-5-mini)이 Langfuse에
+# session_id=null, tags=null로 기록되어 프로덕션 trace와 구분할 수 없습니다.
+# session_id + tags를 ContextVar에 설정하면 merge_config()가 모든 호출에 자동 주입합니다.
+# ============================================================
+@pytest.fixture(scope="session", autouse=True)
+def langfuse_test_session():
+    """DeepEval 평가 세션 전체를 Langfuse session/tags로 추적합니다.
+
+    [데이터 흐름]
+    fixture 시작
+      → tracker.set_test_context() → ContextVar에 session_id + tags 저장
+      → 모든 테스트 실행 (RetryableChatOpenAI.invoke() → merge_config() → metadata 자동 주입)
+      → fixture 종료
+      → tracker.clear_test_context() → ContextVar 복원
+      → tracker.flush() → 버퍼에 남은 trace를 Langfuse로 강제 전송
+
+    Yields:
+        session_id (str): 이 테스트 실행의 Langfuse 세션 ID (예: "deepeval-20260321-154507")
+    """
+    from utils.langfuse_tracker import tracker
+
+    session_id = f"deepeval-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+    tags = ["deepeval", "evaluation"]
+
+    tokens = tracker.set_test_context(session_id=session_id, tags=tags)
+    print(f"\n[Langfuse] 테스트 세션 추적 시작: {session_id}")
+    print(f"[Langfuse] 태그: {tags}")
+
+    yield session_id
+
+    tracker.clear_test_context(tokens)
+    tracker.flush()
+    print(f"\n[Langfuse] 테스트 세션 추적 종료: {session_id}")
 
 
 # ============================================================
@@ -81,7 +121,12 @@ def e2e_result():
     }
 
     print(f"\n[E2E] {E2E_MODE} 모드 — 서버 호출 시작 (최대 대기: {timeout}초 / {timeout//60}분)")
-    result_dict = client.run_pipeline(start_input=start_input, timeout=timeout)
+    # Langfuse 태그를 전달하여 파이프라인 trace에서 테스트 실행을 구분
+    result_dict = client.run_pipeline(
+        start_input=start_input,
+        timeout=timeout,
+        tags=["deepeval", "pipeline"],
+    )
     print("[E2E] 파이프라인 리턴 완료. 캐시 파일을 저장합니다.")
 
     with open(CACHE_PATH, "w", encoding="utf-8") as f:
