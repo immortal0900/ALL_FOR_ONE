@@ -46,6 +46,12 @@ def think_tool(reflection: str) -> str:
     - 정량 수치가 어긋난 것 이 있는가?
     - GPT가 시계열 판단하기에 좋은 형식으로 되어있는가?
     - 잘못된 내용은 없는가?
+
+    [RAG 충실도 규칙 - 반드시 준수]
+    - 제공된 원본 데이터(전세가, 매매가, 금리, GDP 등)의 수치를 그대로 인용할 것
+    - 원본에 없는 수치를 추론하거나 보간(interpolation)하지 말 것
+    - "약", "대략", "추정" 대신 원본 수치를 정확히 기재할 것
+    - 원본 데이터의 시점(YYYY-MM)과 단위(천원, %, 호)를 변형하지 말 것
     """
     return f"Reflection recorded: {reflection}"
 
