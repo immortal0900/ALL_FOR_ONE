@@ -22,9 +22,11 @@ from langgraph.prebuilt import ToolNode
 from agents.state.analysis_state import NearbyMarketState
 from agents.state.start_state import StartInput
 from agents.state.structured_schemas import (
+    AnalysisReport,
     NearbyMarketGeminiSchema,
     NearbyMarketPerplexitySchema,
 )
+from utils.sanitize import strip_think_tool
 from prompts import PromptManager, PromptType
 from tools.context_to_csv import nearby_complexes_to_csv
 from tools.gemini_search_tool import gemini_search
@@ -82,6 +84,7 @@ def think_tool(reflection: str) -> str:
 tool_list = [think_tool, perplexity_search, get_real_estate_price, get_location_profile]
 llm_with_tools = llm.bind_tools(tool_list)
 tool_node = ToolNode(tool_list)
+format_llm = LLMProfile.dev_llm().with_structured_output(AnalysisReport)
 
 
 # ---------------------------------------------------------------------------
@@ -338,13 +341,27 @@ def analysis_setting(state: NearbyMarketState) -> NearbyMarketState:
 
 
 def agent(state: NearbyMarketState) -> NearbyMarketState:
-    """최종 보고서를 생성하고 결과를 State에 저장합니다."""
+    """ReAct 루프를 수행합니다. 결과 저장은 format_output에서 담당합니다."""
     messages = state.get(messages_key, [])
     response = llm_with_tools.invoke(messages)
     new_messages = messages + [response]
-    new_state = {**state, messages_key: new_messages}
+    return {**state, messages_key: new_messages}
+
+
+def format_output(state: NearbyMarketState) -> NearbyMarketState:
+    """ReAct 루프 종료 후 think_tool 반성문을 제거하고 깨끗한 보고서만 추출합니다."""
+    messages = state.get(messages_key, [])
+    raw_content = messages[-1].content
+
+    # 1차 방어: 정규식으로 think_tool(reflection: "...") 패턴 제거
+    cleaned = strip_think_tool(raw_content)
+
+    # 2차 방어: Structured Output으로 순수 보고서만 추출
+    report = format_llm.invoke(cleaned)
+
+    new_state = {**state}
     new_state[output_key] = {
-        "result": response.content,
+        "result": report.result,
         gemini_search_key: state.get(gemini_search_key),
         kakao_api_distance_context_key: state.get(kakao_api_distance_context_key),
         real_estate_price_context_key: state.get(real_estate_price_context_key),
@@ -362,7 +379,7 @@ def router(state: NearbyMarketState) -> str:
     last_ai_message = messages[-1]
     if last_ai_message.tool_calls:
         return "tools"
-    return "__end__"
+    return "format_output"
 
 
 # ---------------------------------------------------------------------------
@@ -384,9 +401,12 @@ graph_builder.add_node(_gemini_search_node_key, gemini_search_tool)
 graph_builder.add_node(_kakao_api_distance_key, kakao_api_distance_tool)
 graph_builder.add_node(_real_estate_price_key, get_real_estate_price_tool)
 graph_builder.add_node(_perplexity_search_node_key, perplexity_search_tool)
+_format_output_key = "format_output"
+
 graph_builder.add_node(_analysis_setting_key, analysis_setting)
 graph_builder.add_node(_tools_key, tool_node)
 graph_builder.add_node(_agent_key, agent)
+graph_builder.add_node(_format_output_key, format_output)
 
 graph_builder.add_edge(START, _gemini_search_node_key)
 graph_builder.add_edge(_gemini_search_node_key, _kakao_api_distance_key)
@@ -398,7 +418,8 @@ graph_builder.add_edge(_real_estate_price_key, _analysis_setting_key)
 graph_builder.add_edge(_perplexity_search_node_key, _analysis_setting_key)
 graph_builder.add_edge(_analysis_setting_key, _agent_key)
 
-graph_builder.add_conditional_edges(_agent_key, router, [_tools_key, END])
+graph_builder.add_conditional_edges(_agent_key, router, [_tools_key, _format_output_key])
 graph_builder.add_edge(_tools_key, _agent_key)
+graph_builder.add_edge(_format_output_key, END)
 
 nearby_market_graph = graph_builder.compile()

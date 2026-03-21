@@ -1,10 +1,12 @@
 from langgraph.graph import StateGraph, START, END
 from agents.state.analysis_state import UnsoldInsightState
+from agents.state.structured_schemas import AnalysisReport
 from langchain_core.tools import tool
 from agents.state.start_state import StartInput
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
 from utils.util import get_today_str
 from utils.llm import LLMProfile
+from utils.sanitize import strip_think_tool
 from prompts import PromptManager, PromptType
 from langgraph.prebuilt import ToolNode
 from tools.context_to_csv import unsold_to_drive
@@ -69,6 +71,7 @@ llm = LLMProfile.analysis_llm()
 tool_list = [think_tool]
 llm_with_tools = llm.bind_tools(tool_list)
 tool_node = ToolNode(tool_list)
+format_llm = LLMProfile.dev_llm().with_structured_output(AnalysisReport)
 
 
 from tools.unsold_units import unsold_units
@@ -101,14 +104,26 @@ def analysis_setting(state: UnsoldInsightState) -> UnsoldInsightState:
 
 
 def agent(state: UnsoldInsightState) -> UnsoldInsightState:
+    """ReAct 루프를 수행합니다. 결과 저장은 format_output에서 담당합니다."""
     messages = state.get(messages_key, [])
     response = llm_with_tools.invoke(messages)
     new_messages = messages + [response]
-    new_state = {**state, messages_key: new_messages}
+    return {**state, messages_key: new_messages}
+
+
+def format_output(state: UnsoldInsightState) -> UnsoldInsightState:
+    """ReAct 루프 종료 후 think_tool 반성문을 제거하고 깨끗한 보고서만 추출합니다."""
+    messages = state.get(messages_key, [])
+    raw_content = messages[-1].content
+
+    cleaned = strip_think_tool(raw_content)
+    report = format_llm.invoke(cleaned)
+
+    new_state = {**state}
     new_state[output_key] = {
-        "result": response.content,
+        "result": report.result,
         unsold_unit_key: state[unsold_unit_key],
-        unsold_unit_download_link_key:state[unsold_unit_download_link_key]
+        unsold_unit_download_link_key: state[unsold_unit_download_link_key],
     }
     return new_state
 
@@ -118,23 +133,26 @@ def router(state: UnsoldInsightState):
     last_ai_message = messages[-1]
     if last_ai_message.tool_calls:
         return "tools"
-    return "__end__"
+    return "format_output"
 
 
 unsold_unit_key = "unsold_unit"
 analysis_setting_key = "analysis_setting"
 tools_key = "tools"
 agent_key = "agent"
+format_output_key = "format_output"
 graph_builder = StateGraph(UnsoldInsightState)
 graph_builder.add_node(unsold_unit_key, get_unsold_unit)
 graph_builder.add_node(analysis_setting_key, analysis_setting)
 graph_builder.add_node(tools_key, tool_node)
 graph_builder.add_node(agent_key, agent)
+graph_builder.add_node(format_output_key, format_output)
 
 graph_builder.add_edge(START, unsold_unit_key)
 graph_builder.add_edge(unsold_unit_key, analysis_setting_key)
 graph_builder.add_edge(analysis_setting_key, agent_key)
-graph_builder.add_conditional_edges(agent_key, router, [tools_key, END])
+graph_builder.add_conditional_edges(agent_key, router, [tools_key, format_output_key])
 graph_builder.add_edge(tools_key, agent_key)
+graph_builder.add_edge(format_output_key, END)
 
 unsold_insight_graph = graph_builder.compile()

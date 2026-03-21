@@ -1,10 +1,12 @@
 from langgraph.graph import StateGraph, START, END
 from agents.state.analysis_state import SupplyDemandState
+from agents.state.structured_schemas import AnalysisReport
 from langchain_core.tools import tool
 from agents.state.start_state import StartInput
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
 from utils.util import get_today_str
 from utils.llm import LLMProfile
+from utils.sanitize import strip_think_tool
 
 from prompts import PromptManager, PromptType
 from langgraph.prebuilt import ToolNode
@@ -46,12 +48,7 @@ def think_tool(reflection: str) -> str:
     - 정량 수치가 어긋난 것 이 있는가?
     - GPT가 시계열 판단하기에 좋은 형식으로 되어있는가?
     - 잘못된 내용은 없는가?
-
-    [RAG 충실도 규칙 - 반드시 준수]
-    - 제공된 원본 데이터(전세가, 매매가, 금리, GDP 등)의 수치를 그대로 인용할 것
-    - 원본에 없는 수치를 추론하거나 보간(interpolation)하지 말 것
-    - "약", "대략", "추정" 대신 원본 수치를 정확히 기재할 것
-    - 원본 데이터의 시점(YYYY-MM)과 단위(천원, %, 호)를 변형하지 말 것
+    
     """
     return f"Reflection recorded: {reflection}"
 
@@ -93,6 +90,7 @@ llm = LLMProfile.analysis_llm()
 tool_list = [think_tool]
 llm_with_tools = llm.bind_tools(tool_list)
 tool_node = ToolNode(tool_list)
+format_llm = LLMProfile.dev_llm().with_structured_output(AnalysisReport)
 
 from perplexity import Perplexity
 
@@ -319,12 +317,24 @@ def analysis_setting(state: SupplyDemandState) -> SupplyDemandState:
 
 
 def agent(state: SupplyDemandState) -> SupplyDemandState:
+    """ReAct 루프를 수행합니다. 결과 저장은 format_output에서 담당합니다."""
     messages = state.get(messages_key, [])
     response = llm_with_tools.invoke(messages)
     new_messages = messages + [response]
-    new_state = {**state, messages_key: new_messages}
+    return {**state, messages_key: new_messages}
+
+
+def format_output(state: SupplyDemandState) -> SupplyDemandState:
+    """ReAct 루프 종료 후 think_tool 반성문을 제거하고 깨끗한 보고서만 추출합니다."""
+    messages = state.get(messages_key, [])
+    raw_content = messages[-1].content
+
+    cleaned = strip_think_tool(raw_content)
+    report = format_llm.invoke(cleaned)
+
+    new_state = {**state}
     new_state[output_key] = {
-        "result": response.content,
+        "result": report.result,
         year10_after_house_key: state[year10_after_house_key],
         jeonse_price_key: state[jeonse_price_key],
         sale_price_key: state[sale_price_key],
@@ -334,9 +344,8 @@ def agent(state: SupplyDemandState) -> SupplyDemandState:
         one_people_gdp_key: state[one_people_gdp_key],
         one_people_grdp_key: state[one_people_grdp_key],
         housing_sales_volume_key: state[housing_sales_volume_key],
-        planning_move_key: state[planning_move_key],        
+        planning_move_key: state[planning_move_key],
         pre_promise_competition_key: state[pre_promise_competition_key],
-        
         jeonse_price_download_link_key: state[jeonse_price_download_link_key],
         sale_price_download_link_key: state[sale_price_download_link_key],
         use_kor_rate_download_link_key: state[use_kor_rate_download_link_key],
@@ -344,7 +353,7 @@ def agent(state: SupplyDemandState) -> SupplyDemandState:
         one_people_gdp_grdp_download_link_key: state[one_people_gdp_grdp_download_link_key],
         housing_sales_volume_download_link_key: state[housing_sales_volume_download_link_key],
         planning_move_download_link_key: state[planning_move_download_link_key],
-        pre_promise_competition_download_link_key: state[pre_promise_competition_download_link_key],        
+        pre_promise_competition_download_link_key: state[pre_promise_competition_download_link_key],
     }
     return new_state
 
@@ -354,7 +363,7 @@ def router(state: SupplyDemandState):
     last_ai_message = messages[-1]
     if last_ai_message.tool_calls:
         return "tools"
-    return "__end__"
+    return "format_output"
 
 
 pre_promise_competition_key = "pre_promise_competition"
@@ -387,9 +396,12 @@ graph_builder.add_node(use_kor_rate_key, use_kor_rate)
 graph_builder.add_node(get_home_mortgage_key, get_home_mortgage)
 graph_builder.add_node(get_gdp_and_grdp_key, get_gdp_and_grdp)
 
+format_output_key = "format_output"
+
 graph_builder.add_node(analysis_setting_key, analysis_setting)
 graph_builder.add_node(tools_key, tool_node)
 graph_builder.add_node(agent_key, agent)
+graph_builder.add_node(format_output_key, format_output)
 
 graph_builder.add_edge(START, pre_promise_competition_key)
 graph_builder.add_edge(START, year10_after_house_key)
@@ -413,7 +425,8 @@ graph_builder.add_edge(get_gdp_and_grdp_key, analysis_setting_key)
 
 graph_builder.add_edge(analysis_setting_key, agent_key)
 
-graph_builder.add_conditional_edges(agent_key, router, [tools_key, END])
+graph_builder.add_conditional_edges(agent_key, router, [tools_key, format_output_key])
 graph_builder.add_edge(tools_key, agent_key)
+graph_builder.add_edge(format_output_key, END)
 
 supply_demand_graph = graph_builder.compile()

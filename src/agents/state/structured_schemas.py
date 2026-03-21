@@ -171,6 +171,20 @@ class HousingRuleList(BaseModel):
 #    파일: kostat_api.py > get_move_population()
 # ---------------------------------------------------------------------------
 
+class AnalysisReport(BaseModel):
+    """
+    ReAct 루프 종료 후 최종 분석 보고서 추출용 스키마.
+
+    [존재 이유]
+    think_tool을 사용하는 agent에서 LLM의 최종 응답에 반성문이 섞일 수 있음.
+    이 스키마로 with_structured_output()을 적용하면 순수 보고서 본문만 추출됨.
+    """
+
+    result: str = Field(
+        description="최종 분석 보고서 본문 (Markdown 형식)"
+    )
+
+
 class MovePopulationQuery(BaseModel):
     """
     get_move_population()에서 LLM이 생성하는 SQL 쿼리의 출력 스키마.
