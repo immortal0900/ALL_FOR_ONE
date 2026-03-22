@@ -32,12 +32,7 @@ def think_tool(reflection: str) -> str:
 
     Returns:
         추론이 기록되었다는 확인 메세지
-
-    [RAG 충실도 규칙 - 반드시 준수]
-    - 검색된 보도자료/뉴스 원문의 정확한 수치와 문구를 인용할 것
-    - 검색 결과에 명시되지 않은 내용을 추론하거나 일반화하지 말 것
-    - 출처를 [보도자료 제목, 날짜] 또는 [뉴스 제목, 날짜] 형식으로 반드시 기록할 것
-    - Supabase에서 검색된 청약 규정/FAQ 데이터는 원문 그대로 인용하고 재해석하지 말 것
+    
     """
     return f"Reflection recorded: {reflection}"
 
