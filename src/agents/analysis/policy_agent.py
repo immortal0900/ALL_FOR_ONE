@@ -70,7 +70,23 @@ def record_reflection(title: str, hint: str) -> None:
 
 # 1. 자료수집
 def national_news(state: PolicyState) -> PolicyState:
-    docs = national_policy_retrieve()
+    start_input = state.get(start_input_key, {})
+    policy_list = start_input.get(StartInput.KEY.policy_list, "")
+    policy_period = start_input.get(StartInput.KEY.policy_period, "")
+    target_area = start_input.get(StartInput.KEY.target_area, "")
+
+    # 검색 쿼리 구성 (policy_pdf_retrieve 노드와 동일한 패턴)
+    query_parts = []
+    if policy_list:
+        query_parts.append(policy_list)
+    if policy_period:
+        query_parts.append(policy_period)
+    if target_area:
+        query_parts.append(target_area)
+
+    # query가 없으면 None -> CSV 전량 로드 fallback
+    query = " ".join(query_parts) if query_parts else None
+    docs = national_policy_retrieve(query=query, k=20)
     record_reflection("국가 뉴스 수집", "전국 정책 기사 정리")
     return {
         national_context_key: docs,
