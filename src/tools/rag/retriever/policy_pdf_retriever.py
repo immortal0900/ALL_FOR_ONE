@@ -1,53 +1,63 @@
 """
 정책 PDF Retriever
-하이브리드 검색을 구현한 Retriever입니다.
+pgvector(벡터 검색) + pgroonga(키워드 검색)를 결합한 Hybrid Search를 구현합니다.
+
+두 검색 모두 같은 langchain_pg_embedding 테이블에서 수행되므로,
+UUID 기준 점수 합산이 의미 있는 진정한 Hybrid Search입니다.
 """
 
+import json
 import re
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
+
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from sqlalchemy import text
 
-from tools.rag.vector_store import get_pgvector_store
+from tools.rag.vector_store import (
+    get_pgvector_store,
+    get_sql_engine,
+    get_collection_id,
+)
 from tools.rag.document_loader.policy_file_loader import PolicyDocument
 
 # 컬렉션 이름 상수
 POLICY_DOCUMENTS_COLLECTION = "policy_documents"
 
+
 class PolicyPDFRetriever:
     """
     정책 문서 검색 시스템
-    의미기반 검색과 키워드기반 검색을 하이브리드로 결합한 검색 시스템입니다.
+    pgvector 벡터 유사도(0.7)와 pgroonga 키워드 검색(0.3)을
+    UUID 기준으로 합산하는 Hybrid Search를 수행합니다.
     """
+
     def __init__(self):
-        """
-        PolicyPDFRetriever 초기화
-        PGVector 스토어를 가져옵니다.
-        """
+        """PolicyPDFRetriever 초기화"""
         self.vector_store = get_pgvector_store(POLICY_DOCUMENTS_COLLECTION)
-        self.documents_cache = []
+        self.collection_id = get_collection_id(POLICY_DOCUMENTS_COLLECTION)
 
     def add_documents(self, policy_documents: List[PolicyDocument]) -> None:
         """
-        정책 문서를 벡터스코어에 추가 합니다.
+        정책 문서를 벡터 스토어에 추가합니다.
 
         Args:
             policy_documents: 추가할 PolicyDocument 리스트
         """
         langchain_docs = []
 
-        # 텍스트 분할기 초기화
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1500,
-            chunk_overlap=150
+            chunk_overlap=150,
         )
 
-        # 각 정책 문서를 청크로 분할 
         for policy_doc in policy_documents:
-            # content가 문자열인지 확인
             if not isinstance(policy_doc.content, str):
-                raise TypeError(f"policy_doc.content는 문자열이어야 합니다. 현재 타입: {type(policy_doc.content)}")
-            
+                raise TypeError(
+                    f"policy_doc.content는 문자열이어야 합니다. "
+                    f"현재 타입: {type(policy_doc.content)}"
+                )
+
             chunks = text_splitter.split_text(policy_doc.content)
             for chunk_idx, chunk in enumerate(chunks):
                 langchain_doc = Document(
@@ -58,201 +68,195 @@ class PolicyPDFRetriever:
                         "policy_type": policy_doc.policy_type.value,
                         "title": policy_doc.title,
                         "chunk_id": chunk_idx,
-                        "total_chunks": len(chunks)
-                    }
+                        "total_chunks": len(chunks),
+                    },
                 )
                 langchain_docs.append(langchain_doc)
-        
-        # 벡터스코어에 문서추가
+
         self.vector_store.add_documents(langchain_docs)
 
-        # 캐시에도 저장(키워드 검색용)
-        self.documents_cache.extend(policy_documents)
-
-    def semantic_search(self, query: str, k: int = 5) -> List[Document]:
+    def semantic_search(self, query: str, k: int = 5) -> List[Tuple[Document, float]]:
         """
-        의미기반 검색을 수행합니다.
-        벡터 유사도를 기반으로 관련 문서를 찾습니다.
+        벡터 유사도 기반 검색을 수행합니다.
 
         Args:
             query: 검색 쿼리
             k: 반환할 문서 개수
 
         Returns:
-            검색된 Document 리스트
+            (Document, distance) 튜플 리스트. distance는 코사인 거리 (낮을수록 유사).
         """
         if not self.vector_store:
             return []
 
-        results = self.vector_store.similarity_search(query, k=k)
-        return results
+        return self.vector_store.similarity_search_with_score(query, k=k)
 
-    def keyword_search(self, keywords: List[str], k: int=5) -> List[Document]:
+    def keyword_search(self, query: str, k: int = 5) -> List[Tuple[Document, float]]:
         """
-        키워드 기반 검색을 수행합니다.
-        문서 내용에서 키워드가 나타나는 빈도를 기반으로 점수를 계산합니다.
+        pgroonga 전문 검색으로 키워드 매칭 문서를 반환합니다.
+
+        pgroonga의 &@~ 연산자가 document 컬럼을 검색하고,
+        pgroonga_score()가 TF-IDF 기반 관련도 점수를 반환합니다.
 
         Args:
-            keywords: 검색할 키워드 리스트
+            query: pgroonga 검색 쿼리 (OR/AND/- 연산자 지원)
             k: 반환할 문서 개수
 
         Returns:
-            검색된 Document 리스트(점수순 정렬)
+            (Document, score) 튜플 리스트. score는 pgroonga 관련도 (높을수록 관련).
         """
-        scored_docs = []
+        engine = get_sql_engine()
 
-        for doc in self.documents_cache:
-            score = 0
-            content_lower = doc.content.lower()
+        sql = text("""
+            SELECT uuid, document, cmetadata,
+                   pgroonga_score(tableoid, ctid) AS score
+            FROM langchain_pg_embedding
+            WHERE collection_id = :cid
+              AND document &@~ :query
+            ORDER BY score DESC
+            LIMIT :k
+        """)
 
-            for keyword in keywords:
-                keyword_lower = keyword.lower()
-                if keyword_lower in content_lower:
-                    score += content_lower.count(keyword_lower)
+        results = []
+        with engine.connect() as conn:
+            rows = conn.execute(
+                sql,
+                {"cid": self.collection_id, "query": query, "k": k},
+            )
+            for row in rows:
+                metadata = row[2] if isinstance(row[2], dict) else json.loads(row[2])
+                doc = Document(page_content=row[1], metadata=metadata)
+                doc.metadata["uuid"] = str(row[0])
+                results.append((doc, float(row[3])))
 
-            if score > 0:
-                scored_docs.append((doc, score))
-
-        # 점수순 정렬
-        scored_docs.sort(key=lambda x: x[1], reverse=True)
-
-        # 상위 k개 반환
-        result_docs = []
-        for doc, score in scored_docs[:k]:
-            result_docs.append(doc)
-
-        return result_docs
+        return results
 
     def hybrid_search(
         self,
         query: str,
         keywords: Optional[List[str]] = None,
         semantic_weight: float = 0.7,
-        k: int = 5
+        k: int = 5,
     ) -> List[Document]:
         """
-        하이브리드 검색을 수행합니다.
-        의미 검색과 키워드 검색의 결과를 결합하여 최종 결과를 반환합니다.
- 
+        Hybrid Search를 수행합니다.
+        pgvector 벡터 유사도와 pgroonga 키워드 검색 결과를
+        UUID 기준으로 점수를 합산하여 최종 순위를 결정합니다.
+
         Args:
             query: 검색 쿼리
             keywords: 검색할 키워드 리스트 (None이면 자동 추출)
-            semantic_weight: 의미검색의 가중치 (0.0~1.0)
+            semantic_weight: 벡터 검색 가중치 (기본 0.7)
             k: 반환할 문서 개수
 
         Returns:
-            검색된 Document 리스트(점수순 정렬)
+            검색된 Document 리스트 (점수순 정렬)
         """
-           
-        # 의미검색수행
-        semantic_results = self.semantic_search(query, k=k*2)
-        
-        # 키워드 추출(제공되지 않은 경우)
-        if keywords is None:
-            keywords = self._extract_keywords(query)
+        # 1. 벡터 검색 (pgvector)
+        semantic_results = self.semantic_search(query, k=k * 2)
 
-        # 키워드 검색 수행
-        keyword_results = self.keyword_search(keywords, k=k*2)
+        # 2. pgroonga 키워드 검색
+        pgroonga_query = self._build_pgroonga_query(query)
+        keyword_results = self.keyword_search(pgroonga_query, k=k * 2)
 
-        # 결과 병합 및 점수 계산
-        combined_scores = {}
+        # 3. 점수 정규화 + UUID 기준 합산
+        combined = self._merge_scores(
+            semantic_results, keyword_results, semantic_weight
+        )
 
-        # 의미 검색 결과에 점수 부여
-        semantic_count = len(semantic_results)
-        for idx, doc in enumerate(semantic_results):
-            doc_id = self._get_doc_id(doc)
-            # 순위가 높을수록 높은 점수 (1.0 → 0.0)
-            rank_score = (semantic_count - idx) / semantic_count if semantic_count > 0 else 0
-            score = semantic_weight * rank_score
-            combined_scores[doc_id] = {
-                'doc': doc,
-                'score': score
-            }
-
-        # 키워드 검색 결과에 점수 부여(이미 있으면 점수 추가)
-        keyword_count = len(keyword_results)
-        keyword_weight = 1.0 - semantic_weight
-
-        for idx, doc in enumerate(keyword_results):
-            doc_id = self._get_doc_id(doc)
-            keyword_score = keyword_weight * (1 - idx / keyword_count) if keyword_count > 0 else 0
-
-            if doc_id in combined_scores:
-                combined_scores[doc_id]['score'] += keyword_score
-            else:
-                combined_scores[doc_id] = {
-                    'doc': doc,
-                    'score': keyword_score
-                }
-
-        # 점수순 정렬
+        # 4. 상위 k개 반환
         sorted_results = sorted(
-            combined_scores.values(),
-            key=lambda x: x['score'],
-            reverse=True
-            )
+            combined.values(), key=lambda x: x["score"], reverse=True
+        )
+        return [item["doc"] for item in sorted_results[:k]]
 
-        # 상위 k개 반환
-        result_docs = []
-        for item in sorted_results[:k]:
-            result_docs.append(item['doc'])
+    def _merge_scores(
+        self,
+        semantic_results: List[Tuple[Document, float]],
+        keyword_results: List[Tuple[Document, float]],
+        semantic_weight: float,
+    ) -> Dict[str, dict]:
+        """
+        벡터 검색과 키워드 검색 결과를 UUID 기준으로 합산합니다.
 
-        return result_docs
+        점수 정규화:
+        - pgvector: 코사인 거리 (0~2, 낮을수록 유사) → 1 - (dist/max_dist)로 변환
+        - pgroonga: relevance score (높을수록 관련) → score/max_score로 정규화
+        """
+        keyword_weight = 1.0 - semantic_weight
+        combined: Dict[str, dict] = {}
+
+        # 벡터 결과 점수 정규화
+        if semantic_results:
+            max_dist = max(dist for _, dist in semantic_results) or 1.0
+            for doc, dist in semantic_results:
+                doc_id = self._get_doc_id(doc)
+                norm_score = semantic_weight * (1.0 - dist / max_dist) if max_dist > 0 else 0.0
+                combined[doc_id] = {"doc": doc, "score": norm_score}
+
+        # 키워드 결과 점수 정규화 + 합산
+        if keyword_results:
+            max_kw_score = max(score for _, score in keyword_results) or 1.0
+            for doc, score in keyword_results:
+                doc_id = self._get_doc_id(doc)
+                norm_score = keyword_weight * (score / max_kw_score) if max_kw_score > 0 else 0.0
+
+                if doc_id in combined:
+                    combined[doc_id]["score"] += norm_score
+                else:
+                    combined[doc_id] = {"doc": doc, "score": norm_score}
+
+        return combined
 
     def _get_doc_id(self, doc: Document) -> str:
         """
-        Document 고유 ID를 생성합니다.
-
-        Args:
-            doc: Document 객체
-
-        Returns:
-            고유 ID 문자열
+        Document의 고유 ID를 반환합니다.
+        pgroonga 결과에는 uuid가 있고, pgvector 결과에는 metadata 기반 ID를 사용합니다.
         """
-        source = doc.metadata.get('source', '')
-        chunk_id = doc.metadata.get('chunk_id', 0)
+        if "uuid" in doc.metadata:
+            return doc.metadata["uuid"]
+        source = doc.metadata.get("source", "")
+        chunk_id = doc.metadata.get("chunk_id", 0)
         return f"{source}_{chunk_id}"
 
-    def _extract_keywords(self, query: str) -> List[str]:
+    def _build_pgroonga_query(self, query: str) -> str:
         """
-        쿼리에서 중요한 키워드를 추출합니다.
+        원본 쿼리에서 도메인 키워드를 추출하여 pgroonga OR 쿼리로 확장합니다.
+
+        도메인 키워드 목록의 역할:
+        - AS-IS: Python `if keyword in content` 매칭용
+        - TO-BE: 쿼리 확장(Query Expansion) — 사용자 쿼리에서 도메인 용어를 감지하면
+                  관련 용어를 pgroonga 쿼리에 추가하여 검색 범위 확대
 
         Args:
-            query: 검색쿼리
+            query: 원본 검색 쿼리
 
         Returns:
-            추출된 키워드 리스트
+            pgroonga &@~ 연산자용 쿼리 문자열
         """
         keywords = []
-        # 중요 키워드 목록
+
         important_terms = [
-            'LTV', 'DTI', 'DSR', '규제지역', '투기과열지구', '조정대상지역',
-            '대출', '주담대', '전세대출', '신용대출', '중도금대출',
-            '주택', '아파트', '분양', '청약', '전매제한',
-            '취득세', '양도세', '재산세', '종부세',
-            '수도권', '지방', '서울', '경기',
-            '금리', '한도', '만기', '상환'
+            "LTV", "DTI", "DSR", "규제지역", "투기과열지구", "조정대상지역",
+            "대출", "주담대", "전세대출", "신용대출", "중도금대출",
+            "주택", "아파트", "분양", "청약", "전매제한",
+            "취득세", "양도세", "재산세", "종부세",
+            "수도권", "지방", "서울", "경기",
+            "금리", "한도", "만기", "상환",
         ]
 
         query_upper = query.upper()
-
-        # 중요 키워드 확인
         for term in important_terms:
             if term.upper() in query_upper:
                 keywords.append(term)
 
-        # 숫자 패턴 추출(날짜, 비율 등)
-        numbers_pattern = r'\d+(?:\.\d+)?[%년월일억원]?' # \d+ - 1개 이상의 숫자 (예: 70, 2024, 5)
-        # (?:\.\d+)? - 소수점과 숫자가 선택적으로 올 수 있음 (예: .5, .75)
-        # ? - 0번 또는 1번 나타남
-        # [%년월일억원]? - 단위 문자가 선택적으로 올 수 있음 (예: %, 년, 월, 일, 억, 원)
-        #   ? - 바로 앞의 문자 집합이 0번 또는 1번 나타남 (있어도 되고 없어도 됨)
-        #(\.\d+)? - 소수점 부분을 그룹1에 저장
-        # (?:\.\d+)? - 소수점 부분을 저장 안 함, 그냥 묶기만
-        numbers = re.findall(numbers_pattern, query)
+        # 숫자 패턴 추출 (날짜, 비율, 금액 등)
+        numbers = re.findall(r"\d+(?:\.\d+)?[%년월일억원]?", query)
         keywords.extend(numbers)
 
-        return keywords
+        # 원본 쿼리 + 도메인 키워드를 OR로 결합
+        all_terms = [query] + keywords
+        return " OR ".join(all_terms)
 
     def as_retriever(self, search_kwargs: Optional[Dict] = None):
         """

@@ -1,5 +1,6 @@
 from langchain_community.vectorstores import PGVector
 from langchain_openai import OpenAIEmbeddings
+from sqlalchemy import create_engine, text
 import os
 from dotenv import load_dotenv
 from threading import Lock
@@ -8,6 +9,13 @@ load_dotenv()
 
 _pgvector_cache = {}
 _pgvector_lock = Lock()
+
+# pgroonga raw SQL 실행용 엔진 캐시
+_engine_cache = None
+_engine_lock = Lock()
+
+# 컬렉션 이름 → UUID 매핑 캐시
+_collection_id_cache = {}
 
 
 import urllib.parse
@@ -106,3 +114,68 @@ def get_pgvector_store(collection_name: str):
             pass
 
         return _pgvector_cache[collection_name]
+
+
+def get_sql_engine():
+    """
+    pgroonga raw SQL 실행용 SQLAlchemy 엔진을 반환합니다.
+    싱글톤 패턴으로 캐싱하여 반복 생성을 방지합니다.
+
+    LangChain PGVector 클래스가 raw SQL(pgroonga &@~ 연산자 등)을 노출하지 않으므로,
+    키워드 검색 시 이 엔진을 통해 직접 SQL을 실행합니다.
+    """
+    global _engine_cache
+    with _engine_lock:
+        if _engine_cache is None:
+            connection_url = os.getenv("POSTGRES_URL")
+            if connection_url:
+                connection_url = _prepare_connection_string(connection_url)
+
+            _engine_cache = create_engine(
+                connection_url,
+                pool_pre_ping=True,
+                pool_recycle=300,
+                pool_size=5,
+                max_overflow=3,
+            )
+        return _engine_cache
+
+
+def get_collection_id(collection_name: str) -> str:
+    """
+    컬렉션 이름으로 UUID를 조회합니다.
+    결과를 캐싱하여 반복 쿼리를 방지합니다.
+
+    pgroonga 키워드 검색 시 collection_id로 필터링해야
+    다른 컬렉션의 문서가 결과에 섞이지 않습니다.
+
+    Args:
+        collection_name: 컬렉션 이름 (예: "policy_documents", "NATIONAL_POLICY")
+
+    Returns:
+        컬렉션 UUID 문자열
+
+    Raises:
+        ValueError: 컬렉션이 존재하지 않는 경우
+    """
+    if collection_name in _collection_id_cache:
+        return _collection_id_cache[collection_name]
+
+    engine = get_sql_engine()
+    sql = text(
+        "SELECT uuid FROM langchain_pg_collection WHERE name = :name"
+    )
+
+    with engine.connect() as conn:
+        result = conn.execute(sql, {"name": collection_name})
+        row = result.fetchone()
+
+    if not row:
+        raise ValueError(
+            f"컬���션 '{collection_name}'이 존재하지 않습니다. "
+            f"인덱서를 먼저 실행하세요."
+        )
+
+    collection_id = str(row[0])
+    _collection_id_cache[collection_name] = collection_id
+    return collection_id
